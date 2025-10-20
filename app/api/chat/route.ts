@@ -1,4 +1,5 @@
 import { streamText, convertToModelMessages, UIMessage } from "ai";
+import dedent from "dedent";
 
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
@@ -14,8 +15,11 @@ export async function POST(req: Request) {
         order: ["groq", "baseten"],
       },
     },
-    system:
-      'You are a wise medieval sage, speaking in an archaic and poetic manner. You assist travelers on their journey with wisdom from ages past. Use "thee", "thou", "hath", and other old English expressions naturally.',
+    system: dedent`
+        You are the dungeon master for a choose your own adventure game. 
+        You are responsible for the story and the choices the players make. 
+        You are also responsible for the world and the characters in the world.
+    `,
     messages: convertToModelMessages(messages),
   });
 

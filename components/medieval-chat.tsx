@@ -1,14 +1,32 @@
 "use client";
 
 import { useChat } from "@ai-sdk/react";
-import { DefaultChatTransport } from "ai";
+import { DefaultChatTransport, UIMessage } from "ai";
+import dedent from "dedent";
 import { useState } from "react";
+import { Response } from "@/components/ai-elements/response";
+
+const firstMessage = dedent`
+You arrive in the small village of Misty Hollow, despite it's small size it seems to be bustling. Who are you?
+`;
 
 export default function MedievalChat() {
   const { messages, sendMessage, status } = useChat({
     transport: new DefaultChatTransport({
       api: "/api/chat",
     }),
+    messages: [
+      {
+        role: "assistant",
+        parts: [
+          {
+            type: "text",
+            text: firstMessage,
+          },
+        ],
+        id: "first-message",
+      } as UIMessage,
+    ],
   });
   const [input, setInput] = useState("");
 
@@ -33,7 +51,7 @@ export default function MedievalChat() {
             {messages.map((message) => (
               <div
                 key={message.id}
-                className={`relative ${
+                className={`${
                   message.role === "user"
                     ? "bg-[#e8d9c0] ml-8"
                     : "bg-[#f0e5d0] mr-8"
@@ -49,11 +67,18 @@ export default function MedievalChat() {
                   {message.role === "user" ? "⚔ Your Choice" : "📜 The Story"}
                 </div>
                 <div className="whitespace-pre-wrap text-[#3a2820] leading-relaxed">
-                  {message.parts.map((part, index) =>
-                    part.type === "text" ? (
-                      <span key={index}>{part.text}</span>
-                    ) : null
-                  )}
+                  {message.parts.map((part, i) => {
+                    switch (part.type) {
+                      case "text": // we don't use any reasoning or tool calls in this example
+                        return (
+                          <Response key={`${message.id}-${i}`}>
+                            {part.text}
+                          </Response>
+                        );
+                      default:
+                        return null;
+                    }
+                  })}
                 </div>
               </div>
             ))}
