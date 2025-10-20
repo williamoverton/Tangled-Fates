@@ -1,7 +1,5 @@
+import MedievalChat from "@/components/medieval-chat";
+
 export default function Home() {
-  return (
-    <div>
-      <h1>Hello World</h1>
-    </div>
-  );
+  return <MedievalChat />;
 }

@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist_Mono, Metamorphous } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const metamorphous = Metamorphous({
+  variable: "--font-metamorphous",
+  weight: ["400"] as const,
   subsets: ["latin"],
 });
 
@@ -25,7 +26,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${metamorphous.variable} ${geistMono.variable} font-sans text-lg antialiased`}
       >
         {children}
       </body>
