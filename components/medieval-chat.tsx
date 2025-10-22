@@ -45,7 +45,7 @@ export default function MedievalChat() {
           {/* Title header */}
           <div className="relative bg-linear-to-b from-medieval-border-dark to-medieval-button-bg p-6 border-b-4 border-medieval-button-hover">
             <h1 className="text-2xl sm:text-3xl font-bold text-center text-medieval-parchment-light tracking-wider drop-shadow-md">
-              ✦ Choose Your Own Adventure ✦
+              ✦ Tangled Fates ✦
             </h1>
             <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 w-24 h-1 bg-medieval-border-dark rounded-full" />
           </div>

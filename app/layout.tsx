@@ -22,8 +22,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Choose Your Own Adventure Multiplayer",
-  description: "A multiplayer choose your own adventure game",
+  title: "Tangled Fates",
+  description:
+    "An AI-powered multiplayer adventure where your choices shape the story",
 };
 
 export default function RootLayout({

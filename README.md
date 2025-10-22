@@ -1,4 +1,6 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Tangled Fates
+
+An AI-powered multiplayer adventure game where your choices shape the story. Built with Next.js, AI SDK, and modern web technologies.
 
 ## Getting Started
 
