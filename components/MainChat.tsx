@@ -2,7 +2,6 @@
 
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport, UIMessage } from "ai";
-import dedent from "dedent";
 import { useState } from "react";
 import { Response } from "@/components/ai-elements/response";
 import { Button } from "@/components/ui/button";
@@ -10,11 +9,13 @@ import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card, CardContent } from "@/components/ui/card";
 
-const firstMessage = dedent`
-You arrive in the small village of Misty Hollow, despite it's small size it seems to be bustling. Who are you?
-`;
-
-export default function MedievalChat() {
+export default function MainChat({
+  initialMessage,
+  title,
+}: {
+  initialMessage: string;
+  title: string;
+}) {
   const { messages, sendMessage, status, error } = useChat({
     transport: new DefaultChatTransport({
       api: "/api/chat",
@@ -25,7 +26,7 @@ export default function MedievalChat() {
         parts: [
           {
             type: "text",
-            text: firstMessage,
+            text: initialMessage,
           },
         ],
         id: "first-message",
@@ -45,7 +46,7 @@ export default function MedievalChat() {
           {/* Title header */}
           <div className="relative bg-linear-to-b from-medieval-border-dark to-medieval-button-bg p-6 border-b-4 border-medieval-button-hover">
             <h1 className="text-2xl sm:text-3xl font-bold text-center text-medieval-parchment-light tracking-wider drop-shadow-md">
-              ✦ Tangled Fates ✦
+              ✦ {title} ✦
             </h1>
             <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 w-24 h-1 bg-medieval-border-dark rounded-full" />
           </div>

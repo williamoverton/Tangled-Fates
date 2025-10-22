@@ -3,8 +3,6 @@ import {
   pgTable,
   varchar,
   text,
-  jsonb,
-  pgEnum,
   vector,
   index,
   timestamp,
@@ -12,7 +10,7 @@ import {
 import { relations } from "drizzle-orm";
 
 // Different worlds / Games that can be played
-export const worldTable = pgTable("worlds", {
+export const worlds = pgTable("worlds", {
   id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
   createdAt: timestamp("created_at")
     .notNull()
@@ -20,10 +18,11 @@ export const worldTable = pgTable("worlds", {
     .$defaultFn(() => new Date()),
   name: varchar("name", { length: 255 }).notNull(),
   description: text("description").notNull(),
+  slug: varchar("slug", { length: 255 }),
 });
 
 // Locations in the world
-export const locationTable = pgTable(
+export const locations = pgTable(
   "locations",
   {
     id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
@@ -33,7 +32,7 @@ export const locationTable = pgTable(
       .$defaultFn(() => new Date()),
     name: varchar("name", { length: 255 }).notNull(),
     description: text("description").notNull(),
-    worldId: integer("world_id").references(() => worldTable.id),
+    worldId: integer("world_id").references(() => worlds.id),
     imageUrl: text("image_url"),
     embedding: vector("embedding", { dimensions: 1536 }).notNull(),
   },
@@ -45,15 +44,15 @@ export const locationTable = pgTable(
   ]
 );
 
-export const locationRelations = relations(locationTable, ({ one }) => ({
-  world: one(worldTable, {
-    fields: [locationTable.worldId],
-    references: [worldTable.id],
+export const locationRelations = relations(locations, ({ one }) => ({
+  world: one(worlds, {
+    fields: [locations.worldId],
+    references: [worlds.id],
   }),
 }));
 
 // Characters in the world
-export const characterTable = pgTable(
+export const characters = pgTable(
   "characters",
   {
     id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
@@ -63,7 +62,7 @@ export const characterTable = pgTable(
       .$defaultFn(() => new Date()),
     name: varchar("name", { length: 255 }).notNull(),
     description: text("description").notNull(),
-    worldId: integer("world_id").references(() => worldTable.id),
+    worldId: integer("world_id").references(() => worlds.id),
     imageUrl: text("image_url"),
     embedding: vector("embedding", { dimensions: 1536 }).notNull(),
   },
@@ -75,15 +74,15 @@ export const characterTable = pgTable(
   ]
 );
 
-export const characterRelations = relations(characterTable, ({ one }) => ({
-  world: one(worldTable, {
-    fields: [characterTable.worldId],
-    references: [worldTable.id],
+export const characterRelations = relations(characters, ({ one }) => ({
+  world: one(worlds, {
+    fields: [characters.worldId],
+    references: [worlds.id],
   }),
 }));
 
 // Players (users)
-export const playerTable = pgTable("players", {
+export const players = pgTable("players", {
   id: varchar("id").primaryKey(), // ID from clerk
   createdAt: timestamp("created_at")
     .notNull()
@@ -91,19 +90,19 @@ export const playerTable = pgTable("players", {
     .$defaultFn(() => new Date()),
   name: varchar("name", { length: 255 }).notNull(),
   description: text("description").notNull(),
-  worldId: integer("world_id").references(() => worldTable.id),
+  worldId: integer("world_id").references(() => worlds.id),
   imageUrl: text("image_url"),
 });
 
-export const playerRelations = relations(playerTable, ({ one }) => ({
-  world: one(worldTable, {
-    fields: [playerTable.worldId],
-    references: [worldTable.id],
+export const playerRelations = relations(players, ({ one }) => ({
+  world: one(worlds, {
+    fields: [players.worldId],
+    references: [worlds.id],
   }),
 }));
 
 // Events that happened in the world and the corresponding location, character, and player (if applicable)
-export const eventTable = pgTable(
+export const events = pgTable(
   "events",
   {
     id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
@@ -113,9 +112,9 @@ export const eventTable = pgTable(
       .$defaultFn(() => new Date()),
     name: varchar("name", { length: 255 }).notNull(),
     description: text("description").notNull(),
-    locationId: integer("location_id").references(() => locationTable.id),
-    characterId: integer("character_id").references(() => characterTable.id),
-    playerId: varchar("player_id").references(() => playerTable.id),
+    locationId: integer("location_id").references(() => locations.id),
+    characterId: integer("character_id").references(() => characters.id),
+    playerId: varchar("player_id").references(() => players.id),
     embedding: vector("embedding", { dimensions: 1536 }).notNull(),
   },
   (table) => [
@@ -126,17 +125,17 @@ export const eventTable = pgTable(
   ]
 );
 
-export const eventRelations = relations(eventTable, ({ one }) => ({
-  location: one(locationTable, {
-    fields: [eventTable.locationId],
-    references: [locationTable.id],
+export const eventRelations = relations(events, ({ one }) => ({
+  location: one(locations, {
+    fields: [events.locationId],
+    references: [locations.id],
   }),
-  character: one(characterTable, {
-    fields: [eventTable.characterId],
-    references: [characterTable.id],
+  character: one(characters, {
+    fields: [events.characterId],
+    references: [characters.id],
   }),
-  player: one(playerTable, {
-    fields: [eventTable.playerId],
-    references: [playerTable.id],
+  player: one(players, {
+    fields: [events.playerId],
+    references: [players.id],
   }),
 }));
