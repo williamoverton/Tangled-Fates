@@ -46,12 +46,31 @@ export const WorldEventItem = z.object({
   type: z.literal("world_event").default("world_event"),
   when: z.iso.datetime(),
   location: WorldLocationItem.omit({ type: true })
+    .extend({
+      id: z
+        .number()
+        .describe(
+          "The ID of the location where the event occurred (if applicable)"
+        ),
+    })
     .optional()
     .describe("The location where the event occurred (if applicable)"),
   character: WorldCharacterItem.omit({ type: true })
+    .extend({
+      id: z
+        .number()
+        .describe(
+          "The ID of the character involved in the event (if applicable)"
+        ),
+    })
     .optional()
     .describe("The character involved in the event (if applicable)"),
   player: WorldPlayerItem.omit({ type: true })
+    .extend({
+      id: z
+        .string()
+        .describe("The ID of the player involved in the event (if applicable)"),
+    })
     .optional()
     .describe("The player involved in the event (if applicable)"),
   description: z.string().describe("A detailed description of the event."),

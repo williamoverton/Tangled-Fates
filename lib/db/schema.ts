@@ -32,7 +32,9 @@ export const locations = pgTable(
       .$defaultFn(() => new Date()),
     name: varchar("name", { length: 255 }).notNull(),
     description: text("description").notNull(),
-    worldId: integer("world_id").references(() => worlds.id),
+    worldId: integer("world_id")
+      .notNull()
+      .references(() => worlds.id),
     imageUrl: text("image_url"),
     embedding: vector("embedding", { dimensions: 1536 }).notNull(),
   },
@@ -62,7 +64,9 @@ export const characters = pgTable(
       .$defaultFn(() => new Date()),
     name: varchar("name", { length: 255 }).notNull(),
     description: text("description").notNull(),
-    worldId: integer("world_id").references(() => worlds.id),
+    worldId: integer("world_id")
+      .notNull()
+      .references(() => worlds.id),
     imageUrl: text("image_url"),
     embedding: vector("embedding", { dimensions: 1536 }).notNull(),
   },
@@ -90,7 +94,9 @@ export const players = pgTable("players", {
     .$defaultFn(() => new Date()),
   name: varchar("name", { length: 255 }).notNull(),
   description: text("description").notNull(),
-  worldId: integer("world_id").references(() => worlds.id),
+  worldId: integer("world_id")
+    .notNull()
+    .references(() => worlds.id),
   imageUrl: text("image_url"),
 });
 
@@ -112,6 +118,9 @@ export const events = pgTable(
       .$defaultFn(() => new Date()),
     name: varchar("name", { length: 255 }).notNull(),
     description: text("description").notNull(),
+    worldId: integer("world_id")
+      .notNull()
+      .references(() => worlds.id),
     locationId: integer("location_id").references(() => locations.id),
     characterId: integer("character_id").references(() => characters.id),
     playerId: varchar("player_id").references(() => players.id),
