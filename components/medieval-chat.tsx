@@ -31,10 +31,10 @@ export default function MedievalChat() {
   const [input, setInput] = useState("");
 
   return (
-    <div className="flex flex-col h-screen bg-linear-to-br from-amber-50 via-yellow-50 to-amber-100">
-      <div className="flex flex-col h-full max-w-6xl mx-auto p-8">
+    <div className="flex flex-col w-full h-full">
+      <div className="flex flex-col w-full h-full p-8">
         {/* Parchment-like container */}
-        <div className="flex flex-col h-full bg-[#f4e8d0] shadow-2xl rounded-sm border-4 border-[#8b7355] relative overflow-hidden">
+        <div className="flex flex-col h-full shadow-2xl rounded-sm border-4 border-[#8b7355] relative overflow-hidden">
           {/* Aged paper texture overlay */}
           <div className="absolute inset-0 opacity-[0.15] pointer-events-none bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIj48ZmVUdXJidWxlbmNlIGJhc2VGcmVxdWVuY3k9Ii43NSIgc3RpdGNoVGlsZXM9InN0aXRjaCIgdHlwZT0iZnJhY3RhbE5vaXNlIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxwYXRoIGQ9Ik0wIDBoMzAwdjMwMEgweiIgZmlsdGVyPSJ1cmwoI2EpIiBvcGFjaXR5PSIuNSIvPjwvc3ZnPg==')]"></div>
 
@@ -47,7 +47,7 @@ export default function MedievalChat() {
           </div>
 
           {/* Messages area with parchment styling */}
-          <div className="flex-1 overflow-y-auto p-6 space-y-6 scroll-smooth scrollbar-thin scrollbar-thumb-[#8b7355] scrollbar-track-[#e8d9c0]">
+          <div className="flex-1 overflow-y-auto p-6 space-y-6 scroll-smooth scrollbar-thin scrollbar-thumb-[#8b7355] scrollbar-track-[#e8d9c0] bg-[#3a3024]">
             {messages.map((message) => (
               <div
                 key={message.id}
