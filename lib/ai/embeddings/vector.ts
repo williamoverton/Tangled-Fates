@@ -3,16 +3,16 @@ import dedent from "dedent";
 import { z } from "zod";
 
 // Things that can happen in the world
-const WorldEventMetadata = z.object({
-  type: z.literal("world_event"),
+export const WorldEventMetadata = z.object({
+  type: z.literal("world_event").default("world_event"),
   when: z.string(),
   where: z.string(),
   what: z.string(),
 });
 
 // Places in the world
-const WorldLocationMetadata = z.object({
-  type: z.literal("world_location"),
+export const WorldLocationMetadata = z.object({
+  type: z.literal("world_location").default("world_location"),
   placeType: z
     .string()
     .describe(
@@ -35,8 +35,8 @@ const WorldLocationMetadata = z.object({
     ),
 });
 
-const WorldPersonalityMetadata = z.object({
-  type: z.literal("world_personality"),
+export const WorldPersonalityMetadata = z.object({
+  type: z.literal("world_personality").default("world_personality"),
   personalityType: z
     .string()
     .describe(
@@ -70,6 +70,8 @@ export type QueryType = Metadata["type"];
 const index = new Index<Metadata>();
 
 async function upsert(data: string, metadata: Metadata) {
+  console.log("Saving knowledge:", data, metadata);
+
   await index.upsert({
     id: crypto.randomUUID(),
     data: data,
@@ -78,20 +80,42 @@ async function upsert(data: string, metadata: Metadata) {
 }
 
 async function queryIndex(data: string, type: QueryType) {
-  return await index.query({
+  console.log("Querying index for:", data, "of type:", type);
+
+  const res = await index.query({
     data: data,
     topK: 10,
     includeVectors: true,
     includeMetadata: true,
     filter: `type = "${type}"`,
   });
+
+  console.log(
+    "Query results:",
+    res.map((item) => item.metadata)
+  );
+  return res;
+}
+
+function generateContentForMetadata(metadata: Metadata): string {
+  switch (metadata.type) {
+    case "world_event":
+      return dedent`
+        In ${metadata.where} at ${metadata.when}, ${metadata.what}
+      `;
+    case "world_location":
+      return dedent`
+        In ${metadata.location} there is a ${metadata.placeType} called ${metadata.name}. It can be described as: ${metadata.description}
+      `;
+    case "world_personality":
+      return dedent`
+        There is a ${metadata.personalityType} called ${metadata.name}. They can be described as: ${metadata.description}
+      `;
+  }
 }
 
 export const addWorldEvent = async (event: WorldEventMetadata) => {
-  const content = dedent`
-    In ${event.where} at ${event.when}, ${event.what} happened.
-  `;
-
+  const content = generateContentForMetadata(event);
   await upsert(content, event);
 };
 
@@ -104,10 +128,7 @@ export const getWorldEvents = async (query: string) => {
 };
 
 export const addWorldLocation = async (location: WorldLocationMetadata) => {
-  const content = dedent`
-    In ${location.location} there is a ${location.placeType} called ${location.name}. It can be described as: ${location.description}
-  `;
-
+  const content = generateContentForMetadata(location);
   await upsert(content, location);
 };
 
@@ -122,10 +143,7 @@ export const getWorldLocations = async (query: string) => {
 export const addWorldPersonality = async (
   personality: WorldPersonalityMetadata
 ) => {
-  const content = dedent`
-    There is a ${personality.personalityType} called ${personality.name}. They can be described as: ${personality.description}
-  `;
-
+  const content = generateContentForMetadata(personality);
   await upsert(content, personality);
 };
 
@@ -135,4 +153,31 @@ export const getWorldPersonalities = async (query: string) => {
     worldPersonality: WorldPersonalityMetadata.parse(item.metadata),
     score: item.score,
   }));
+};
+
+// Used to rewrite an event to match the current world state
+// For example if the tavern was on fire and we the player extingushed it, we need to rewrite the event to say the tavern was on fire but is no longer on fire.
+// That way the story can be resumed with something like "The tavern is a smouldering ruin" etc.
+export const updateHistory = async (id: string, newEvent: Metadata) => {
+  const events = await index.fetch([id], {
+    includeMetadata: true,
+  });
+
+  if (events.length === 0) {
+    return;
+  }
+
+  const event = events[0]!;
+
+  if (event.metadata!.type !== newEvent.type) {
+    return "Error! The event type does not match the metadata type";
+  }
+
+  await index.update({
+    id,
+    metadata: newEvent,
+    data: generateContentForMetadata(newEvent),
+  });
+
+  return "History updated successfully";
 };

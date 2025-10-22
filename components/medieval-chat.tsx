@@ -11,7 +11,7 @@ You arrive in the small village of Misty Hollow, despite it's small size it seem
 `;
 
 export default function MedievalChat() {
-  const { messages, sendMessage, status } = useChat({
+  const { messages, sendMessage, status, error } = useChat({
     transport: new DefaultChatTransport({
       api: "/api/chat",
     }),
@@ -75,10 +75,26 @@ export default function MedievalChat() {
                             {part.text}
                           </Response>
                         );
+                      case "reasoning":
+                        return (
+                          status === "streaming" && (
+                            <Response
+                              key={`${message.id}-${i}`}
+                              className="text-sm text-gray-500"
+                            >
+                              {part.text}
+                            </Response>
+                          )
+                        );
                       default:
                         return null;
                     }
                   })}
+                  {error && (
+                    <Response className="text-sm text-red-500">
+                      {error.message}
+                    </Response>
+                  )}
                 </div>
               </div>
             ))}

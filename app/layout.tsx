@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import { Geist_Mono, Metamorphous } from "next/font/google";
+import { Geist_Mono, Caudex } from "next/font/google";
 import "./globals.css";
 
-const metamorphous = Metamorphous({
-  variable: "--font-metamorphous",
+const caudex = Caudex({
+  variable: "--font-caudex",
   weight: ["400"] as const,
   subsets: ["latin"],
 });
@@ -26,7 +26,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${metamorphous.variable} ${geistMono.variable} font-sans text-lg antialiased`}
+        className={`${caudex.variable} ${geistMono.variable} font-sans text-lg antialiased`}
       >
         {children}
       </body>
