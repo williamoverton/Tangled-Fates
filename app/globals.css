@@ -41,6 +41,22 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+  
+  /* Medieval/Fantasy Theme Colors - Warm Tavern & Parchment */
+  --color-medieval-dark-bg: #1c1410;
+  --color-medieval-header-bg: #3d2f1f;
+  --color-medieval-border-dark: #8b6f47;
+  --color-medieval-border-medium: #b8956f;
+  --color-medieval-border-light: #d4a574;
+  --color-medieval-parchment-light: #fffbf0;
+  --color-medieval-parchment: #faf4e6;
+  --color-medieval-parchment-dark: #f5e9d3;
+  --color-medieval-content-bg: #2a1f15;
+  --color-medieval-text-dark: #2a1a0f;
+  --color-medieval-text-medium: #5a3d24;
+  --color-medieval-button-bg: #8b6f47;
+  --color-medieval-button-hover: #a68a5c;
+  --color-clerk-primary: #d4a574;
 }
 
 :root {
