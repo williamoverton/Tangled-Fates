@@ -8,17 +8,26 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card, CardContent } from "@/components/ui/card";
+import { worlds } from "@/lib/db/schema";
 
 export default function MainChat({
   initialMessage,
   title,
+  world,
+  playerId,
 }: {
   initialMessage: string;
   title: string;
+  world: typeof worlds.$inferSelect;
+  playerId: string;
 }) {
   const { messages, sendMessage, status, error } = useChat({
     transport: new DefaultChatTransport({
       api: "/api/chat",
+      body: {
+        worldId: world.id,
+        playerId: playerId,
+      },
     }),
     messages: [
       {

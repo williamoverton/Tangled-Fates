@@ -7,9 +7,22 @@ import { getInitialMessage } from "@/lib/ai/chatbot/initialMessage";
 import MainChat from "@/components/MainChat";
 import { Suspense } from "react";
 
-const Game = async ({ world }: { world: typeof worlds.$inferSelect }) => {
+const Game = async ({
+  world,
+  playerId,
+}: {
+  world: typeof worlds.$inferSelect;
+  playerId: string;
+}) => {
   const initialMessage = await getInitialMessage(world);
-  return <MainChat initialMessage={initialMessage.text} title={world.name} />;
+  return (
+    <MainChat
+      initialMessage={initialMessage.text}
+      title={world.name}
+      world={world}
+      playerId={playerId}
+    />
+  );
 };
 
 export default async function WorldPage({
@@ -30,9 +43,11 @@ export default async function WorldPage({
     notFound();
   }
 
+  const playerId = "123"; // TODO: use auth for playerId
+
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <Game world={world} />
+      <Game world={world} playerId={playerId} />
     </Suspense>
   );
 }

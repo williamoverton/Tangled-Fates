@@ -17,7 +17,6 @@ export const addEventToKnowledge = async (
   const [createdEvent] = await db
     .insert(events)
     .values({
-      name: `Event at ${new Date(event.when).toLocaleString()}`,
       description: event.description,
       locationId: event.location?.id ?? null,
       characterId: event.character?.id ?? null,
@@ -50,7 +49,6 @@ export async function searchForEvent(
     .select({
       id: events.id,
       createdAt: events.createdAt,
-      name: events.name,
       description: events.description,
       locationId: events.locationId,
       characterId: events.characterId,

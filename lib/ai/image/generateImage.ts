@@ -1,7 +1,7 @@
 import { generateText } from "ai";
 import dedent from "dedent";
-import { uuidv4 } from "zod/v4";
 import { put } from "@vercel/blob";
+import crypto from "crypto";
 
 export const generateImage = async (prompt: string) => {
   const result = await generateText({
@@ -32,7 +32,7 @@ export const generateImage = async (prompt: string) => {
 
   const image = imageFiles[0].uint8Array;
 
-  const path = `/images/${uuidv4()}.png`;
+  const path = `/images/${crypto.randomUUID()}.png`;
 
   const uploadedImage = await put(path, Buffer.from(image), {
     access: "public",

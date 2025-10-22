@@ -29,11 +29,15 @@ export function generateContentForKnowledgeItem(
   }
 }
 
-export const embedKnowledgeItem = (item: KnowledgeItem) =>
-  embed({
+export const embedKnowledgeItem = async (item: KnowledgeItem) => {
+  console.log(`Embedding knowledge item ${item.type}...`);
+  const result = await embed({
     model: EMBEDDING_MODEL,
     value: generateContentForKnowledgeItem(item) ?? "",
   });
+  console.log(`Embedding complete`);
+  return result;
+};
 
 export const getEmbedForQuery = (query: string) =>
   embed({

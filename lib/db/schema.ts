@@ -116,7 +116,6 @@ export const events = pgTable(
       .notNull()
       .defaultNow()
       .$defaultFn(() => new Date()),
-    name: varchar("name", { length: 255 }).notNull(),
     description: text("description").notNull(),
     worldId: integer("world_id")
       .notNull()

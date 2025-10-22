@@ -9,21 +9,27 @@ import {
 } from "ai";
 import dedent from "dedent";
 import { z } from "zod";
+import { searchForEvent, addEventToKnowledge } from "../knowledge/event";
 import {
-  addWorldEvent,
-  addWorldLocation,
-  addWorldPersonality,
-  getWorldEvents,
-  getWorldLocations,
-  getWorldPersonalities,
-  Metadata,
-  updateHistory,
-  WorldEventMetadata,
-  WorldLocationMetadata,
-  WorldPersonalityMetadata,
+  searchForLocation,
+  addLocationToKnowledge,
+} from "../knowledge/location";
+import {
+  searchForCharacter,
+  addCharacterToKnowledge,
+} from "../knowledge/character";
+import { worlds } from "@/lib/db/schema";
+import {
+  WorldCharacterItem,
+  WorldEventItem,
+  WorldLocationItem,
 } from "../knowledge/types";
 
-export const chat = (messages: UIMessage[]) =>
+export const chat = (
+  world: typeof worlds.$inferSelect,
+  playerId: string,
+  messages: UIMessage[]
+) =>
   streamText({
     model: "openai/gpt-oss-120b",
     providerOptions: {
@@ -44,9 +50,6 @@ export const chat = (messages: UIMessage[]) =>
       When searching for events, locations, and personalities you must search with at least 3 different queries, 
       for example if the player was entering a town yoy could search for the name of the town, any details of the town like the tavern etc.
 
-      If you or the player do something that changes information learned about an event, location, or personality you must update the history using the updateWorld function.
-      That way the story will be kept up to date with player actions.
-
       Keep resonses short and concise and remember you are a storyteller, your output should be a narrative of the story. (but only a few sentences at a time)
   `,
     messages: convertToModelMessages(messages),
@@ -66,7 +69,7 @@ export const chat = (messages: UIMessage[]) =>
             ),
         }),
         execute: async ({ queries }) =>
-          Promise.all(queries.map((query) => getWorldEvents(query))),
+          Promise.all(queries.map((query) => searchForEvent(world, query))),
       }),
       getWorldLocations: tool({
         description:
@@ -82,7 +85,7 @@ export const chat = (messages: UIMessage[]) =>
             ),
         }),
         execute: async ({ queries }) =>
-          Promise.all(queries.map(getWorldLocations)),
+          Promise.all(queries.map((query) => searchForLocation(world, query))),
       }),
       getWorldPersonalities: tool({
         description:
@@ -98,44 +101,33 @@ export const chat = (messages: UIMessage[]) =>
             ),
         }),
         execute: async ({ queries }) =>
-          Promise.all(queries.map(getWorldPersonalities)),
+          Promise.all(queries.map((query) => searchForCharacter(world, query))),
       }),
       addWorldEvent: tool({
         description:
           "Add an event to the world. Use this to add an event that has recently happened at a location or with a character. If anything important happens, add it here.",
         inputSchema: z.object({
-          event: WorldEventMetadata,
+          event: WorldEventItem,
         }),
-        execute: async ({ event }) => await addWorldEvent(event),
+        execute: async ({ event }) => await addEventToKnowledge(world, event),
       }),
       addWorldLocation: tool({
         description:
           "Add a location to the world. Use this to add a location that is in the world.",
         inputSchema: z.object({
-          location: WorldLocationMetadata,
+          location: WorldLocationItem,
         }),
-        execute: async ({ location }) => await addWorldLocation(location),
+        execute: async ({ location }) =>
+          await addLocationToKnowledge(world, location),
       }),
       addWorldPersonality: tool({
         description:
           "Add a personality to the world. Use this to add a personality that is in the world.",
         inputSchema: z.object({
-          personality: WorldPersonalityMetadata,
+          personality: WorldCharacterItem,
         }),
         execute: async ({ personality }) =>
-          await addWorldPersonality(personality),
-      }),
-      updateWorld: tool({
-        description: dedent`
-          Update the history/information/details of an item in the world. 
-          Use this function to update your knowledge of the world when something that already exists changes.
-          For example if the tavern was on fire and the player extingushed it, we need to rewrite the event from "The tavern was on fire" to "The tavern roof is burnt but the fire was extingushed before the entire building caught fire" etc.
-        `,
-        inputSchema: z.object({
-          id: z.string(),
-          item: Metadata,
-        }),
-        execute: async ({ id, item }) => await updateHistory(id, item),
+          await addCharacterToKnowledge(world, personality),
       }),
     },
   });
