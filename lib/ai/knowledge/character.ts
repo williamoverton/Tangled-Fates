@@ -61,9 +61,11 @@ export async function searchForCharacter(
   return await db
     .select({
       id: characters.id,
+      createdAt: characters.createdAt,
       name: characters.name,
       description: characters.description,
       imageUrl: characters.imageUrl,
+      worldId: characters.worldId,
       similarity,
     })
     .from(characters)

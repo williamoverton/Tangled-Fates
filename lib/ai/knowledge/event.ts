@@ -49,12 +49,13 @@ export async function searchForEvent(
   return await db
     .select({
       id: events.id,
+      createdAt: events.createdAt,
       name: events.name,
       description: events.description,
       locationId: events.locationId,
       characterId: events.characterId,
       playerId: events.playerId,
-      createdAt: events.createdAt,
+      worldId: events.worldId,
       similarity,
     })
     .from(events)

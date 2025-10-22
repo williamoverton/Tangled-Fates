@@ -61,9 +61,11 @@ export async function searchForLocation(
   return await db
     .select({
       id: locations.id,
+      createdAt: locations.createdAt,
       name: locations.name,
       description: locations.description,
       imageUrl: locations.imageUrl,
+      worldId: locations.worldId,
       similarity,
     })
     .from(locations)
