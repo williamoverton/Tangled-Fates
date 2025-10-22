@@ -23,17 +23,27 @@ export const worldTable = pgTable("worlds", {
 });
 
 // Locations in the world
-export const locationTable = pgTable("locations", {
-  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
-  createdAt: timestamp("created_at")
-    .notNull()
-    .defaultNow()
-    .$defaultFn(() => new Date()),
-  name: varchar("name", { length: 255 }).notNull(),
-  description: text("description").notNull(),
-  worldId: integer("world_id").references(() => worldTable.id),
-  imageUrl: text("image_url"),
-});
+export const locationTable = pgTable(
+  "locations",
+  {
+    id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+    createdAt: timestamp("created_at")
+      .notNull()
+      .defaultNow()
+      .$defaultFn(() => new Date()),
+    name: varchar("name", { length: 255 }).notNull(),
+    description: text("description").notNull(),
+    worldId: integer("world_id").references(() => worldTable.id),
+    imageUrl: text("image_url"),
+    embedding: vector("embedding", { dimensions: 1536 }).notNull(),
+  },
+  (table) => [
+    index("locations_embedding_index").using(
+      "hnsw",
+      table.embedding.op("vector_cosine_ops")
+    ),
+  ]
+);
 
 export const locationRelations = relations(locationTable, ({ one }) => ({
   world: one(worldTable, {
@@ -43,17 +53,27 @@ export const locationRelations = relations(locationTable, ({ one }) => ({
 }));
 
 // Characters in the world
-export const characterTable = pgTable("characters", {
-  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
-  createdAt: timestamp("created_at")
-    .notNull()
-    .defaultNow()
-    .$defaultFn(() => new Date()),
-  name: varchar("name", { length: 255 }).notNull(),
-  description: text("description").notNull(),
-  worldId: integer("world_id").references(() => worldTable.id),
-  imageUrl: text("image_url"),
-});
+export const characterTable = pgTable(
+  "characters",
+  {
+    id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+    createdAt: timestamp("created_at")
+      .notNull()
+      .defaultNow()
+      .$defaultFn(() => new Date()),
+    name: varchar("name", { length: 255 }).notNull(),
+    description: text("description").notNull(),
+    worldId: integer("world_id").references(() => worldTable.id),
+    imageUrl: text("image_url"),
+    embedding: vector("embedding", { dimensions: 1536 }).notNull(),
+  },
+  (table) => [
+    index("characters_embedding_index").using(
+      "hnsw",
+      table.embedding.op("vector_cosine_ops")
+    ),
+  ]
+);
 
 export const characterRelations = relations(characterTable, ({ one }) => ({
   world: one(worldTable, {
@@ -83,18 +103,28 @@ export const playerRelations = relations(playerTable, ({ one }) => ({
 }));
 
 // Events that happened in the world and the corresponding location, character, and player (if applicable)
-export const eventTable = pgTable("events", {
-  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
-  createdAt: timestamp("created_at")
-    .notNull()
-    .defaultNow()
-    .$defaultFn(() => new Date()),
-  name: varchar("name", { length: 255 }).notNull(),
-  description: text("description").notNull(),
-  locationId: integer("location_id").references(() => locationTable.id),
-  characterId: integer("character_id").references(() => characterTable.id),
-  playerId: varchar("player_id").references(() => playerTable.id),
-});
+export const eventTable = pgTable(
+  "events",
+  {
+    id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+    createdAt: timestamp("created_at")
+      .notNull()
+      .defaultNow()
+      .$defaultFn(() => new Date()),
+    name: varchar("name", { length: 255 }).notNull(),
+    description: text("description").notNull(),
+    locationId: integer("location_id").references(() => locationTable.id),
+    characterId: integer("character_id").references(() => characterTable.id),
+    playerId: varchar("player_id").references(() => playerTable.id),
+    embedding: vector("embedding", { dimensions: 1536 }).notNull(),
+  },
+  (table) => [
+    index("events_embedding_index").using(
+      "hnsw",
+      table.embedding.op("vector_cosine_ops")
+    ),
+  ]
+);
 
 export const eventRelations = relations(eventTable, ({ one }) => ({
   location: one(locationTable, {
