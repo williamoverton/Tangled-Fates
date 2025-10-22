@@ -39,37 +39,31 @@ export default function MainChat({
     <div className="flex flex-col w-full h-full">
       <div className="flex flex-col w-full h-full p-4 sm:p-8">
         {/* Main container */}
-        <div className="flex flex-col h-full shadow-2xl rounded-sm border-4 border-medieval-border-dark relative overflow-hidden">
-          {/* Aged paper texture overlay */}
-          <div className="absolute inset-0 opacity-[0.15] pointer-events-none bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIj48ZmVUdXJidWxlbmNlIGJhc2VGcmVxdWVuY3k9Ii43NSIgc3RpdGNoVGlsZXM9InN0aXRjaCIgdHlwZT0iZnJhY3RhbE5vaXNlIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxwYXRoIGQ9Ik0wIDBoMzAwdjMwMEgweiIgZmlsdGVyPSJ1cmwoI2EpIiBvcGFjaXR5PSIuNSIvPjwvc3ZnPg==')]" />
-
+        <div className="flex flex-col h-full shadow-2xl rounded-lg border border-ui-border-strong relative overflow-hidden bg-background">
           {/* Title header */}
-          <div className="relative bg-linear-to-b from-medieval-border-dark to-medieval-button-bg p-6 border-b-4 border-medieval-button-hover">
-            <h1 className="text-2xl sm:text-3xl font-bold text-center text-medieval-parchment-light tracking-wider drop-shadow-md">
-              ✦ {title} ✦
+          <div className="relative bg-linear-to-r from-ui-card-bg via-ui-card-bg-alt to-ui-card-bg p-6 border-b border-ui-border">
+            <h1 className="text-2xl sm:text-3xl font-bold text-center text-foreground tracking-tight">
+              {title}
             </h1>
-            <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 w-24 h-1 bg-medieval-border-dark rounded-full" />
           </div>
 
           {/* Messages area */}
-          <ScrollArea className="flex-1 bg-medieval-content-bg">
-            <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
+          <ScrollArea className="flex-1 bg-background">
+            <div className="p-4 sm:p-6 space-y-4">
               {messages.map((message) => (
                 <Card
                   key={message.id}
-                  className={`relative border-2 border-medieval-border-light shadow-md ${
+                  className={`relative border border-ui-border shadow-lg ${
                     message.role === "user"
-                      ? "bg-medieval-parchment-dark ml-4 sm:ml-8"
-                      : "bg-medieval-parchment mr-4 sm:mr-8"
+                      ? "bg-ui-card-bg-alt ml-4 sm:ml-12"
+                      : "bg-ui-card-bg mr-4 sm:mr-12"
                   }`}
                 >
-                  <CardContent className="p-4">
-                    <div className="font-bold mb-2 text-medieval-text-medium text-xs sm:text-sm uppercase tracking-wide">
-                      {message.role === "user"
-                        ? "⚔ Your Choice"
-                        : "📜 The Story"}
+                  <CardContent className="p-4 sm:p-5">
+                    <div className="font-semibold mb-2 text-ui-accent text-xs sm:text-sm uppercase tracking-wide">
+                      {message.role === "user" ? "You" : "Story"}
                     </div>
-                    <div className="whitespace-pre-wrap text-medieval-text-dark leading-relaxed text-sm sm:text-base">
+                    <div className="whitespace-pre-wrap text-ui-text-primary leading-relaxed text-sm sm:text-base">
                       {message.parts.map((part, i) => {
                         switch (part.type) {
                           case "text":
@@ -104,15 +98,15 @@ export default function MainChat({
               ))}
 
               {(status === "submitted" || status === "streaming") && (
-                <Card className="bg-medieval-parchment border-2 border-medieval-border-light shadow-md mx-4 sm:mx-8">
+                <Card className="bg-ui-card-bg border border-ui-border shadow-lg mx-4 sm:mx-12">
                   <CardContent className="flex items-center justify-center gap-3 p-4">
                     <div className="flex gap-1">
-                      <span className="w-2 h-2 bg-medieval-border-dark rounded-full animate-bounce [animation-delay:-0.3s]" />
-                      <span className="w-2 h-2 bg-medieval-border-dark rounded-full animate-bounce [animation-delay:-0.15s]" />
-                      <span className="w-2 h-2 bg-medieval-border-dark rounded-full animate-bounce" />
+                      <span className="w-2 h-2 bg-ui-accent rounded-full animate-bounce [animation-delay:-0.3s]" />
+                      <span className="w-2 h-2 bg-ui-accent rounded-full animate-bounce [animation-delay:-0.15s]" />
+                      <span className="w-2 h-2 bg-ui-accent rounded-full animate-bounce" />
                     </div>
-                    <span className="text-medieval-text-medium italic text-sm">
-                      The tale unfolds...
+                    <span className="text-ui-text-secondary text-sm">
+                      Generating...
                     </span>
                   </CardContent>
                 </Card>
@@ -121,7 +115,7 @@ export default function MainChat({
           </ScrollArea>
 
           {/* Input area */}
-          <div className="relative bg-linear-to-t from-medieval-border-dark to-medieval-button-bg p-4 sm:p-6 border-t-4 border-medieval-button-hover">
+          <div className="relative bg-linear-to-t from-ui-card-bg to-ui-card-bg-alt p-4 sm:p-6 border-t border-ui-border">
             <form
               onSubmit={(e) => {
                 e.preventDefault();
@@ -137,14 +131,14 @@ export default function MainChat({
                 onChange={(e) => setInput(e.target.value)}
                 disabled={status !== "ready"}
                 placeholder="What do you do next?..."
-                className="flex-1 bg-medieval-parchment-light border-2 border-medieval-border-dark text-medieval-text-dark placeholder:text-medieval-text-medium placeholder:italic"
+                className="flex-1 bg-input border border-ui-border text-foreground placeholder:text-muted-foreground focus-visible:ring-ui-accent"
               />
               <Button
                 type="submit"
                 disabled={status !== "ready"}
-                className="bg-medieval-button-bg hover:bg-medieval-button-hover text-medieval-parchment-light font-bold px-4 sm:px-6 border-2 border-medieval-button-hover uppercase tracking-wide shadow-lg hover:shadow-xl active:translate-y-0.5 transition-all"
+                className="bg-ui-accent hover:bg-ui-accent-hover text-background font-semibold px-4 sm:px-6 shadow-lg hover:shadow-xl transition-all"
               >
-                Choose
+                Send
               </Button>
             </form>
           </div>

@@ -5,6 +5,12 @@ import { cacheTag } from "next/cache";
 import { notFound } from "next/navigation";
 import { getInitialMessage } from "@/lib/ai/chatbot/initialMessage";
 import MainChat from "@/components/MainChat";
+import { Suspense } from "react";
+
+const Game = async ({ world }: { world: typeof worlds.$inferSelect }) => {
+  const initialMessage = await getInitialMessage(world);
+  return <MainChat initialMessage={initialMessage.text} title={world.name} />;
+};
 
 export default async function WorldPage({
   params,
@@ -24,10 +30,9 @@ export default async function WorldPage({
     notFound();
   }
 
-  const initialMessage = await getInitialMessage(world);
   return (
-    <div>
-      <MainChat initialMessage={initialMessage.text} title={world.name} />
-    </div>
+    <Suspense fallback={<div>Loading...</div>}>
+      <Game world={world} />
+    </Suspense>
   );
 }

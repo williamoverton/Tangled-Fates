@@ -21,7 +21,7 @@ import {
   WorldEventMetadata,
   WorldLocationMetadata,
   WorldPersonalityMetadata,
-} from "../embeddings/vector";
+} from "../knowledge/types";
 
 export const chat = (messages: UIMessage[]) =>
   streamText({
