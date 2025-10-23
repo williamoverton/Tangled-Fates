@@ -46,6 +46,8 @@ export const chat = (
       When searching for events, locations, and personalities you must search with at least 3 different queries, 
       for example if the player was entering a town yoy could search for the name of the town, any details of the town like the tavern etc.
 
+      Remember we need to keep track of thigns that happen in the world, so if something happens, add it to the knowledge base.
+
       Keep resonses short and concise and remember you are a storyteller, your output should be a narrative of the story. (but only a few sentences at a time)
   `,
     messages: convertToModelMessages(messages),
@@ -101,7 +103,7 @@ export const chat = (
       }),
       addWorldEvent: tool({
         description:
-          "Add an event to the world. Use this to add an event that has recently happened at a location or with a character. If anything important happens, add it here.",
+          "Add an event to the world. Use this to add an event that has recently happened at a location or with a character. If anything happens, add it here.",
         inputSchema: z.object({
           event: WorldEventItem,
         }),

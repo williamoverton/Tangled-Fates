@@ -23,29 +23,17 @@ export default async function WorldLayout({
         {/* Navigation Links */}
         <nav className="flex items-center gap-2">
           <Link href={`/${world_slug}`}>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-foreground hover:text-primary"
-            >
+            <Button variant="ghost" size="sm" className="text-foreground">
               Game
             </Button>
           </Link>
           <Link href={`/${world_slug}/wiki/characters`}>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-foreground hover:text-primary"
-            >
+            <Button variant="ghost" size="sm" className="text-foreground">
               Characters
             </Button>
           </Link>
           <Link href={`/${world_slug}/wiki/locations`}>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-foreground hover:text-primary"
-            >
+            <Button variant="ghost" size="sm" className="text-foreground">
               Locations
             </Button>
           </Link>

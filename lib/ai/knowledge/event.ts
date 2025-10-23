@@ -11,24 +11,46 @@ export const addEventToKnowledge = async (
   world: typeof worlds.$inferSelect,
   event: WorldEventItem
 ) => {
+  // Make sure the event has at least one of location, character, or player
+  if (!event.location && !event.character && !event.player) {
+    console.log(
+      "Attempted to add event with no location, character, or player"
+    );
+    return "Error adding event! Event must have at least one of location, character, or player";
+  }
+
   console.log(`Adding event to knowledge base`);
 
-  const embedding = await embedKnowledgeItem(event);
-  const [createdEvent] = await db
-    .insert(events)
-    .values({
-      description: event.description,
-      locationId: event.location ?? null,
-      characterId: event.character ?? null,
-      playerId: event.player ?? null,
-      worldId: world.id,
-      embedding: embedding.embedding,
-    })
-    .returning();
+  try {
+    const embedding = await embedKnowledgeItem(event);
+    console.log(`Embedding created successfully`);
 
-  console.log(`Event added to knowledge base with id ${createdEvent.id}`);
+    const [createdEvent] = await db
+      .insert(events)
+      .values({
+        description: event.description,
+        locationId: event.location ?? null,
+        characterId: event.character ?? null,
+        playerId: event.player ?? null,
+        worldId: world.id,
+        embedding: embedding.embedding,
+      })
+      .returning();
 
-  return createdEvent;
+    if (!createdEvent) {
+      throw new Error("Failed to create event - no data returned from insert");
+    }
+
+    console.log(`Event added to knowledge base with id ${createdEvent.id}`);
+
+    return createdEvent;
+  } catch (error) {
+    console.error("Error adding event to knowledge base:", error);
+    console.error("Event data:", JSON.stringify(event, null, 2));
+
+    // Re-throw the error so the caller knows it failed
+    throw error;
+  }
 };
 
 export async function searchForEvent(
