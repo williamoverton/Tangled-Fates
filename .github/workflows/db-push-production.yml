@@ -1,15 +1,13 @@
 name: Push Database Schema to Production
 
 on:
-  release:
-    types: [published]
+  push:
+    branches:
+      - main
 
 jobs:
   db-push:
     runs-on: ubuntu-latest
-
-    # Only run on production releases (you can adjust the condition)
-    if: github.event.release.prerelease == false
 
     steps:
       - name: Checkout code
