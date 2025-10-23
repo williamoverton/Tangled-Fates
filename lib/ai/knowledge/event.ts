@@ -4,7 +4,7 @@ import { WorldEventItem } from "./types";
 import { db } from "@/lib/db/client";
 import { and, cosineDistance, desc, eq, gt, sql } from "drizzle-orm";
 
-const SIMILARITY_THRESHOLD = 0.5; // TODO: tune this
+const SIMILARITY_THRESHOLD = 0.3; // TODO: tune this
 
 // Add a new event to the knowledge base
 export const addEventToKnowledge = async (
@@ -18,9 +18,9 @@ export const addEventToKnowledge = async (
     .insert(events)
     .values({
       description: event.description,
-      locationId: event.location?.id ?? null,
-      characterId: event.character?.id ?? null,
-      playerId: event.player?.id ?? null,
+      locationId: event.location ?? null,
+      characterId: event.character ?? null,
+      playerId: event.player ?? null,
       worldId: world.id,
       embedding: embedding.embedding,
     })
@@ -36,6 +36,8 @@ export async function searchForEvent(
   query: string,
   limit: number = 10
 ) {
+  console.log(`Searching for event: '${query}'`);
+
   const queryEmbedding = await getEmbedForQuery(query);
 
   // use Drizzle's built in vector functions to generate query

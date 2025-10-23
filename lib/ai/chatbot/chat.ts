@@ -13,10 +13,12 @@ import { searchForEvent, addEventToKnowledge } from "../knowledge/event";
 import {
   searchForLocation,
   addLocationToKnowledge,
+  updateLocation,
 } from "../knowledge/location";
 import {
   searchForCharacter,
   addCharacterToKnowledge,
+  updateCharacter,
 } from "../knowledge/character";
 import { worlds } from "@/lib/db/schema";
 import {
@@ -31,13 +33,7 @@ export const chat = (
   messages: UIMessage[]
 ) =>
   streamText({
-    model: "openai/gpt-oss-120b",
-    providerOptions: {
-      // Use groq provider as its crazy fast
-      gateway: {
-        order: ["groq", "baseten"],
-      },
-    },
+    model: "moonshotai/kimi-k2",
     system: dedent`
       You are the dungeon master for a choose your own adventure game. 
       You are responsible for the story and the choices the players make. 
@@ -87,9 +83,9 @@ export const chat = (
         execute: async ({ queries }) =>
           Promise.all(queries.map((query) => searchForLocation(world, query))),
       }),
-      getWorldPersonalities: tool({
+      getWorldCharacters: tool({
         description:
-          "Get personalities in the world and their descriptions. Use this thouroughly as part of your knowledge of the world.",
+          "Get characters in the world and their descriptions. Use this thouroughly as part of your knowledge of the world.",
         inputSchema: z.object({
           queries: z
             .string()
@@ -111,7 +107,7 @@ export const chat = (
         }),
         execute: async ({ event }) => await addEventToKnowledge(world, event),
       }),
-      addWorldLocation: tool({
+      addNewLocation: tool({
         description:
           "Add a location to the world. Use this to add a location that is in the world.",
         inputSchema: z.object({
@@ -120,14 +116,34 @@ export const chat = (
         execute: async ({ location }) =>
           await addLocationToKnowledge(world, location),
       }),
-      addWorldPersonality: tool({
+      updateLocation: tool({
         description:
-          "Add a personality to the world. Use this to add a personality that is in the world.",
+          "Update a location in the world. Use this to update a location that is already in the world if something has changed.",
         inputSchema: z.object({
-          personality: WorldCharacterItem,
+          locationId: z.number(),
+          location: WorldLocationItem,
         }),
-        execute: async ({ personality }) =>
-          await addCharacterToKnowledge(world, personality),
+        execute: async ({ locationId, location }) =>
+          await updateLocation(world, locationId, location),
+      }),
+      addNewCharacter: tool({
+        description:
+          "Add a new character to the world (NOT A PLAYER, only use for NPCs). Use this to add a character that is in the world.",
+        inputSchema: z.object({
+          character: WorldCharacterItem,
+        }),
+        execute: async ({ character }) =>
+          await addCharacterToKnowledge(world, character),
+      }),
+      updateCharacter: tool({
+        description:
+          "Update a character in the world. Use this to update a character that is already in the world if something has changed.",
+        inputSchema: z.object({
+          characterId: z.number(),
+          character: WorldCharacterItem,
+        }),
+        execute: async ({ characterId, character }) =>
+          await updateCharacter(world, characterId, character),
       }),
     },
   });

@@ -6,7 +6,7 @@ import { generateImage } from "../image/generateImage";
 import { after } from "next/server";
 import { and, cosineDistance, desc, eq, gt, sql } from "drizzle-orm";
 
-const SIMILARITY_THRESHOLD = 0.5; // TODO: tune this
+const SIMILARITY_THRESHOLD = 0.3; // TODO: tune this
 
 // Add a new character to the knowledge base
 export const addCharacterToKnowledge = async (
@@ -49,6 +49,8 @@ export async function searchForCharacter(
   query: string,
   limit: number = 10
 ) {
+  console.log(`Searching for character: '${query}'`);
+
   const queryEmbedding = await getEmbedForQuery(query);
 
   // use Drizzle's built in vector functions to generate query
@@ -78,3 +80,23 @@ export async function searchForCharacter(
     .orderBy((t) => desc(t.similarity))
     .limit(limit);
 }
+
+export const updateCharacter = async (
+  world: typeof worlds.$inferSelect,
+  characterId: number,
+  character: WorldCharacterItem
+) => {
+  console.log(`Updating character ${character.name} in knowledge base`);
+
+  const embedding = await embedKnowledgeItem(character);
+  await db
+    .update(characters)
+    .set({
+      name: character.name,
+      description: character.description,
+      embedding: embedding.embedding,
+    })
+    .where(
+      and(eq(characters.id, characterId), eq(characters.worldId, world.id))
+    );
+};

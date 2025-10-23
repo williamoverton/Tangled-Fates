@@ -2,17 +2,23 @@ import dedent from "dedent";
 import { KnowledgeItem } from "./types";
 import { embed } from "ai";
 import { EMBEDDING_MODEL } from "@/CONFIG";
+import { getLocationById } from "./location";
 
 // TODO: Generate better content for the knowledge items
-export function generateContentForKnowledgeItem(
+export async function generateContentForKnowledgeItem(
   item: KnowledgeItem
-): string | undefined {
+): Promise<string | undefined> {
   switch (item.type) {
     case "world_event":
+      // TODO: Handle the case where the location is not found
+      const location = item.location
+        ? await getLocationById(item.location)
+        : undefined;
+
       return dedent`
-        In ${item.location ? `${item.location.name}` : "the world"} at ${
-        item.when
-      }, ${item.description}
+        In ${location ? `${location.name}` : "the world"} at ${item.when}, ${
+        item.description
+      }
       `;
     case "world_location":
       return dedent`
@@ -33,7 +39,7 @@ export const embedKnowledgeItem = async (item: KnowledgeItem) => {
   console.log(`Embedding knowledge item ${item.type}...`);
   const result = await embed({
     model: EMBEDDING_MODEL,
-    value: generateContentForKnowledgeItem(item) ?? "",
+    value: (await generateContentForKnowledgeItem(item)) ?? "",
   });
   console.log(`Embedding complete`);
   return result;

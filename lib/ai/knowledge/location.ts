@@ -6,7 +6,7 @@ import { generateImage } from "../image/generateImage";
 import { after } from "next/server";
 import { and, cosineDistance, desc, eq, gt, sql } from "drizzle-orm";
 
-const SIMILARITY_THRESHOLD = 0.5; // TODO: tune this
+const SIMILARITY_THRESHOLD = 0.3; // TODO: tune this
 
 // Add a new location to the knowledge base
 export const addLocationToKnowledge = async (
@@ -49,6 +49,8 @@ export async function searchForLocation(
   query: string,
   limit: number = 10
 ) {
+  console.log(`Searching for location: '${query}'`);
+
   const queryEmbedding = await getEmbedForQuery(query);
 
   // use Drizzle's built in vector functions to generate query
@@ -75,3 +77,27 @@ export async function searchForLocation(
     .orderBy((t) => desc(t.similarity))
     .limit(limit);
 }
+
+export const updateLocation = async (
+  world: typeof worlds.$inferSelect,
+  locationId: number,
+  location: WorldLocationItem
+) => {
+  console.log(`Updating location ${location.name} in knowledge base`);
+
+  const embedding = await embedKnowledgeItem(location);
+  await db
+    .update(locations)
+    .set({
+      name: location.name,
+      description: location.description,
+      embedding: embedding.embedding,
+    })
+    .where(and(eq(locations.id, locationId), eq(locations.worldId, world.id)));
+};
+
+export const getLocationById = async (id: number) => {
+  return await db.query.locations.findFirst({
+    where: eq(locations.id, id),
+  });
+};
