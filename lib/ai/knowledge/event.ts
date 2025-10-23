@@ -37,10 +37,6 @@ export const addEventToKnowledge = async (
       })
       .returning();
 
-    if (!createdEvent) {
-      throw new Error("Failed to create event - no data returned from insert");
-    }
-
     console.log(`Event added to knowledge base with id ${createdEvent.id}`);
 
     return createdEvent;
@@ -48,8 +44,9 @@ export const addEventToKnowledge = async (
     console.error("Error adding event to knowledge base:", error);
     console.error("Event data:", JSON.stringify(event, null, 2));
 
-    // Re-throw the error so the caller knows it failed
-    throw error;
+    return `Error adding event! ${
+      error instanceof Error ? error.message : "Unknown error"
+    }`;
   }
 };
 
