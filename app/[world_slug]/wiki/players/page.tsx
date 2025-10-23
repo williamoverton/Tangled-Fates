@@ -3,7 +3,7 @@ import { worlds } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { notFound } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { getAllPlayersInWorld } from "@/lib/player/player";
+import { getAllPlayersInWorld } from "@/lib/ai/knowledge/player";
 import Image from "next/image";
 import Link from "next/link";
 

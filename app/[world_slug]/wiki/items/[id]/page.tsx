@@ -1,11 +1,12 @@
 import { db } from "@/lib/db/client";
-import { items, worlds } from "@/lib/db/schema";
-import { eq, and } from "drizzle-orm";
+import { worlds } from "@/lib/db/schema";
+import { eq } from "drizzle-orm";
 import { notFound } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Image from "next/image";
 import { RecentEvents } from "@/components/wiki/RecentEvents";
 import { getEventsForItem } from "@/lib/ai/knowledge/event";
+import { getItemById } from "@/lib/ai/knowledge/item";
 
 export default async function ItemWikiPage({
   params,
@@ -24,11 +25,9 @@ export default async function ItemWikiPage({
   }
 
   // Get the item
-  const item = await db.query.items.findFirst({
-    where: and(eq(items.id, parseInt(id)), eq(items.worldId, world.id)),
-  });
+  const item = await getItemById(parseInt(id));
 
-  if (!item) {
+  if (!item || item.worldId !== world.id) {
     notFound();
   }
 

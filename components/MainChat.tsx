@@ -54,9 +54,10 @@ export default function MainChat({
           {/* Messages area */}
           <ScrollArea className="flex-1 bg-background min-h-0">
             <div className="p-4 sm:p-6 space-y-4">
-              {messages.map((message) => (
+              {messages.map((message, index) => (
                 <Card
-                  key={message.id}
+                  // TODO: Fix messages sometimes missing ids
+                  key={message.id || `message-${index}`}
                   className={`relative border border-ui-border shadow-lg ${
                     message.role === "user"
                       ? "bg-ui-card-bg-alt ml-4 sm:ml-12"

@@ -1,11 +1,12 @@
 import { db } from "@/lib/db/client";
-import { players, worlds } from "@/lib/db/schema";
-import { eq, and } from "drizzle-orm";
+import { worlds } from "@/lib/db/schema";
+import { eq } from "drizzle-orm";
 import { notFound } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Image from "next/image";
 import { RecentEvents } from "@/components/wiki/RecentEvents";
 import { getEventsForPlayer } from "@/lib/ai/knowledge/event";
+import { getPlayerById } from "@/lib/ai/knowledge/player";
 
 export default async function PlayerWikiPage({
   params,
@@ -24,11 +25,9 @@ export default async function PlayerWikiPage({
   }
 
   // Get the player
-  const player = await db.query.players.findFirst({
-    where: and(eq(players.id, parseInt(id)), eq(players.worldId, world.id)),
-  });
+  const player = await getPlayerById(parseInt(id));
 
-  if (!player) {
+  if (!player || player.worldId !== world.id) {
     notFound();
   }
 

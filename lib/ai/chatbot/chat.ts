@@ -25,6 +25,7 @@ import {
   addItemToKnowledge,
   updateItem,
 } from "../knowledge/item";
+import { searchForPlayer } from "../knowledge/player";
 import { players, worlds } from "@/lib/db/schema";
 import {
   WorldCharacterItem,
@@ -46,11 +47,11 @@ export const chat = (
       You are responsible for the story and the choices the players make. 
       You are also responsible for the world, the characters, and the items in the world.
 
-      You must keep the story consitent! To do this before you give any details you must search for any relevant information about events, locations, characters, and items.
+      You must keep the story consitent! To do this before you give any details you must search for any relevant information about events, locations, characters, items, and players.
       For example if the player asks if there is a tavern in the village, you must search for any events, locations, characters, and items that are related to the tavern
       before you give any details.
 
-      When searching for events, locations, characters, and items you must search with at least 3 different queries, 
+      When searching for events, locations, characters, items, and players you must search with at least 3 different queries, 
       for example if the player was entering a town you could search for the name of the town, any details of the town like the tavern etc.
 
       If a new location, character, or item is mentioned, add it to the knowledge base using the appropriate tool.
@@ -67,6 +68,10 @@ export const chat = (
         Name: ${world.name}
         Description: ${world.description}
       </WORLD_INFO>
+
+      <RULES>
+        - NEVER mention your internal workings or state to the player. Everything you say must be story telling.
+      </RULES>
   `,
     messages: convertToModelMessages(messages),
     stopWhen: stepCountIs(10),
@@ -118,6 +123,22 @@ export const chat = (
         }),
         execute: async ({ queries }) =>
           Promise.all(queries.map((query) => searchForCharacter(world, query))),
+      }),
+      getWorldPlayers: tool({
+        description:
+          "Get players in the world and their descriptions. Use this to learn about other players that may have interacted with locations, characters, or items. This helps you understand the full context of events.",
+        inputSchema: z.object({
+          queries: z
+            .string()
+            .array()
+            .min(1)
+            .max(10)
+            .describe(
+              "The queries to search for players, such as a player name/type or related activities."
+            ),
+        }),
+        execute: async ({ queries }) =>
+          Promise.all(queries.map((query) => searchForPlayer(world, query))),
       }),
       getWorldItems: tool({
         description:

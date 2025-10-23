@@ -1,11 +1,12 @@
 import { db } from "@/lib/db/client";
-import { locations, worlds } from "@/lib/db/schema";
-import { eq, and } from "drizzle-orm";
+import { worlds } from "@/lib/db/schema";
+import { eq } from "drizzle-orm";
 import { notFound } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Image from "next/image";
 import { RecentEvents } from "@/components/wiki/RecentEvents";
 import { getEventsForLocation } from "@/lib/ai/knowledge/event";
+import { getLocationById } from "@/lib/ai/knowledge/location";
 
 export default async function LocationWikiPage({
   params,
@@ -24,11 +25,9 @@ export default async function LocationWikiPage({
   }
 
   // Get the location
-  const location = await db.query.locations.findFirst({
-    where: and(eq(locations.id, parseInt(id)), eq(locations.worldId, world.id)),
-  });
+  const location = await getLocationById(parseInt(id));
 
-  if (!location) {
+  if (!location || location.worldId !== world.id) {
     notFound();
   }
 
