@@ -6,6 +6,8 @@ import { eq } from "drizzle-orm";
 import { UIMessage } from "ai";
 import { auth } from "@clerk/nextjs/server";
 import { getPlayer } from "@/lib/player/player";
+import { NextResponse } from "next/server";
+import { checkBotId } from "botid/server";
 
 const schema = z.object({
   worldId: z.number(),
@@ -15,6 +17,12 @@ const schema = z.object({
 
 export async function POST(req: Request) {
   const { worldId, playerId, messages } = schema.parse(await req.json());
+
+  const verification = await checkBotId();
+
+  if (verification.isBot) {
+    return NextResponse.json({ error: "Access denied" }, { status: 403 });
+  }
 
   const world = await db.query.worlds.findFirst({
     where: eq(worlds.id, worldId),
