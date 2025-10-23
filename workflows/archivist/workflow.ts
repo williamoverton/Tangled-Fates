@@ -68,6 +68,7 @@ async function saveHistoryToKnowledgeBaseStep(
       
       IMPORTANT: Make sure to not add duplicates to the knowledge base! Always search for duplicates before adding anything new.
       IMPORTANT: Before adding a new character, make sure there is not a player with the same name already in the knowledge base!
+      IMPORTANT: You're also in charge of updating things if they have changed! If you find something in the knowledge base but the information is outdated, update it using the appropriate tools.
 
       If the messages include new places, characters, items, or events, make sure to add them to the knowledge base using the appropriate tools.
       You can add as many things as you want! Remember the more things in our knowledge base the better the story will be!
