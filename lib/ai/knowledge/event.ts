@@ -65,3 +65,15 @@ export async function searchForEvent(
     .orderBy((t) => desc(t.similarity))
     .limit(limit);
 }
+
+export const getEventsForLocation = async (locationId: number) => {
+  return await db.query.events.findMany({
+    where: eq(events.locationId, locationId),
+  });
+};
+
+export const getEventsForCharacter = async (characterId: number) => {
+  return await db.query.events.findMany({
+    where: eq(events.characterId, characterId),
+  });
+};

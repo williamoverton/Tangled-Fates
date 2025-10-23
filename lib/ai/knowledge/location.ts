@@ -101,3 +101,9 @@ export const getLocationById = async (id: number) => {
     where: eq(locations.id, id),
   });
 };
+
+export const getAllLocationsInWorld = async (worldId: number) => {
+  return await db.query.locations.findMany({
+    where: eq(locations.worldId, worldId),
+  });
+};

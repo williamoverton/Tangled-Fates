@@ -100,3 +100,15 @@ export const updateCharacter = async (
       and(eq(characters.id, characterId), eq(characters.worldId, world.id))
     );
 };
+
+export const getCharacterById = async (id: number) => {
+  return await db.query.characters.findFirst({
+    where: eq(characters.id, id),
+  });
+};
+
+export const getAllCharactersInWorld = async (worldId: number) => {
+  return await db.query.characters.findMany({
+    where: eq(characters.worldId, worldId),
+  });
+};
