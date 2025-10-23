@@ -86,6 +86,38 @@ export const characterRelations = relations(characters, ({ one }) => ({
   }),
 }));
 
+// Items in the world
+export const items = pgTable(
+  "items",
+  {
+    id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+    createdAt: timestamp("created_at")
+      .notNull()
+      .defaultNow()
+      .$defaultFn(() => new Date()),
+    name: varchar("name", { length: 255 }).notNull(),
+    description: text("description").notNull(),
+    worldId: integer("world_id")
+      .notNull()
+      .references(() => worlds.id),
+    imageUrl: text("image_url"),
+    embedding: vector("embedding", { dimensions: 1536 }).notNull(),
+  },
+  (table) => [
+    index("items_embedding_index").using(
+      "hnsw",
+      table.embedding.op("vector_cosine_ops")
+    ),
+  ]
+);
+
+export const itemRelations = relations(items, ({ one }) => ({
+  world: one(worlds, {
+    fields: [items.worldId],
+    references: [worlds.id],
+  }),
+}));
+
 // Players (users)
 export const players = pgTable(
   "players",
@@ -119,7 +151,7 @@ export const playerRelations = relations(players, ({ one }) => ({
   }),
 }));
 
-// Events that happened in the world and the corresponding location, character, and player (if applicable)
+// Events that happened in the world and the corresponding location, character, player, and item (if applicable)
 export const events = pgTable(
   "events",
   {
@@ -135,6 +167,7 @@ export const events = pgTable(
     locationId: integer("location_id").references(() => locations.id),
     characterId: integer("character_id").references(() => characters.id),
     playerId: integer("player_id").references(() => players.id),
+    itemId: integer("item_id").references(() => items.id),
     embedding: vector("embedding", { dimensions: 1536 }).notNull(),
   },
   (table) => [
@@ -157,6 +190,10 @@ export const eventRelations = relations(events, ({ one }) => ({
   player: one(players, {
     fields: [events.playerId],
     references: [players.id],
+  }),
+  item: one(items, {
+    fields: [events.itemId],
+    references: [items.id],
   }),
 }));
 

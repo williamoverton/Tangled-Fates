@@ -20,11 +20,17 @@ import {
   addCharacterToKnowledge,
   updateCharacter,
 } from "../knowledge/character";
+import {
+  searchForItem,
+  addItemToKnowledge,
+  updateItem,
+} from "../knowledge/item";
 import { players, worlds } from "@/lib/db/schema";
 import {
   WorldCharacterItem,
   WorldEventItem,
   WorldLocationItem,
+  CreateWorldItemItem,
 } from "../knowledge/types";
 import { saveChatHistory } from "./history";
 
@@ -38,18 +44,29 @@ export const chat = (
     system: dedent`
       You are the dungeon master for a choose your own adventure game. 
       You are responsible for the story and the choices the players make. 
-      You are also responsible for the world and the characters in the world.
+      You are also responsible for the world, the characters, and the items in the world.
 
-      You must keep the story consitent! To do this before you give any details you must search for any relevant information about events, locations, and personalities.
-      For example if the player asks if there is a tavern in the village, you must search for any events, locations, and personalities that are related to the tavern
+      You must keep the story consitent! To do this before you give any details you must search for any relevant information about events, locations, characters, and items.
+      For example if the player asks if there is a tavern in the village, you must search for any events, locations, characters, and items that are related to the tavern
       before you give any details.
 
-      When searching for events, locations, and personalities you must search with at least 3 different queries, 
-      for example if the player was entering a town yoy could search for the name of the town, any details of the town like the tavern etc.
+      When searching for events, locations, characters, and items you must search with at least 3 different queries, 
+      for example if the player was entering a town you could search for the name of the town, any details of the town like the tavern etc.
 
-      Remember we need to keep track of thigns that happen in the world, so if something happens, add it to the knowledge base.
+      If a new location, character, or item is mentioned, add it to the knowledge base using the appropriate tool.
+      Remember: we need to keep track of things that happen in the world, so if anything happens, add it to the knowledge base using the addWorldEvent tool.
 
       Keep resonses short and concise and remember you are a storyteller, your output should be a narrative of the story. (but only a few sentences at a time)
+
+      <PLAYER_INFO>
+        Player ID: ${player.id}
+        Name: ${player.name}
+        Description: ${player.description}
+      </PLAYER_INFO>
+      <WORLD_INFO>
+        Name: ${world.name}
+        Description: ${world.description}
+      </WORLD_INFO>
   `,
     messages: convertToModelMessages(messages),
     stopWhen: stepCountIs(10),
@@ -102,9 +119,25 @@ export const chat = (
         execute: async ({ queries }) =>
           Promise.all(queries.map((query) => searchForCharacter(world, query))),
       }),
+      getWorldItems: tool({
+        description:
+          "Get items in the world and their descriptions. Use this thouroughly as part of your knowledge of the world.",
+        inputSchema: z.object({
+          queries: z
+            .string()
+            .array()
+            .min(3)
+            .max(10)
+            .describe(
+              "The queries to search for items, such as an item name/type or related items. You should include at least 3 different queries to search for items."
+            ),
+        }),
+        execute: async ({ queries }) =>
+          Promise.all(queries.map((query) => searchForItem(world, query))),
+      }),
       addWorldEvent: tool({
         description:
-          "Add an event to the world. Use this to add an event that has recently happened at a location or with a character. If anything happens, add it here.",
+          "Add an event to the world. Use this to add an event that has recently happened at a location or with a character. If anything happens, add it here. If a new item, character, or location is created, save them first if they didnt exist to get their ID and then add an event with their ids.",
         inputSchema: z.object({
           event: WorldEventItem,
         }),
@@ -147,6 +180,24 @@ export const chat = (
         }),
         execute: async ({ characterId, character }) =>
           await updateCharacter(world, characterId, character),
+      }),
+      addNewItem: tool({
+        description:
+          "Add a new item to the world. Use this whenever any item of note is mentioned that doesnt already exist in the knowledge base.",
+        inputSchema: z.object({
+          item: CreateWorldItemItem,
+        }),
+        execute: async ({ item }) => await addItemToKnowledge(world, item),
+      }),
+      updateItem: tool({
+        description:
+          "Update an item in the world. Use this to update an item that is already in the world if something has changed.",
+        inputSchema: z.object({
+          itemId: z.number(),
+          item: CreateWorldItemItem,
+        }),
+        execute: async ({ itemId, item }) =>
+          await updateItem(world, itemId, item),
       }),
     },
   }).toUIMessageStreamResponse({

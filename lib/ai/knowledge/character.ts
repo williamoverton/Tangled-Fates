@@ -1,6 +1,6 @@
 import { characters, worlds } from "@/lib/db/schema";
 import { embedKnowledgeItem, getEmbedForQuery } from "./embed";
-import { WorldCharacterItem } from "./types";
+import { CreateWorldCharacterItem } from "./types";
 import { db } from "@/lib/db/client";
 import { generateImage } from "../image/generateImage";
 import { after } from "next/server";
@@ -11,11 +11,14 @@ const SIMILARITY_THRESHOLD = 0.3; // TODO: tune this
 // Add a new character to the knowledge base
 export const addCharacterToKnowledge = async (
   world: typeof worlds.$inferSelect,
-  character: WorldCharacterItem
+  character: CreateWorldCharacterItem
 ) => {
   console.log(`Adding character ${character.name} to knowledge base`);
 
-  const embedding = await embedKnowledgeItem(character);
+  const embedding = await embedKnowledgeItem({
+    type: "world_character",
+    ...character,
+  });
   const [createdCharacter] = await db
     .insert(characters)
     .values({
@@ -84,11 +87,14 @@ export async function searchForCharacter(
 export const updateCharacter = async (
   world: typeof worlds.$inferSelect,
   characterId: number,
-  character: WorldCharacterItem
+  character: CreateWorldCharacterItem
 ) => {
   console.log(`Updating character ${character.name} in knowledge base`);
 
-  const embedding = await embedKnowledgeItem(character);
+  const embedding = await embedKnowledgeItem({
+    type: "world_character",
+    ...character,
+  });
   await db
     .update(characters)
     .set({

@@ -7,7 +7,7 @@ import { auth } from "@clerk/nextjs/server";
 import { getPlayer } from "@/lib/player/player";
 import { getWorldBySlug } from "@/lib/worlds/world";
 import { getChatHistory } from "@/lib/ai/chatbot/history";
-import { ModelMessage, UIMessage } from "ai";
+import { UIMessage } from "ai";
 
 const Game = async ({
   world,

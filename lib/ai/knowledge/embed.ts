@@ -32,6 +32,10 @@ export async function generateContentForKnowledgeItem(
       return dedent`
         There is a player called ${item.name}. They can be described as: ${item.description}
       `;
+    case "world_item":
+      return dedent`
+        There is an item called ${item.name}. It can be described as: ${item.description}
+      `;
   }
 }
 

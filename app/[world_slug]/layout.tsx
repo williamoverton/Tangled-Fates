@@ -37,6 +37,11 @@ export default async function WorldLayout({
               Locations
             </Button>
           </Link>
+          <Link href={`/${world_slug}/wiki/items`}>
+            <Button variant="ghost" size="sm" className="text-foreground">
+              Items
+            </Button>
+          </Link>
           <Link href={`/${world_slug}/wiki/players`}>
             <Button variant="ghost" size="sm" className="text-foreground">
               Players

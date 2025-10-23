@@ -1,6 +1,6 @@
 import { events, worlds } from "@/lib/db/schema";
 import { embedKnowledgeItem, getEmbedForQuery } from "./embed";
-import { WorldEventItem } from "./types";
+import { CreateWorldEventItem } from "./types";
 import { db } from "@/lib/db/client";
 import { and, cosineDistance, desc, eq, gt, sql } from "drizzle-orm";
 
@@ -9,20 +9,23 @@ const SIMILARITY_THRESHOLD = 0.3; // TODO: tune this
 // Add a new event to the knowledge base
 export const addEventToKnowledge = async (
   world: typeof worlds.$inferSelect,
-  event: WorldEventItem
+  event: CreateWorldEventItem
 ) => {
-  // Make sure the event has at least one of location, character, or player
-  if (!event.location && !event.character && !event.player) {
+  // Make sure the event has at least one of location, character, player, or item
+  if (!event.location && !event.character && !event.player && !event.item) {
     console.log(
-      "Attempted to add event with no location, character, or player"
+      "Attempted to add event with no location, character, player, or item"
     );
-    return "Error adding event! Event must have at least one of location, character, or player";
+    return "Error adding event! Event must have at least one of location, character, player, or item";
   }
 
   console.log(`Adding event to knowledge base`);
 
   try {
-    const embedding = await embedKnowledgeItem(event);
+    const embedding = await embedKnowledgeItem({
+      type: "world_event",
+      ...event,
+    });
     console.log(`Embedding created successfully`);
 
     const [createdEvent] = await db
@@ -32,6 +35,7 @@ export const addEventToKnowledge = async (
         locationId: event.location ?? null,
         characterId: event.character ?? null,
         playerId: event.player ?? null,
+        itemId: event.item ?? null,
         worldId: world.id,
         embedding: embedding.embedding,
       })
@@ -74,6 +78,7 @@ export async function searchForEvent(
       locationId: events.locationId,
       characterId: events.characterId,
       playerId: events.playerId,
+      itemId: events.itemId,
       worldId: events.worldId,
       similarity,
     })
@@ -110,6 +115,14 @@ export const getEventsForCharacter = async (
 export const getEventsForPlayer = async (playerId: number, limit?: number) => {
   return await db.query.events.findMany({
     where: eq(events.playerId, playerId),
+    orderBy: desc(events.createdAt),
+    limit,
+  });
+};
+
+export const getEventsForItem = async (itemId: number, limit?: number) => {
+  return await db.query.events.findMany({
+    where: eq(events.itemId, itemId),
     orderBy: desc(events.createdAt),
     limit,
   });

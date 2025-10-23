@@ -1,6 +1,6 @@
 import { locations, worlds } from "@/lib/db/schema";
 import { embedKnowledgeItem, getEmbedForQuery } from "./embed";
-import { WorldLocationItem } from "./types";
+import { CreateWorldLocationItem } from "./types";
 import { db } from "@/lib/db/client";
 import { generateImage } from "../image/generateImage";
 import { after } from "next/server";
@@ -11,11 +11,14 @@ const SIMILARITY_THRESHOLD = 0.3; // TODO: tune this
 // Add a new location to the knowledge base
 export const addLocationToKnowledge = async (
   world: typeof worlds.$inferSelect,
-  location: WorldLocationItem
+  location: CreateWorldLocationItem
 ) => {
   console.log(`Adding location ${location.name} to knowledge base`);
 
-  const embedding = await embedKnowledgeItem(location);
+  const embedding = await embedKnowledgeItem({
+    type: "world_location",
+    ...location,
+  });
   const [createdLocation] = await db
     .insert(locations)
     .values({
@@ -81,11 +84,14 @@ export async function searchForLocation(
 export const updateLocation = async (
   world: typeof worlds.$inferSelect,
   locationId: number,
-  location: WorldLocationItem
+  location: CreateWorldLocationItem
 ) => {
   console.log(`Updating location ${location.name} in knowledge base`);
 
-  const embedding = await embedKnowledgeItem(location);
+  const embedding = await embedKnowledgeItem({
+    type: "world_location",
+    ...location,
+  });
   await db
     .update(locations)
     .set({
