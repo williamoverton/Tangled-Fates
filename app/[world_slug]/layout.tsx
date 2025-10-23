@@ -18,8 +18,8 @@ export default async function WorldLayout({
   const { world_slug } = await params;
 
   return (
-    <div>
-      <header className="flex justify-between items-center p-4 gap-4 h-16 text-white bg-medieval-header-bg border-b border-border">
+    <div className="flex flex-col h-screen">
+      <header className="flex justify-between items-center p-4 gap-4 h-16 text-white bg-medieval-header-bg border-b border-border shrink-0">
         {/* Navigation Links */}
         <nav className="flex items-center gap-2">
           <Link href={`/${world_slug}`}>
@@ -54,7 +54,7 @@ export default async function WorldLayout({
           </SignedIn>
         </div>
       </header>
-      {children}
+      <div className="flex-1 min-h-0 overflow-hidden">{children}</div>
     </div>
   );
 }

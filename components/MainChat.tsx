@@ -2,7 +2,7 @@
 
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport, UIMessage } from "ai";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Response } from "@/components/ai-elements/response";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -43,21 +43,27 @@ export default function MainChat({
     ],
   });
   const [input, setInput] = useState("");
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Auto-scroll when messages change or streaming
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, status]);
 
   return (
     <div className="flex flex-col w-full h-full">
-      <div className="flex flex-col w-full h-full p-4 sm:p-8">
+      <div className="flex flex-col w-full h-full">
         {/* Main container */}
-        <div className="flex flex-col h-full shadow-2xl rounded-lg border border-ui-border-strong relative overflow-hidden bg-background">
+        <div className="flex flex-col h-full shadow-2xl border border-ui-border-strong relative overflow-hidden bg-background">
           {/* Title header */}
-          <div className="relative bg-linear-to-r from-ui-card-bg via-ui-card-bg-alt to-ui-card-bg p-6 border-b border-ui-border">
+          <div className="relative bg-linear-to-r from-ui-card-bg via-ui-card-bg-alt to-ui-card-bg p-2 border-b border-ui-border shrink-0">
             <h1 className="text-2xl sm:text-3xl font-bold text-center text-foreground tracking-tight">
               {title}
             </h1>
           </div>
 
           {/* Messages area */}
-          <ScrollArea className="flex-1 bg-background">
+          <ScrollArea className="flex-1 bg-background min-h-0">
             <div className="p-4 sm:p-6 space-y-4">
               {messages.map((message) => (
                 <Card
@@ -72,7 +78,7 @@ export default function MainChat({
                     <div className="font-semibold mb-2 text-ui-accent text-xs sm:text-sm uppercase tracking-wide">
                       {message.role === "user" ? "You" : "Story"}
                     </div>
-                    <div className="whitespace-pre-wrap text-ui-text-primary leading-relaxed text-sm sm:text-base">
+                    <div className="text-ui-text-primary leading-relaxed text-sm sm:text-base">
                       {message.parts.map((part, i) => {
                         switch (part.type) {
                           case "text":
@@ -120,11 +126,12 @@ export default function MainChat({
                   </CardContent>
                 </Card>
               )}
+              <div ref={messagesEndRef} />
             </div>
           </ScrollArea>
 
           {/* Input area */}
-          <div className="relative bg-linear-to-t from-ui-card-bg to-ui-card-bg-alt p-4 sm:p-6 border-t border-ui-border">
+          <div className="relative bg-linear-to-t from-ui-card-bg to-ui-card-bg-alt p-4 sm:p-6 border-t border-ui-border shrink-0">
             <form
               onSubmit={(e) => {
                 e.preventDefault();

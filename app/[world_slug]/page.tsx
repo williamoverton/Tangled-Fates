@@ -47,7 +47,9 @@ export default async function WorldPage({
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <Game world={world} playerId={playerId} />
+      <div className="flex flex-col w-full h-full overflow-hidden">
+        <Game world={world} playerId={playerId} />
+      </div>
     </Suspense>
   );
 }

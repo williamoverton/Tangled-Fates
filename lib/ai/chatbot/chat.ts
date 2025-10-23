@@ -33,7 +33,7 @@ export const chat = (
   messages: UIMessage[]
 ) =>
   streamText({
-    model: "moonshotai/kimi-k2",
+    model: "anthropic/claude-haiku-4.5",
     system: dedent`
       You are the dungeon master for a choose your own adventure game. 
       You are responsible for the story and the choices the players make. 
