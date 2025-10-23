@@ -66,14 +66,24 @@ export async function searchForEvent(
     .limit(limit);
 }
 
-export const getEventsForLocation = async (locationId: number) => {
+export const getEventsForLocation = async (
+  locationId: number,
+  limit?: number
+) => {
   return await db.query.events.findMany({
     where: eq(events.locationId, locationId),
+    orderBy: desc(events.createdAt),
+    limit,
   });
 };
 
-export const getEventsForCharacter = async (characterId: number) => {
+export const getEventsForCharacter = async (
+  characterId: number,
+  limit?: number
+) => {
   return await db.query.events.findMany({
     where: eq(events.characterId, characterId),
+    orderBy: desc(events.createdAt),
+    limit,
   });
 };

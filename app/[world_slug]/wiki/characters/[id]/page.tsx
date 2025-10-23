@@ -4,6 +4,8 @@ import { eq, and } from "drizzle-orm";
 import { notFound } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Image from "next/image";
+import { RecentEvents } from "@/components/wiki/RecentEvents";
+import { getEventsForCharacter } from "@/lib/ai/knowledge/event";
 
 export default async function CharacterWikiPage({
   params,
@@ -32,6 +34,9 @@ export default async function CharacterWikiPage({
   if (!character) {
     notFound();
   }
+
+  // Get recent events for this character
+  const recentEvents = await getEventsForCharacter(character.id, 10);
 
   return (
     <div className="min-h-screen bg-background">
@@ -96,6 +101,9 @@ export default async function CharacterWikiPage({
                 </div>
               </CardContent>
             </Card>
+
+            {/* Recent Events Section */}
+            <RecentEvents events={recentEvents} />
           </div>
 
           {/* Sidebar Info Box */}
