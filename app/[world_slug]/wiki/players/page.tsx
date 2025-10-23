@@ -3,11 +3,11 @@ import { worlds } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { notFound } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { getAllCharactersInWorld } from "@/lib/ai/knowledge/character";
+import { getAllPlayersInWorld } from "@/lib/player/player";
 import Image from "next/image";
 import Link from "next/link";
 
-export default async function CharactersIndexPage({
+export default async function PlayersIndexPage({
   params,
 }: {
   params: Promise<{ world_slug: string }>;
@@ -23,8 +23,8 @@ export default async function CharactersIndexPage({
     notFound();
   }
 
-  // Get all characters in this world
-  const characters = await getAllCharactersInWorld(world.id);
+  // Get all players in this world
+  const players = await getAllPlayersInWorld(world.id);
 
   return (
     <div className="min-h-screen bg-background">
@@ -39,43 +39,43 @@ export default async function CharactersIndexPage({
               {world.name}
             </a>
             {" / "}
-            <span className="text-foreground font-medium">Characters</span>
+            <span className="text-foreground font-medium">Players</span>
           </nav>
 
           <h1 className="text-4xl md:text-5xl font-bold tracking-tight border-b border-border pb-4">
-            Characters
+            Players
           </h1>
           <p className="text-muted-foreground mt-4">
-            {characters.length} character{characters.length !== 1 ? "s" : ""} in{" "}
+            {players.length} player{players.length !== 1 ? "s" : ""} in{" "}
             {world.name}
           </p>
         </div>
 
-        {/* Characters Grid */}
-        {characters.length === 0 ? (
+        {/* Players Grid */}
+        {players.length === 0 ? (
           <Card>
             <CardContent className="py-12 text-center">
               <p className="text-muted-foreground">
-                No characters have been discovered yet. Start exploring to meet
-                new characters!
+                No players have joined this world yet. Be the first to start
+                your adventure!
               </p>
             </CardContent>
           </Card>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {characters.map((character) => (
+            {players.map((player) => (
               <Link
-                key={character.id}
-                href={`/${world_slug}/wiki/characters/${character.id}`}
+                key={player.id}
+                href={`/${world_slug}/wiki/players/${player.id}`}
                 className="group"
               >
                 <Card className="h-full overflow-hidden transition-all hover:shadow-lg hover:border-primary/50 hover:scale-[1.02] p-0">
-                  {/* Character Image */}
+                  {/* Player Image */}
                   <div className="relative w-full aspect-square bg-muted">
-                    {character.imageUrl ? (
+                    {player.imageUrl ? (
                       <Image
-                        src={character.imageUrl}
-                        alt={character.name}
+                        src={player.imageUrl}
+                        alt={player.name}
                         fill
                         className="object-cover transition-transform group-hover:scale-105"
                       />
@@ -98,19 +98,18 @@ export default async function CharactersIndexPage({
                     )}
                   </div>
 
-                  {/* Character Info */}
+                  {/* Player Info */}
                   <CardHeader className="pb-3">
                     <CardTitle className="text-lg group-hover:text-primary transition-colors">
-                      {character.name}
+                      {player.name}
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
                     <p className="text-sm text-muted-foreground line-clamp-3">
-                      {character.description}
+                      {player.description}
                     </p>
                     <p className="text-xs text-muted-foreground mt-3">
-                      First seen{" "}
-                      {new Date(character.createdAt).toLocaleDateString()}
+                      Joined {new Date(player.createdAt).toLocaleDateString()}
                     </p>
                   </CardContent>
                 </Card>

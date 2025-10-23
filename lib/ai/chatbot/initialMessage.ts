@@ -1,4 +1,4 @@
-import { worlds } from "@/lib/db/schema";
+import { players, worlds } from "@/lib/db/schema";
 import { generateText, stepCountIs, tool } from "ai";
 import dedent from "dedent";
 import { z } from "zod/v4";
@@ -6,7 +6,10 @@ import { searchForCharacter } from "../knowledge/character";
 import { searchForLocation } from "../knowledge/location";
 import { searchForEvent } from "../knowledge/event";
 
-export const getInitialMessage = async (world: typeof worlds.$inferSelect) => {
+export const getInitialMessage = async (
+  world: typeof worlds.$inferSelect,
+  player: typeof players.$inferSelect
+) => {
   return generateText({
     system: dedent`
       You are the dungeon master for a choose your own adventure game. Your task is to send the first message to the player when they begin their quest!
@@ -17,10 +20,23 @@ export const getInitialMessage = async (world: typeof worlds.$inferSelect) => {
     model: "openai/gpt-oss-120b",
     prompt: dedent`
       A player is about to begin a quest in the world of ${world.name}.
-      The world can be described as: 
+      
+      The player is:
+      <PLAYER>
+        ${player.name}
+      </PLAYER>
+      <PLAYER_DESCRIPTION>
+        ${player.description}
+      </PLAYER_DESCRIPTION>
+
+      The world is:
+      <WORLD>
+        ${world.name}
+      </WORLD>
       <WORLD_DESCRIPTION>
         ${world.description}
       </WORLD_DESCRIPTION>
+      
       Introduce the player to the game with a brief introduction to the world and ask them what they want to do!
     `,
     stopWhen: stepCountIs(10),

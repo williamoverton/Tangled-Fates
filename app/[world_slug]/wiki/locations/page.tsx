@@ -69,7 +69,7 @@ export default async function LocationsIndexPage({
                 href={`/${world_slug}/wiki/locations/${location.id}`}
                 className="group"
               >
-                <Card className="h-full overflow-hidden transition-all hover:shadow-lg hover:border-primary/50 hover:scale-[1.02]">
+                <Card className="h-full overflow-hidden transition-all hover:shadow-lg hover:border-primary/50 hover:scale-[1.02] p-0">
                   {/* Location Image */}
                   <div className="relative w-full aspect-square bg-muted">
                     {location.imageUrl ? (

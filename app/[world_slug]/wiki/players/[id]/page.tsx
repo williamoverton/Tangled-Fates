@@ -1,13 +1,13 @@
 import { db } from "@/lib/db/client";
-import { locations, worlds } from "@/lib/db/schema";
+import { players, worlds } from "@/lib/db/schema";
 import { eq, and } from "drizzle-orm";
 import { notFound } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Image from "next/image";
 import { RecentEvents } from "@/components/wiki/RecentEvents";
-import { getEventsForLocation } from "@/lib/ai/knowledge/event";
+import { getEventsForPlayer } from "@/lib/ai/knowledge/event";
 
-export default async function LocationWikiPage({
+export default async function PlayerWikiPage({
   params,
 }: {
   params: Promise<{ world_slug: string; id: string }>;
@@ -23,17 +23,17 @@ export default async function LocationWikiPage({
     notFound();
   }
 
-  // Get the location
-  const location = await db.query.locations.findFirst({
-    where: and(eq(locations.id, parseInt(id)), eq(locations.worldId, world.id)),
+  // Get the player
+  const player = await db.query.players.findFirst({
+    where: and(eq(players.id, parseInt(id)), eq(players.worldId, world.id)),
   });
 
-  if (!location) {
+  if (!player) {
     notFound();
   }
 
-  // Get recent events for this location
-  const recentEvents = await getEventsForLocation(location.id, 10);
+  // Get recent events for this player
+  const recentEvents = await getEventsForPlayer(player.id, 10);
 
   return (
     <div className="min-h-screen bg-background">
@@ -48,9 +48,9 @@ export default async function LocationWikiPage({
               {world.name}
             </a>
             {" / "}
-            <span className="text-foreground">Locations</span>
+            <span className="text-foreground">Players</span>
             {" / "}
-            <span className="text-foreground font-medium">{location.name}</span>
+            <span className="text-foreground font-medium">{player.name}</span>
           </nav>
         </div>
 
@@ -60,16 +60,16 @@ export default async function LocationWikiPage({
           <div className="lg:col-span-2 space-y-6">
             {/* Title */}
             <h1 className="text-4xl md:text-5xl font-bold tracking-tight border-b border-border pb-4">
-              {location.name}
+              {player.name}
             </h1>
 
             {/* Featured Image (full width on main content) */}
-            {location.imageUrl && (
+            {player.imageUrl && (
               <Card className="overflow-hidden p-0">
                 <div className="relative w-full aspect-video">
                   <Image
-                    src={location.imageUrl}
-                    alt={location.name}
+                    src={player.imageUrl}
+                    alt={player.name}
                     fill
                     className="object-cover"
                     priority
@@ -77,7 +77,7 @@ export default async function LocationWikiPage({
                 </div>
                 <CardContent className="py-3">
                   <p className="text-xs text-muted-foreground text-center">
-                    {location.name}
+                    {player.name}
                   </p>
                 </CardContent>
               </Card>
@@ -86,12 +86,12 @@ export default async function LocationWikiPage({
             {/* Description Section */}
             <Card>
               <CardHeader>
-                <CardTitle className="text-2xl">Overview</CardTitle>
+                <CardTitle className="text-2xl">Biography</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="prose prose-invert max-w-none">
                   <p className="text-foreground leading-relaxed whitespace-pre-wrap">
-                    {location.description}
+                    {player.description}
                   </p>
                 </div>
               </CardContent>
@@ -105,22 +105,22 @@ export default async function LocationWikiPage({
           <div className="lg:col-span-1">
             <Card className="sticky top-4">
               <CardHeader className="border-b border-border bg-card-foreground/5">
-                <CardTitle className="text-center">{location.name}</CardTitle>
+                <CardTitle className="text-center">{player.name}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 {/* Small thumbnail for sidebar */}
-                {location.imageUrl && (
+                {player.imageUrl && (
                   <div className="relative w-full aspect-square rounded-lg overflow-hidden border border-border">
                     <Image
-                      src={location.imageUrl}
-                      alt={location.name}
+                      src={player.imageUrl}
+                      alt={player.name}
                       fill
                       className="object-cover"
                     />
                   </div>
                 )}
 
-                {/* Location Info */}
+                {/* Player Info */}
                 <div className="space-y-3 text-sm">
                   <div className="border-t border-border pt-3">
                     <div className="flex justify-between py-2">
@@ -130,9 +130,9 @@ export default async function LocationWikiPage({
                       </span>
                     </div>
                     <div className="flex justify-between py-2">
-                      <span className="text-muted-foreground">Discovered</span>
+                      <span className="text-muted-foreground">Joined</span>
                       <span className="font-medium text-foreground">
-                        {new Date(location.createdAt).toLocaleDateString()}
+                        {new Date(player.createdAt).toLocaleDateString()}
                       </span>
                     </div>
                   </div>

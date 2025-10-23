@@ -24,7 +24,7 @@ export default async function WorldLayout({
         <nav className="flex items-center gap-2">
           <Link href={`/${world_slug}`}>
             <Button variant="ghost" size="sm" className="text-foreground">
-              Game
+              Play
             </Button>
           </Link>
           <Link href={`/${world_slug}/wiki/characters`}>
@@ -35,6 +35,11 @@ export default async function WorldLayout({
           <Link href={`/${world_slug}/wiki/locations`}>
             <Button variant="ghost" size="sm" className="text-foreground">
               Locations
+            </Button>
+          </Link>
+          <Link href={`/${world_slug}/wiki/players`}>
+            <Button variant="ghost" size="sm" className="text-foreground">
+              Players
             </Button>
           </Link>
         </nav>

@@ -106,3 +106,11 @@ export const getEventsForCharacter = async (
     limit,
   });
 };
+
+export const getEventsForPlayer = async (playerId: number, limit?: number) => {
+  return await db.query.events.findMany({
+    where: eq(events.playerId, playerId),
+    orderBy: desc(events.createdAt),
+    limit,
+  });
+};

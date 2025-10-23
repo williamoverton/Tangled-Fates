@@ -58,10 +58,10 @@ export const WorldEventItem = z.object({
     .nullable()
     .describe("The character involved in the event (if applicable)"),
   player: z
-    .string()
+    .number()
     .optional()
     .nullable()
-    .describe("The player involved in the event (if applicable)"),
+    .describe("The player involved in the event (if applicable)"), // TODO: Letting the LLM include the player ID is dangerous.
   description: z.string().describe("A detailed description of the event."),
 });
 

@@ -20,7 +20,7 @@ import {
   addCharacterToKnowledge,
   updateCharacter,
 } from "../knowledge/character";
-import { worlds } from "@/lib/db/schema";
+import { players, worlds } from "@/lib/db/schema";
 import {
   WorldCharacterItem,
   WorldEventItem,
@@ -29,7 +29,7 @@ import {
 
 export const chat = (
   world: typeof worlds.$inferSelect,
-  playerId: string,
+  player: typeof players.$inferSelect,
   messages: UIMessage[]
 ) =>
   streamText({

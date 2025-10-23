@@ -86,19 +86,30 @@ export const characterRelations = relations(characters, ({ one }) => ({
 }));
 
 // Players (users)
-export const players = pgTable("players", {
-  id: varchar("id").primaryKey(), // ID from clerk
-  createdAt: timestamp("created_at")
-    .notNull()
-    .defaultNow()
-    .$defaultFn(() => new Date()),
-  name: varchar("name", { length: 255 }).notNull(),
-  description: text("description").notNull(),
-  worldId: integer("world_id")
-    .notNull()
-    .references(() => worlds.id),
-  imageUrl: text("image_url"),
-});
+export const players = pgTable(
+  "players",
+  {
+    id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+    clerkUserId: varchar("clerk_user_id", { length: 255 }).notNull(),
+    worldId: integer("world_id")
+      .notNull()
+      .references(() => worlds.id),
+    createdAt: timestamp("created_at")
+      .notNull()
+      .defaultNow()
+      .$defaultFn(() => new Date()),
+    name: varchar("name", { length: 255 }).notNull(),
+    description: text("description").notNull(),
+    imageUrl: text("image_url"),
+    embedding: vector("embedding", { dimensions: 1536 }).notNull(),
+  },
+  (table) => [
+    index("players_embedding_index").using(
+      "hnsw",
+      table.embedding.op("vector_cosine_ops")
+    ),
+  ]
+);
 
 export const playerRelations = relations(players, ({ one }) => ({
   world: one(worlds, {
@@ -122,7 +133,7 @@ export const events = pgTable(
       .references(() => worlds.id),
     locationId: integer("location_id").references(() => locations.id),
     characterId: integer("character_id").references(() => characters.id),
-    playerId: varchar("player_id").references(() => players.id),
+    playerId: integer("player_id").references(() => players.id),
     embedding: vector("embedding", { dimensions: 1536 }).notNull(),
   },
   (table) => [

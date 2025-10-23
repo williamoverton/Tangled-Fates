@@ -8,25 +8,25 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card, CardContent } from "@/components/ui/card";
-import { worlds } from "@/lib/db/schema";
+import { players, worlds } from "@/lib/db/schema";
 
 export default function MainChat({
   initialMessage,
   title,
   world,
-  playerId,
+  player,
 }: {
   initialMessage: string;
   title: string;
   world: typeof worlds.$inferSelect;
-  playerId: string;
+  player: typeof players.$inferSelect;
 }) {
   const { messages, sendMessage, status, error } = useChat({
     transport: new DefaultChatTransport({
       api: "/api/chat",
       body: {
         worldId: world.id,
-        playerId: playerId,
+        playerId: player.id,
       },
     }),
     messages: [
@@ -58,7 +58,7 @@ export default function MainChat({
           {/* Title header */}
           <div className="relative bg-linear-to-r from-ui-card-bg via-ui-card-bg-alt to-ui-card-bg p-2 border-b border-ui-border shrink-0">
             <h1 className="text-2xl sm:text-3xl font-bold text-center text-foreground tracking-tight">
-              {title}
+              {title} - {player.name}
             </h1>
           </div>
 

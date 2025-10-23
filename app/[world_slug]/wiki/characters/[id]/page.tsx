@@ -70,7 +70,7 @@ export default async function CharacterWikiPage({
 
             {/* Featured Image (full width on main content) */}
             {character.imageUrl && (
-              <Card className="overflow-hidden">
+              <Card className="overflow-hidden p-0">
                 <div className="relative w-full aspect-video">
                   <Image
                     src={character.imageUrl}
@@ -80,7 +80,7 @@ export default async function CharacterWikiPage({
                     priority
                   />
                 </div>
-                <CardContent className="py-2">
+                <CardContent className="py-3">
                   <p className="text-xs text-muted-foreground text-center">
                     {character.name}
                   </p>
@@ -112,7 +112,7 @@ export default async function CharacterWikiPage({
               <CardHeader className="border-b border-border bg-card-foreground/5">
                 <CardTitle className="text-center">{character.name}</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4 pt-6">
+              <CardContent className="space-y-4">
                 {/* Small thumbnail for sidebar */}
                 {character.imageUrl && (
                   <div className="relative w-full aspect-square rounded-lg overflow-hidden border border-border">

@@ -4,10 +4,12 @@ import { worlds } from "@/lib/db/schema";
 import { db } from "@/lib/db/client";
 import { eq } from "drizzle-orm";
 import { UIMessage } from "ai";
+import { auth } from "@clerk/nextjs/server";
+import { getPlayer } from "@/lib/player/player";
 
 const schema = z.object({
   worldId: z.number(),
-  playerId: z.string(),
+  playerId: z.number(),
   messages: z.any(), // TODO: type this as UIMessage[]
 });
 
@@ -22,9 +24,19 @@ export async function POST(req: Request) {
     return new Response("World not found", { status: 404 });
   }
 
-  // TODO: use auth for playerId / add charcter system & state etc
+  const { userId } = await auth();
 
-  const result = chat(world, playerId, messages as UIMessage[]);
+  if (!userId) {
+    return new Response("Unauthorized", { status: 401 });
+  }
+
+  const player = await getPlayer(world, userId, playerId);
+
+  if (!player) {
+    return new Response("Player not found", { status: 404 });
+  }
+
+  const result = chat(world, player, messages as UIMessage[]);
 
   return result.toUIMessageStreamResponse();
 }
