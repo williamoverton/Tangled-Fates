@@ -1,10 +1,18 @@
 import type { Metadata } from "next";
-import { Geist_Mono, Caudex } from "next/font/google";
+import { Geist_Mono, Geist } from "next/font/google";
 import "./globals.css";
+import {
+  ClerkProvider,
+  SignInButton,
+  SignUpButton,
+  SignedIn,
+  SignedOut,
+  UserButton,
+} from "@clerk/nextjs";
+import { Suspense } from "react";
 
-const caudex = Caudex({
-  variable: "--font-caudex",
-  weight: ["400"] as const,
+const geistSans = Geist({
+  variable: "--font-geist-sans",
   subsets: ["latin"],
 });
 
@@ -14,8 +22,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Choose Your Own Adventure Multiplayer",
-  description: "A multiplayer choose your own adventure game",
+  title: "Tangled Fates",
+  description:
+    "An AI-powered multiplayer adventure where your choices shape the story",
 };
 
 export default function RootLayout({
@@ -26,9 +35,17 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${caudex.variable} ${geistMono.variable} font-sans text-lg antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased bg-medieval-dark-bg`}
       >
-        {children}
+        <Suspense
+          fallback={
+            <div className="flex h-screen w-screen items-center justify-center">
+              <div>Loading!</div>
+            </div>
+          }
+        >
+          <ClerkProvider>{children}</ClerkProvider>
+        </Suspense>
       </body>
     </html>
   );
