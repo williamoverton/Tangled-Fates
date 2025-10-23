@@ -11,12 +11,12 @@ import { Card, CardContent } from "@/components/ui/card";
 import { players, worlds } from "@/lib/db/schema";
 
 export default function MainChat({
-  initialMessage,
+  initialMessages,
   title,
   world,
   player,
 }: {
-  initialMessage: string;
+  initialMessages: UIMessage[];
   title: string;
   world: typeof worlds.$inferSelect;
   player: typeof players.$inferSelect;
@@ -29,18 +29,7 @@ export default function MainChat({
         playerId: player.id,
       },
     }),
-    messages: [
-      {
-        role: "assistant",
-        parts: [
-          {
-            type: "text",
-            text: initialMessage,
-          },
-        ],
-        id: "first-message",
-      } as UIMessage,
-    ],
+    messages: initialMessages,
   });
   const [input, setInput] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);

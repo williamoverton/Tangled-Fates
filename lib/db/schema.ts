@@ -6,6 +6,7 @@ import {
   vector,
   index,
   timestamp,
+  jsonb,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 
@@ -158,3 +159,16 @@ export const eventRelations = relations(events, ({ one }) => ({
     references: [players.id],
   }),
 }));
+
+export const chatHistory = pgTable("chat_history", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  createdAt: timestamp("created_at")
+    .notNull()
+    .defaultNow()
+    .$defaultFn(() => new Date()),
+  playerId: integer("player_id")
+    .notNull()
+    .references(() => players.id)
+    .unique(),
+  messages: jsonb("messages").notNull(),
+});

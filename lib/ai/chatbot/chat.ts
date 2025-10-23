@@ -26,6 +26,7 @@ import {
   WorldEventItem,
   WorldLocationItem,
 } from "../knowledge/types";
+import { saveChatHistory } from "./history";
 
 export const chat = (
   world: typeof worlds.$inferSelect,
@@ -147,5 +148,9 @@ export const chat = (
         execute: async ({ characterId, character }) =>
           await updateCharacter(world, characterId, character),
       }),
+    },
+  }).toUIMessageStreamResponse({
+    onFinish: async (result) => {
+      await saveChatHistory(player.id, [...messages, ...result.messages]);
     },
   });

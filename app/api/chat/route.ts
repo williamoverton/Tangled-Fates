@@ -36,7 +36,5 @@ export async function POST(req: Request) {
     return new Response("Player not found", { status: 404 });
   }
 
-  const result = chat(world, player, messages as UIMessage[]);
-
-  return result.toUIMessageStreamResponse();
+  return chat(world, player, messages as UIMessage[]);
 }

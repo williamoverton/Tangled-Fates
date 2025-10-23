@@ -6,6 +6,8 @@ import { Suspense } from "react";
 import { auth } from "@clerk/nextjs/server";
 import { getPlayer } from "@/lib/player/player";
 import { getWorldBySlug } from "@/lib/worlds/world";
+import { getChatHistory } from "@/lib/ai/chatbot/history";
+import { ModelMessage, UIMessage } from "ai";
 
 const Game = async ({
   world,
@@ -26,11 +28,26 @@ const Game = async ({
     return redirect(`/${world.slug}`);
   }
 
-  const initialMessage = await getInitialMessage(world, player);
+  let messages: UIMessage[] = await getChatHistory(player.id);
+
+  if (messages.length === 0) {
+    messages = [
+      {
+        role: "assistant",
+        parts: [
+          {
+            type: "text",
+            text: (await getInitialMessage(world, player)).text,
+          },
+        ],
+        id: "initial-message",
+      },
+    ];
+  }
 
   return (
     <MainChat
-      initialMessage={initialMessage.text}
+      initialMessages={messages}
       title={world.name}
       world={world}
       player={player}
