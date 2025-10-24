@@ -8,18 +8,22 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card, CardContent } from "@/components/ui/card";
-import { players, worlds } from "@/lib/db/schema";
+import { players, worlds, events } from "@/lib/db/schema";
+import { ChatSidebar } from "@/components/ChatSidebar";
+import { PanelRightOpen, PanelRightClose } from "lucide-react";
 
 export default function MainChat({
   initialMessages,
   title,
   world,
   player,
+  recentEvents,
 }: {
   initialMessages: UIMessage[];
   title: string;
   world: typeof worlds.$inferSelect;
   player: typeof players.$inferSelect;
+  recentEvents: (typeof events.$inferSelect)[];
 }) {
   const { messages, sendMessage, status, error } = useChat({
     transport: new DefaultChatTransport({
@@ -32,7 +36,26 @@ export default function MainChat({
     messages: initialMessages,
   });
   const [input, setInput] = useState("");
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Initialize sidebar state based on screen size
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) {
+        setSidebarOpen(true);
+      } else {
+        setSidebarOpen(false);
+      }
+    };
+
+    // Set initial state
+    handleResize();
+
+    // Listen for resize events
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   // Auto-scroll when messages change or streaming
   useEffect(() => {
@@ -40,15 +63,36 @@ export default function MainChat({
   }, [messages, status]);
 
   return (
-    <div className="flex flex-col w-full h-full">
-      <div className="flex flex-col w-full h-full">
+    <div className="flex w-full h-full">
+      {/* Main chat area */}
+      <div className="flex flex-col flex-1 h-full">
         {/* Main container */}
         <div className="flex flex-col h-full shadow-2xl border border-ui-border-strong relative overflow-hidden bg-background">
           {/* Title header */}
-          <div className="relative bg-linear-to-r from-ui-card-bg via-ui-card-bg-alt to-ui-card-bg p-2 border-b border-ui-border shrink-0">
-            <h1 className="text-2xl sm:text-3xl font-bold text-center text-foreground tracking-tight">
-              {title} - {player.name}
-            </h1>
+          <div className="relative bg-muted p-2 border-b border-ui-border-strong shrink-0 shadow-md z-10">
+            <div className="flex items-center justify-between">
+              <div className="flex-1" />
+              <h1 className="text-2xl sm:text-3xl font-bold text-center text-foreground tracking-tight flex-1">
+                {title} - {player.name}
+              </h1>
+              <div className="flex-1 flex justify-end pr-2">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => setSidebarOpen(!sidebarOpen)}
+                  className="bg-background hover:bg-accent hover:text-accent-foreground"
+                  title={sidebarOpen ? "Hide sidebar" : "Show sidebar"}
+                >
+                  {sidebarOpen ? (
+                    <PanelRightClose className="h-5 w-5" />
+                  ) : (
+                    <PanelRightOpen className="h-5 w-5" />
+                  )}
+                </Button>
+              </div>
+            </div>
+            {/* Fade overlay */}
+            <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-b from-background to-transparent pointer-events-none translate-y-full" />
           </div>
 
           {/* Messages area */}
@@ -150,6 +194,11 @@ export default function MainChat({
           </div>
         </div>
       </div>
+
+      {/* Sidebar */}
+      {sidebarOpen && (
+        <ChatSidebar player={player} recentEvents={recentEvents} />
+      )}
     </div>
   );
 }
