@@ -17,7 +17,7 @@ export function BrandLink({ className = "" }: BrandLinkProps) {
           <span className="text-accent group-hover:text-accent transition-colors duration-200">
             ⚔️
           </span>
-          <span className="bg-gradient-to-r from-foreground to-accent bg-clip-text text-transparent group-hover:from-accent group-hover:to-foreground transition-all duration-200">
+          <span className="bg-linear-to-r from-foreground to-accent bg-clip-text text-transparent group-hover:from-accent group-hover:to-foreground transition-all duration-200">
             Tangled Fates
           </span>
         </span>
