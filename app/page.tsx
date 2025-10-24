@@ -1,6 +1,7 @@
 import { worlds } from "@/lib/db/schema";
 import { db } from "@/lib/db/client";
 import { WorldCard } from "@/components/WorldCard";
+import { GeneralNavbar } from "@/components/navbar/GeneralNavbar";
 import { cacheTag } from "next/cache";
 
 export default async function Home() {
@@ -10,6 +11,7 @@ export default async function Home() {
   const worldsList = await db.select().from(worlds);
   return (
     <div className="min-h-screen">
+      <GeneralNavbar />
       {/* Hero Section */}
       <section className="relative overflow-hidden">
         {/* Subtle Background Gradient */}
