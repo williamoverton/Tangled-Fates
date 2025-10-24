@@ -47,7 +47,7 @@ export function WorldCard({
         }`}
       >
         {/* World Image */}
-        <div className="relative w-full aspect-square bg-muted shrink-0">
+        <div className={`relative w-full bg-muted shrink-0 aspect-square`}>
           {world.imageUrl ? (
             <Image
               src={world.imageUrl}
@@ -68,9 +68,9 @@ export function WorldCard({
 
         {/* World Info - Scrollable area */}
         <CardHeader
-          className={`${isWikiVariant ? "pb-3" : ""} ${
-            !isWikiVariant ? "flex-1 overflow-y-auto" : ""
-          }`}
+          className={`${
+            isWikiVariant ? "pb-3" : "flex-1 flex flex-col justify-start p-4"
+          } ${!isWikiVariant ? "" : ""}`}
         >
           <CardTitle
             className={
@@ -84,7 +84,9 @@ export function WorldCard({
           {world.description && (
             <CardDescription
               className={
-                isWikiVariant ? "text-sm line-clamp-3" : "text-sm line-clamp-3"
+                isWikiVariant
+                  ? "text-sm line-clamp-3"
+                  : "text-sm line-clamp-2 h-10"
               }
             >
               {world.description}
@@ -93,14 +95,14 @@ export function WorldCard({
         </CardHeader>
 
         {/* Footer - Always visible */}
-        <CardContent className="shrink-0">
+        <CardContent className={`shrink-0 ${!isWikiVariant ? "p-4 pt-0" : ""}`}>
           {isWikiVariant && (
             <p className="text-xs text-muted-foreground">
               Created {new Date(world.createdAt).toLocaleDateString()}
             </p>
           )}
           {!isWikiVariant && (
-            <Button variant="outline" className="w-full mb-4" asChild>
+            <Button variant="outline" className="w-full" asChild>
               <span>{actionLabel || `Enter ${world.name}`}</span>
             </Button>
           )}

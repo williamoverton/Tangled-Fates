@@ -1,8 +1,7 @@
 import { worlds } from "@/lib/db/schema";
 import { db } from "@/lib/db/client";
-import { Card } from "@/components/ui/card";
+import { WorldCard } from "@/components/WorldCard";
 import { cacheTag } from "next/cache";
-import Link from "next/link";
 
 export default async function Home() {
   "use cache";
@@ -93,95 +92,18 @@ export default async function Home() {
           {/* Worlds Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
             {worldsList.map((world, index) => (
-              <Link
-                href={`/${world.slug}/`}
+              <div
                 key={world.id}
-                className="group animate-fade-in-up"
+                className="animate-fade-in-up"
                 style={{ animationDelay: `${index * 150}ms` }}
               >
-                <Card className="relative h-full overflow-hidden border-2 border-border/50 hover:border-primary/60 transition-all duration-700 cursor-pointer bg-card/90 backdrop-blur-sm hover:shadow-2xl hover:shadow-primary/25 hover:-translate-y-2 hover:scale-[1.02]">
-                  {/* Animated Background */}
-                  <div className="absolute inset-0 bg-linear-to-br from-primary/5 via-transparent to-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
-
-                  {/* Glowing Border Effect */}
-                  <div className="absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-700">
-                    <div className="absolute inset-0 rounded-lg bg-linear-to-r from-primary via-accent to-primary animate-gradient bg-size-[200%_auto] blur-sm opacity-60"></div>
-                    <div className="absolute inset-px rounded-lg bg-card"></div>
-                  </div>
-
-                  {/* Floating Particles Effect */}
-                  <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                    <div className="flex space-x-1">
-                      <div className="w-1 h-1 bg-primary rounded-full animate-ping animation-delay-200"></div>
-                      <div className="w-1 h-1 bg-accent rounded-full animate-ping animation-delay-400"></div>
-                      <div className="w-1 h-1 bg-primary rounded-full animate-ping animation-delay-600"></div>
-                    </div>
-                  </div>
-
-                  <div className="relative p-8 space-y-6">
-                    {/* World Header */}
-                    <div className="space-y-3">
-                      <div className="flex items-start justify-between">
-                        <div className="space-y-2">
-                          <h3 className="text-3xl font-bold group-hover:text-primary transition-colors duration-300">
-                            {world.name}
-                          </h3>
-                          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                            <svg
-                              className="w-4 h-4"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                              />
-                            </svg>
-                            <span>
-                              Created{" "}
-                              {new Date(world.createdAt).toLocaleDateString()}
-                            </span>
-                          </div>
-                        </div>
-                        <div className="w-3 h-3 rounded-full bg-primary animate-pulse shadow-lg shadow-primary/50"></div>
-                      </div>
-                    </div>
-
-                    {/* World Description */}
-                    <div className="space-y-4">
-                      <p className="text-muted-foreground leading-relaxed line-clamp-4 group-hover:text-foreground/90 transition-colors duration-300">
-                        {world.description}
-                      </p>
-                    </div>
-
-                    {/* CTA Button */}
-                    <div className="pt-4">
-                      <div className="inline-flex items-center gap-3 px-6 py-3 rounded-xl bg-linear-to-r from-primary to-accent text-primary-foreground font-semibold text-lg shadow-lg shadow-primary/25 group-hover:shadow-xl group-hover:shadow-primary/40 transition-all duration-300 group-hover:scale-105">
-                        <span>Enter World</span>
-                        <svg
-                          className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M13 7l5 5m0 0l-5 5m5-5H6"
-                          />
-                        </svg>
-                      </div>
-                    </div>
-
-                    {/* Hover Glow Effect */}
-                    <div className="absolute inset-0 rounded-lg bg-linear-to-r from-primary/20 to-accent/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl -z-10"></div>
-                  </div>
-                </Card>
-              </Link>
+                <WorldCard
+                  world={world}
+                  href={`/${world.slug}/`}
+                  variant="select"
+                  actionLabel="Enter World"
+                />
+              </div>
             ))}
           </div>
 
