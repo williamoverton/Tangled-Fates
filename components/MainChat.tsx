@@ -71,11 +71,18 @@ export default function MainChat({
           {/* Title header */}
           <div className="relative bg-muted p-2 border-b border-ui-border-strong shrink-0 shadow-md z-10">
             <div className="flex items-center justify-between">
-              <div className="flex-1" />
-              <h1 className="text-2xl sm:text-3xl font-bold text-center text-foreground tracking-tight flex-1">
-                {title} - {player.name}
-              </h1>
-              <div className="flex-1 flex justify-end pr-2">
+              <div className="flex gap-2 tracking-tight grow items-start">
+                <div className="text-xl font-bold text-center text-foreground-muted tracking-tight">
+                  {title}
+                </div>
+                <span className="text-xl font-bold text-center text-foreground tracking-tight">
+                  -
+                </span>
+                <div className="text-xl font-bold text-center tracking-tight text-accent">
+                  {player.name}
+                </div>
+              </div>
+              <div className="flex justify-end pr-2">
                 <Button
                   variant="outline"
                   size="icon"
@@ -92,7 +99,7 @@ export default function MainChat({
               </div>
             </div>
             {/* Fade overlay */}
-            <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-b from-background to-transparent pointer-events-none translate-y-full" />
+            <div className="absolute bottom-0 left-0 right-0 h-8 bg-linear-to-b from-background to-transparent pointer-events-none translate-y-full" />
           </div>
 
           {/* Messages area */}

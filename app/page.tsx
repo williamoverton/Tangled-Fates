@@ -1,12 +1,6 @@
 import { worlds } from "@/lib/db/schema";
 import { db } from "@/lib/db/client";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-} from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { cacheTag } from "next/cache";
 import Link from "next/link";
 
@@ -16,38 +10,291 @@ export default async function Home() {
 
   const worldsList = await db.select().from(worlds);
   return (
-    <div className="container mx-auto py-12 px-4">
-      <div className="max-w-6xl mx-auto">
-        <div className="mb-12 text-center">
-          <h1 className="text-5xl font-bold mb-4 bg-linear-to-r from-primary to-accent bg-clip-text text-transparent">
-            Choose Your Adventure
-          </h1>
-          <p className="text-muted-foreground text-lg">
-            Select a world to begin your interactive story
+    <div className="min-h-screen">
+      {/* Hero Section */}
+      <section className="relative overflow-hidden">
+        {/* Subtle Background Gradient */}
+        <div className="absolute inset-0 bg-linear-to-br from-primary/5 via-background to-accent/5"></div>
+
+        {/* Static Glow Effects */}
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-accent/10 rounded-full blur-3xl"></div>
+
+        <div className="relative container mx-auto px-4 py-24 md:py-32">
+          <div className="max-w-5xl mx-auto text-center space-y-8">
+            {/* Logo / Title */}
+            <div className="space-y-4 animate-fade-in-up">
+              <h1 className="text-6xl md:text-8xl font-bold tracking-tight">
+                <span className="bg-linear-to-r from-primary via-accent to-primary bg-clip-text text-transparent animate-gradient bg-size-[200%_auto]">
+                  Tangled Fates
+                </span>
+              </h1>
+              <p className="text-xl md:text-2xl text-muted-foreground font-medium">
+                Where Every Choice Shapes Reality
+              </p>
+            </div>
+
+            {/* Main Tagline */}
+            <p className="text-lg md:text-xl text-foreground/90 max-w-3xl mx-auto leading-relaxed animate-fade-in-up animation-delay-200">
+              An AI-powered living, breathing world where your adventure
+              intertwines with others. Discover secrets, forge your path, and
+              leave your mark on a shared universe.
+            </p>
+
+            {/* Feature Pills */}
+            <div className="flex flex-wrap justify-center gap-4 pt-4 animate-fade-in-up animation-delay-400">
+              <div className="px-6 py-3 rounded-full bg-card/80 backdrop-blur-sm border border-primary/30 shadow-lg shadow-primary/10">
+                <span className="text-sm font-medium text-primary">
+                  🤖 AI-Powered Stories
+                </span>
+              </div>
+              <div className="px-6 py-3 rounded-full bg-card/80 backdrop-blur-sm border border-accent/30 shadow-lg shadow-accent/10">
+                <span className="text-sm font-medium text-accent">
+                  🌍 Shared Living Worlds
+                </span>
+              </div>
+              <div className="px-6 py-3 rounded-full bg-card/80 backdrop-blur-sm border border-primary/30 shadow-lg shadow-primary/10">
+                <span className="text-sm font-medium text-primary">
+                  📖 Collaborative Wiki
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Worlds Selection Section - Main CTA */}
+      <section className="relative py-24 px-4 overflow-hidden">
+        {/* Background Effects */}
+        <div className="absolute inset-0 bg-linear-to-b from-background via-primary/3 to-background"></div>
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-px bg-linear-to-r from-transparent via-primary/30 to-transparent"></div>
+
+        <div className="container mx-auto max-w-7xl relative">
+          {/* Section Header */}
+          <div className="text-center mb-20 space-y-6">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium mb-4">
+              <span className="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+              Available Worlds
+            </div>
+            <h2 className="text-5xl md:text-7xl font-bold leading-tight">
+              <span className="bg-linear-to-r from-primary via-accent to-primary bg-clip-text text-transparent animate-gradient bg-size-[200%_auto]">
+                Choose Your World
+              </span>
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+              Each world is a unique universe with its own lore, characters, and
+              mysteries waiting to be unraveled.
+              <span className="text-primary font-semibold">
+                Your adventure starts here.
+              </span>
+            </p>
+          </div>
+
+          {/* Worlds Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+            {worldsList.map((world, index) => (
+              <Link
+                href={`/${world.slug}/`}
+                key={world.id}
+                className="group animate-fade-in-up"
+                style={{ animationDelay: `${index * 150}ms` }}
+              >
+                <Card className="relative h-full overflow-hidden border-2 border-border/50 hover:border-primary/60 transition-all duration-700 cursor-pointer bg-card/90 backdrop-blur-sm hover:shadow-2xl hover:shadow-primary/25 hover:-translate-y-2 hover:scale-[1.02]">
+                  {/* Animated Background */}
+                  <div className="absolute inset-0 bg-linear-to-br from-primary/5 via-transparent to-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+
+                  {/* Glowing Border Effect */}
+                  <div className="absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-700">
+                    <div className="absolute inset-0 rounded-lg bg-linear-to-r from-primary via-accent to-primary animate-gradient bg-size-[200%_auto] blur-sm opacity-60"></div>
+                    <div className="absolute inset-px rounded-lg bg-card"></div>
+                  </div>
+
+                  {/* Floating Particles Effect */}
+                  <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                    <div className="flex space-x-1">
+                      <div className="w-1 h-1 bg-primary rounded-full animate-ping animation-delay-200"></div>
+                      <div className="w-1 h-1 bg-accent rounded-full animate-ping animation-delay-400"></div>
+                      <div className="w-1 h-1 bg-primary rounded-full animate-ping animation-delay-600"></div>
+                    </div>
+                  </div>
+
+                  <div className="relative p-8 space-y-6">
+                    {/* World Header */}
+                    <div className="space-y-3">
+                      <div className="flex items-start justify-between">
+                        <div className="space-y-2">
+                          <h3 className="text-3xl font-bold group-hover:text-primary transition-colors duration-300">
+                            {world.name}
+                          </h3>
+                          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                            <svg
+                              className="w-4 h-4"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                              />
+                            </svg>
+                            <span>
+                              Created{" "}
+                              {new Date(world.createdAt).toLocaleDateString()}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="w-3 h-3 rounded-full bg-primary animate-pulse shadow-lg shadow-primary/50"></div>
+                      </div>
+                    </div>
+
+                    {/* World Description */}
+                    <div className="space-y-4">
+                      <p className="text-muted-foreground leading-relaxed line-clamp-4 group-hover:text-foreground/90 transition-colors duration-300">
+                        {world.description}
+                      </p>
+                    </div>
+
+                    {/* CTA Button */}
+                    <div className="pt-4">
+                      <div className="inline-flex items-center gap-3 px-6 py-3 rounded-xl bg-linear-to-r from-primary to-accent text-primary-foreground font-semibold text-lg shadow-lg shadow-primary/25 group-hover:shadow-xl group-hover:shadow-primary/40 transition-all duration-300 group-hover:scale-105">
+                        <span>Enter World</span>
+                        <svg
+                          className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M13 7l5 5m0 0l-5 5m5-5H6"
+                          />
+                        </svg>
+                      </div>
+                    </div>
+
+                    {/* Hover Glow Effect */}
+                    <div className="absolute inset-0 rounded-lg bg-linear-to-r from-primary/20 to-accent/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl -z-10"></div>
+                  </div>
+                </Card>
+              </Link>
+            ))}
+          </div>
+
+          {/* Empty State */}
+          {worldsList.length === 0 && (
+            <div className="text-center py-24">
+              <div className="inline-flex items-center justify-center w-24 h-24 rounded-full bg-muted/30 mb-8 border-2 border-dashed border-muted-foreground/30">
+                <svg
+                  className="w-12 h-12 text-muted-foreground"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+              </div>
+              <h3 className="text-2xl font-semibold mb-3">No Worlds Yet</h3>
+              <p className="text-muted-foreground text-lg">
+                New worlds will appear here soon
+              </p>
+            </div>
+          )}
+
+          {/* Call to Action */}
+          {worldsList.length > 0 && (
+            <div className="text-center mt-16">
+              <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-primary/10 border border-primary/20 text-primary font-medium">
+                <span className="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                <span>Ready to begin your adventure?</span>
+              </div>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Feature Highlight Section */}
+      <section className="relative py-20 px-4 bg-linear-to-b from-background via-card/30 to-background">
+        <div className="container mx-auto max-w-6xl">
+          <div className="grid md:grid-cols-3 gap-8">
+            {/* Feature 1 */}
+            <div className="group relative p-8 rounded-2xl bg-card/50 backdrop-blur-sm border border-border hover:border-primary/50 transition-all duration-300 hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-1">
+              <div className="absolute inset-0 bg-linear-to-br from-primary/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
+              <div className="relative space-y-4">
+                <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center text-2xl">
+                  ✨
+                </div>
+                <h3 className="text-xl font-bold text-foreground">
+                  Choose Your Adventure
+                </h3>
+                <p className="text-muted-foreground leading-relaxed">
+                  Make meaningful choices that shape your unique story. Every
+                  decision matters in these dynamic, AI-generated narratives.
+                </p>
+              </div>
+            </div>
+
+            {/* Feature 2 */}
+            <div className="group relative p-8 rounded-2xl bg-card/50 backdrop-blur-sm border border-border hover:border-accent/50 transition-all duration-300 hover:shadow-xl hover:shadow-accent/10 hover:-translate-y-1">
+              <div className="absolute inset-0 bg-linear-to-br from-accent/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
+              <div className="relative space-y-4">
+                <div className="w-12 h-12 rounded-xl bg-accent/20 flex items-center justify-center text-2xl">
+                  🔗
+                </div>
+                <h3 className="text-xl font-bold text-foreground">
+                  Shared Discoveries
+                </h3>
+                <p className="text-muted-foreground leading-relaxed">
+                  When you discover something, it becomes part of the
+                  world&apos;s wiki. Your findings influence every other
+                  player&apos;s journey.
+                </p>
+              </div>
+            </div>
+
+            {/* Feature 3 */}
+            <div className="group relative p-8 rounded-2xl bg-card/50 backdrop-blur-sm border border-border hover:border-primary/50 transition-all duration-300 hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-1">
+              <div className="absolute inset-0 bg-linear-to-br from-primary/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
+              <div className="relative space-y-4">
+                <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center text-2xl">
+                  🌊
+                </div>
+                <h3 className="text-xl font-bold text-foreground">
+                  Living, Breathing World
+                </h3>
+                <p className="text-muted-foreground leading-relaxed">
+                  The world evolves with every player&apos;s actions. Return to
+                  find new characters, items, and events shaped by the
+                  community.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Call to Action Footer */}
+      <section className="relative py-20 px-4 overflow-hidden">
+        <div className="absolute inset-0 bg-linear-to-t from-primary/10 via-background to-transparent"></div>
+        <div className="relative container mx-auto max-w-4xl text-center space-y-6">
+          <h2 className="text-3xl md:text-4xl font-bold">
+            Your Adventure Awaits
+          </h2>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            Join a community of adventurers. Every story you create, every
+            secret you uncover, becomes part of a living legend.
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {worldsList.map((world) => (
-            <Link href={`/${world.slug}/`} key={world.id}>
-              <Card className="h-full hover:shadow-2xl hover:border-primary/50 transition-all duration-300 cursor-pointer group">
-                <CardHeader>
-                  <CardTitle className="group-hover:text-primary transition-colors">
-                    {world.name}
-                  </CardTitle>
-                  <CardDescription>
-                    Created {new Date(world.createdAt).toLocaleDateString()}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
-                    {world.description}
-                  </p>
-                </CardContent>
-              </Card>
-            </Link>
-          ))}
-        </div>
-      </div>
+      </section>
     </div>
   );
 }
