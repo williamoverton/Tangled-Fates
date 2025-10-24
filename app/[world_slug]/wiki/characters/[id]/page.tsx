@@ -1,3 +1,5 @@
+"use cache";
+
 import { db } from "@/lib/db/client";
 import { worlds } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
@@ -7,6 +9,7 @@ import Image from "next/image";
 import { RecentEvents } from "@/components/wiki/RecentEvents";
 import { getEventsForCharacter } from "@/lib/ai/knowledge/event";
 import { getCharacterById } from "@/lib/ai/knowledge/character";
+import { cacheTag } from "next/cache";
 
 export default async function CharacterWikiPage({
   params,
@@ -30,6 +33,9 @@ export default async function CharacterWikiPage({
   if (!character || character.worldId !== world.id) {
     notFound();
   }
+
+  // Cache tag for this specific character
+  cacheTag(`character-${character.id}`);
 
   // Get recent events for this character
   const recentEvents = await getEventsForCharacter(character.id, 10);

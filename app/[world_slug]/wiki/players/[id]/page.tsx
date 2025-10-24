@@ -1,3 +1,5 @@
+"use cache";
+
 import { db } from "@/lib/db/client";
 import { worlds } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
@@ -7,6 +9,7 @@ import Image from "next/image";
 import { RecentEvents } from "@/components/wiki/RecentEvents";
 import { getEventsForPlayer } from "@/lib/ai/knowledge/event";
 import { getPlayerById } from "@/lib/ai/knowledge/player";
+import { cacheTag } from "next/cache";
 
 export default async function PlayerWikiPage({
   params,
@@ -30,6 +33,9 @@ export default async function PlayerWikiPage({
   if (!player || player.worldId !== world.id) {
     notFound();
   }
+
+  // Cache tag for this specific player
+  cacheTag(`player-${player.id}`);
 
   // Get recent events for this player
   const recentEvents = await getEventsForPlayer(player.id, 10);

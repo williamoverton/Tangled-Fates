@@ -5,6 +5,7 @@ import { db } from "@/lib/db/client";
 import { generateImage } from "../image/generateImage";
 import { after } from "next/server";
 import { and, cosineDistance, desc, eq, gt, sql } from "drizzle-orm";
+import { revalidateTag } from "next/cache";
 
 const SIMILARITY_THRESHOLD = 0.3; // TODO: tune this
 
@@ -32,6 +33,9 @@ export const addItemToKnowledge = async (
       .returning();
 
     console.log(`Item added to knowledge base with id ${createdItem.id}`);
+
+    // Revalidate cache for items in this world
+    revalidateTag(`items-${world.id}`, "max");
 
     // Generate an image in the background after the item is created
     after(async () => {
@@ -114,6 +118,10 @@ export const updateItem = async (
       embedding: embedding.embedding,
     })
     .where(and(eq(items.id, itemId), eq(items.worldId, world.id)));
+
+  // Revalidate cache for this specific item and items in this world
+  revalidateTag(`item-${itemId}`, "max");
+  revalidateTag(`items-${world.id}`, "max");
 };
 
 export const getItemById = async (id: number) => {

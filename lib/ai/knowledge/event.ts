@@ -10,6 +10,7 @@ import { embedKnowledgeItem, getEmbedForQuery } from "./embed";
 import { CreateWorldEventItem, UIEvent, UIEventWithRelations } from "./types";
 import { db } from "@/lib/db/client";
 import { and, cosineDistance, desc, eq, gt, sql } from "drizzle-orm";
+import { revalidateTag } from "next/cache";
 
 const SIMILARITY_THRESHOLD = 0.3; // TODO: tune this
 
@@ -90,6 +91,9 @@ export const addEventToKnowledge = async (
     }
 
     console.log(`Event relationships added to knowledge base`);
+
+    // Revalidate cache for events in this world
+    revalidateTag(`events-${world.id}`, "max");
 
     return createdEvent;
   } catch (error) {

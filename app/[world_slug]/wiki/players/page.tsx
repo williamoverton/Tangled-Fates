@@ -1,3 +1,5 @@
+"use cache";
+
 import { db } from "@/lib/db/client";
 import { worlds } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
@@ -5,6 +7,7 @@ import { notFound } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { getAllPlayersInWorld } from "@/lib/ai/knowledge/player";
 import { PlayerCard } from "@/components/PlayerCard";
+import { cacheTag } from "next/cache";
 
 export default async function PlayersIndexPage({
   params,
@@ -21,6 +24,9 @@ export default async function PlayersIndexPage({
   if (!world) {
     notFound();
   }
+
+  // Cache tag for players in this world
+  cacheTag(`players-${world.id}`);
 
   // Get all players in this world
   const players = await getAllPlayersInWorld(world.id);

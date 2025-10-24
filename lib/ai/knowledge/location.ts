@@ -5,6 +5,7 @@ import { db } from "@/lib/db/client";
 import { generateImage } from "../image/generateImage";
 import { after } from "next/server";
 import { and, cosineDistance, desc, eq, gt, sql } from "drizzle-orm";
+import { revalidateTag } from "next/cache";
 
 const SIMILARITY_THRESHOLD = 0.3; // TODO: tune this
 
@@ -28,6 +29,9 @@ export const addLocationToKnowledge = async (
       embedding: embedding.embedding,
     })
     .returning();
+
+  // Revalidate cache for locations in this world
+  revalidateTag(`locations-${world.id}`, "max");
 
   // Generate an image in the background after the location is created
   after(async () => {
@@ -100,6 +104,10 @@ export const updateLocation = async (
       embedding: embedding.embedding,
     })
     .where(and(eq(locations.id, locationId), eq(locations.worldId, world.id)));
+
+  // Revalidate cache for this specific location and locations in this world
+  revalidateTag(`location-${locationId}`, "max");
+  revalidateTag(`locations-${world.id}`, "max");
 };
 
 export const getLocationById = async (id: number) => {

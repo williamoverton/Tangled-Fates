@@ -1,3 +1,5 @@
+"use cache";
+
 import { db } from "@/lib/db/client";
 import { worlds } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
@@ -7,6 +9,7 @@ import Image from "next/image";
 import { RecentEvents } from "@/components/wiki/RecentEvents";
 import { getEventsForLocation } from "@/lib/ai/knowledge/event";
 import { getLocationById } from "@/lib/ai/knowledge/location";
+import { cacheTag } from "next/cache";
 
 export default async function LocationWikiPage({
   params,
@@ -30,6 +33,9 @@ export default async function LocationWikiPage({
   if (!location || location.worldId !== world.id) {
     notFound();
   }
+
+  // Cache tag for this specific location
+  cacheTag(`location-${location.id}`);
 
   // Get recent events for this location
   const recentEvents = await getEventsForLocation(location.id, 10);

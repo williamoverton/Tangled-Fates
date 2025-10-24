@@ -8,6 +8,7 @@ import { and, cosineDistance, desc, eq, gt, sql } from "drizzle-orm";
 import { generateObject } from "ai";
 import dedent from "dedent";
 import { z } from "zod/v4";
+import { revalidateTag } from "next/cache";
 
 const SIMILARITY_THRESHOLD = 0.3; // TODO: tune this
 
@@ -31,6 +32,9 @@ export const addCharacterToKnowledge = async (
       embedding: embedding.embedding,
     })
     .returning();
+
+  // Revalidate cache for characters in this world
+  revalidateTag(`characters-${world.id}`, "max");
 
   // Generate an image in the background after the character is created
   after(async () => {
@@ -108,6 +112,10 @@ export const updateCharacter = async (
     .where(
       and(eq(characters.id, characterId), eq(characters.worldId, world.id))
     );
+
+  // Revalidate cache for this specific character and characters in this world
+  revalidateTag(`character-${characterId}`, "max");
+  revalidateTag(`characters-${world.id}`, "max");
 };
 
 export const getCharacterById = async (id: number) => {
@@ -192,4 +200,9 @@ export const mergeCharacters = async (
 
   // Delete the other character
   await db.delete(characters).where(eq(characters.id, otherCharacterId));
+
+  // Revalidate cache for both characters and characters in this world
+  revalidateTag(`character-${characterId}`, "max");
+  revalidateTag(`character-${otherCharacterId}`, "max");
+  revalidateTag(`characters-${world.id}`, "max");
 };

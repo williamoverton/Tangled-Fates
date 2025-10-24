@@ -3,6 +3,7 @@ import { embedKnowledgeItem, getEmbedForQuery } from "./embed";
 import { db } from "@/lib/db/client";
 import { and, cosineDistance, desc, eq, gt, sql } from "drizzle-orm";
 import { CreateWorldPlayerItem } from "./types";
+import { revalidateTag } from "next/cache";
 
 const SIMILARITY_THRESHOLD = 0.3; // TODO: tune this
 
@@ -72,4 +73,8 @@ export const updatePlayer = async (
       embedding: embedding.embedding,
     })
     .where(and(eq(players.id, playerId), eq(players.worldId, world.id)));
+
+  // Revalidate cache for this specific player and players in this world
+  revalidateTag(`player-${playerId}`, "max");
+  revalidateTag(`players-${world.id}`, "max");
 };

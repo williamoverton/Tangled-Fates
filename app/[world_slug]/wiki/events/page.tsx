@@ -1,3 +1,5 @@
+"use cache";
+
 import { db } from "@/lib/db/client";
 import { worlds } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
@@ -5,6 +7,7 @@ import { notFound } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { getAllEventsInWorld } from "@/lib/ai/knowledge/event";
 import Link from "next/link";
+import { cacheTag } from "next/cache";
 
 export default async function EventsIndexPage({
   params,
@@ -21,6 +24,9 @@ export default async function EventsIndexPage({
   if (!world) {
     notFound();
   }
+
+  // Cache tag for events in this world
+  cacheTag(`events-${world.id}`);
 
   // Get the last 100 events in this world
   const events = await getAllEventsInWorld(world.id, 100);
@@ -66,7 +72,7 @@ export default async function EventsIndexPage({
 
             {/* Events */}
             <div className="space-y-6">
-              {events.map((event, index) => (
+              {events.map((event) => (
                 <div key={event.id} className="relative pl-20">
                   {/* Timeline dot */}
                   <div className="absolute left-6 w-5 h-5 rounded-full bg-primary border-4 border-background" />

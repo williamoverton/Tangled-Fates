@@ -1,3 +1,5 @@
+"use cache";
+
 import { db } from "@/lib/db/client";
 import { worlds } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
@@ -6,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getAllLocationsInWorld } from "@/lib/ai/knowledge/location";
 import Image from "next/image";
 import Link from "next/link";
+import { cacheTag } from "next/cache";
 
 export default async function LocationsIndexPage({
   params,
@@ -22,6 +25,9 @@ export default async function LocationsIndexPage({
   if (!world) {
     notFound();
   }
+
+  // Cache tag for locations in this world
+  cacheTag(`locations-${world.id}`);
 
   // Get all locations in this world
   const locations = await getAllLocationsInWorld(world.id);
