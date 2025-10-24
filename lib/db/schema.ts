@@ -172,6 +172,7 @@ export const events = pgTable(
       .defaultNow()
       .$defaultFn(() => new Date()),
     description: text("description").notNull(),
+    shortDescription: text("short_description"),
     worldId: integer("world_id")
       .notNull()
       .references(() => worlds.id, { onDelete: "cascade" }),

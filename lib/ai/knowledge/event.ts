@@ -44,6 +44,7 @@ export const addEventToKnowledge = async (
       .insert(events)
       .values({
         description: event.description,
+        shortDescription: event.shortDescription,
         worldId: world.id,
         embedding: embedding.embedding,
       })
@@ -122,6 +123,7 @@ export async function searchForEvent(
       id: events.id,
       createdAt: events.createdAt,
       description: events.description,
+      shortDescription: events.shortDescription,
       worldId: events.worldId,
       similarity,
     })
@@ -142,6 +144,7 @@ export const getEventsForLocation = async (
       id: events.id,
       createdAt: events.createdAt,
       description: events.description,
+      shortDescription: events.shortDescription,
       worldId: events.worldId,
     })
     .from(events)
@@ -162,6 +165,7 @@ export const getEventsForCharacter = async (
       id: events.id,
       createdAt: events.createdAt,
       description: events.description,
+      shortDescription: events.shortDescription,
       worldId: events.worldId,
     })
     .from(events)
@@ -169,8 +173,7 @@ export const getEventsForCharacter = async (
     .where(eq(eventCharacters.characterId, characterId))
     .orderBy(desc(events.createdAt));
 
-  const result = limit ? await query.limit(limit) : await query;
-  return result;
+  return limit ? await query.limit(limit) : await query;
 };
 
 export const getEventsForPlayer = async (
@@ -182,6 +185,7 @@ export const getEventsForPlayer = async (
       id: events.id,
       createdAt: events.createdAt,
       description: events.description,
+      shortDescription: events.shortDescription,
       worldId: events.worldId,
     })
     .from(events)
@@ -202,6 +206,7 @@ export const getEventsForItem = async (
       id: events.id,
       createdAt: events.createdAt,
       description: events.description,
+      shortDescription: events.shortDescription,
       worldId: events.worldId,
     })
     .from(events)
@@ -209,8 +214,7 @@ export const getEventsForItem = async (
     .where(eq(eventItems.itemId, itemId))
     .orderBy(desc(events.createdAt));
 
-  const result = limit ? await query.limit(limit) : await query;
-  return result;
+  return limit ? await query.limit(limit) : await query;
 };
 
 export const getAllEventsInWorld = async (

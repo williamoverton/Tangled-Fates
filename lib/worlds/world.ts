@@ -6,6 +6,7 @@ import { db } from "../db/client";
 import { worlds } from "../db/schema";
 import { eq } from "drizzle-orm";
 import dedent from "dedent";
+import { revalidateTag } from "next/cache";
 
 export const getWorldBySlug = (slug: string) =>
   db.query.worlds.findFirst({
@@ -48,6 +49,9 @@ export const createWorld = async (
         imageUrl,
       })
       .where(eq(worlds.id, createdWorld.id));
+
+    // Revalidate the worlds tag to show the new world
+    revalidateTag("worlds", "max");
   });
 
   return createdWorld;

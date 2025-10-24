@@ -40,6 +40,7 @@ export const chat = (
 
       <RULES>
         - NEVER mention your internal workings or state to the player. Everything you say must be story telling.
+        - Never say something like "I'm thinking about..." or "I'm searching for..." or anything like that. Everything you say must be story telling.
       </RULES>
   `,
     messages: convertToModelMessages(messages),
