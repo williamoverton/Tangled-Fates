@@ -86,9 +86,10 @@ export default async function EventsIndexPage({
 
                       {/* Related entities */}
                       <div className="flex flex-wrap gap-2 text-sm">
-                        {event.location && (
+                        {event.locations?.map((locationRelation) => (
                           <Link
-                            href={`/${world_slug}/wiki/locations/${event.location.id}`}
+                            key={locationRelation.location.id}
+                            href={`/${world_slug}/wiki/locations/${locationRelation.location.id}`}
                             className="inline-flex items-center gap-1 px-2 py-1 bg-blue-500/10 text-blue-600 dark:text-blue-400 rounded-md hover:bg-blue-500/20 transition-colors"
                           >
                             <svg
@@ -110,13 +111,14 @@ export default async function EventsIndexPage({
                                 d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
                               />
                             </svg>
-                            {event.location.name}
+                            {locationRelation.location.name}
                           </Link>
-                        )}
+                        ))}
 
-                        {event.character && (
+                        {event.characters?.map((characterRelation) => (
                           <Link
-                            href={`/${world_slug}/wiki/characters/${event.character.id}`}
+                            key={characterRelation.character.id}
+                            href={`/${world_slug}/wiki/characters/${characterRelation.character.id}`}
                             className="inline-flex items-center gap-1 px-2 py-1 bg-purple-500/10 text-purple-600 dark:text-purple-400 rounded-md hover:bg-purple-500/20 transition-colors"
                           >
                             <svg
@@ -132,13 +134,14 @@ export default async function EventsIndexPage({
                                 d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                               />
                             </svg>
-                            {event.character.name}
+                            {characterRelation.character.name}
                           </Link>
-                        )}
+                        ))}
 
-                        {event.player && (
+                        {event.players?.map((playerRelation) => (
                           <Link
-                            href={`/${world_slug}/wiki/players/${event.player.id}`}
+                            key={playerRelation.player.id}
+                            href={`/${world_slug}/wiki/players/${playerRelation.player.id}`}
                             className="inline-flex items-center gap-1 px-2 py-1 bg-green-500/10 text-green-600 dark:text-green-400 rounded-md hover:bg-green-500/20 transition-colors"
                           >
                             <svg
@@ -154,13 +157,14 @@ export default async function EventsIndexPage({
                                 d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"
                               />
                             </svg>
-                            {event.player.name}
+                            {playerRelation.player.name}
                           </Link>
-                        )}
+                        ))}
 
-                        {event.item && (
+                        {event.items?.map((itemRelation) => (
                           <Link
-                            href={`/${world_slug}/wiki/items/${event.item.id}`}
+                            key={itemRelation.item.id}
+                            href={`/${world_slug}/wiki/items/${itemRelation.item.id}`}
                             className="inline-flex items-center gap-1 px-2 py-1 bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded-md hover:bg-amber-500/20 transition-colors"
                           >
                             <svg
@@ -176,9 +180,9 @@ export default async function EventsIndexPage({
                                 d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
                               />
                             </svg>
-                            {event.item.name}
+                            {itemRelation.item.name}
                           </Link>
-                        )}
+                        ))}
                       </div>
                     </CardContent>
                   </Card>

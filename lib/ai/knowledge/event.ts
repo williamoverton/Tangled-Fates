@@ -7,7 +7,7 @@ import {
   eventItems,
 } from "@/lib/db/schema";
 import { embedKnowledgeItem, getEmbedForQuery } from "./embed";
-import { CreateWorldEventItem } from "./types";
+import { CreateWorldEventItem, UIEvent, UIEventWithRelations } from "./types";
 import { db } from "@/lib/db/client";
 import { and, cosineDistance, desc, eq, gt, sql } from "drizzle-orm";
 
@@ -136,7 +136,7 @@ export async function searchForEvent(
 export const getEventsForLocation = async (
   locationId: number,
   limit?: number
-) => {
+): Promise<UIEvent[]> => {
   const query = db
     .select({
       id: events.id,
@@ -149,13 +149,14 @@ export const getEventsForLocation = async (
     .where(eq(eventLocations.locationId, locationId))
     .orderBy(desc(events.createdAt));
 
-  return limit ? query.limit(limit) : query;
+  const result = limit ? await query.limit(limit) : await query;
+  return result;
 };
 
 export const getEventsForCharacter = async (
   characterId: number,
   limit?: number
-) => {
+): Promise<UIEvent[]> => {
   const query = db
     .select({
       id: events.id,
@@ -168,10 +169,11 @@ export const getEventsForCharacter = async (
     .where(eq(eventCharacters.characterId, characterId))
     .orderBy(desc(events.createdAt));
 
-  return limit ? query.limit(limit) : query;
+  const result = limit ? await query.limit(limit) : await query;
+  return result;
 };
 
-export const getEventsForPlayer = async (playerId: number, limit?: number) => {
+export const getEventsForPlayer = async (playerId: number, limit?: number): Promise<UIEvent[]> => {
   const query = db
     .select({
       id: events.id,
@@ -184,10 +186,11 @@ export const getEventsForPlayer = async (playerId: number, limit?: number) => {
     .where(eq(eventPlayers.playerId, playerId))
     .orderBy(desc(events.createdAt));
 
-  return limit ? query.limit(limit) : query;
+  const result = limit ? await query.limit(limit) : await query;
+  return result;
 };
 
-export const getEventsForItem = async (itemId: number, limit?: number) => {
+export const getEventsForItem = async (itemId: number, limit?: number): Promise<UIEvent[]> => {
   const query = db
     .select({
       id: events.id,
@@ -200,11 +203,12 @@ export const getEventsForItem = async (itemId: number, limit?: number) => {
     .where(eq(eventItems.itemId, itemId))
     .orderBy(desc(events.createdAt));
 
-  return limit ? query.limit(limit) : query;
+  const result = limit ? await query.limit(limit) : await query;
+  return result;
 };
 
-export const getAllEventsInWorld = async (worldId: number, limit?: number) => {
-  return await db.query.events.findMany({
+export const getAllEventsInWorld = async (worldId: number, limit?: number): Promise<UIEventWithRelations[]> => {
+  const result = await db.query.events.findMany({
     where: eq(events.worldId, worldId),
     orderBy: desc(events.createdAt),
     limit,
@@ -231,4 +235,5 @@ export const getAllEventsInWorld = async (worldId: number, limit?: number) => {
       },
     },
   });
+  return result;
 };

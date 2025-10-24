@@ -1,10 +1,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { events } from "@/lib/db/schema";
-
-type Event = typeof events.$inferSelect;
+import { UIEvent } from "@/lib/ai/knowledge/types";
 
 interface RecentEventsProps {
-  events: Event[];
+  events: UIEvent[];
   maxEvents?: number;
 }
 

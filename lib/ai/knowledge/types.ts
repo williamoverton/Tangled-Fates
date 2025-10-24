@@ -138,3 +138,44 @@ export type CreateGameWorldItem = z.infer<typeof CreateGameWorldItem>;
 export type GameWorldItem = z.infer<typeof GameWorldItem>;
 
 export type KnowledgeItem = z.infer<typeof KnowledgeItem>;
+
+// Import database schema types
+import {
+  events,
+  locations,
+  characters,
+  players,
+  items,
+  eventLocations,
+  eventCharacters,
+  eventPlayers,
+  eventItems,
+} from "@/lib/db/schema";
+
+// UI-specific types without embeddings for better performance
+export type UIEvent = Omit<typeof events.$inferSelect, "embedding">;
+export type UILocation = Omit<typeof locations.$inferSelect, "embedding">;
+export type UICharacter = Omit<typeof characters.$inferSelect, "embedding">;
+export type UIPlayer = Omit<typeof players.$inferSelect, "embedding">;
+export type UIItem = Omit<typeof items.$inferSelect, "embedding">;
+
+// Use inferred types for junction tables
+type EventLocationRelation = typeof eventLocations.$inferSelect & {
+  location: UILocation;
+};
+type EventCharacterRelation = typeof eventCharacters.$inferSelect & {
+  character: UICharacter;
+};
+type EventPlayerRelation = typeof eventPlayers.$inferSelect & {
+  player: UIPlayer;
+};
+type EventItemRelation = typeof eventItems.$inferSelect & {
+  item: UIItem;
+};
+
+export type UIEventWithRelations = UIEvent & {
+  locations?: EventLocationRelation[];
+  characters?: EventCharacterRelation[];
+  players?: EventPlayerRelation[];
+  items?: EventItemRelation[];
+};

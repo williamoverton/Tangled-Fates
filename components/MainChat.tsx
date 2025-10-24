@@ -8,7 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card, CardContent } from "@/components/ui/card";
-import { players, worlds, events } from "@/lib/db/schema";
+import { players, worlds } from "@/lib/db/schema";
+import { UIEvent } from "@/lib/ai/knowledge/types";
 import { ChatSidebar } from "@/components/ChatSidebar";
 import { PanelRightOpen, PanelRightClose } from "lucide-react";
 
@@ -23,7 +24,7 @@ export default function MainChat({
   title: string;
   world: typeof worlds.$inferSelect;
   player: typeof players.$inferSelect;
-  recentEvents: (typeof events.$inferSelect)[];
+  recentEvents: UIEvent[];
 }) {
   const { messages, sendMessage, status, error } = useChat({
     transport: new DefaultChatTransport({

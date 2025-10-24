@@ -2,14 +2,14 @@ import Image from "next/image";
 import { User, Clock } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { players, events } from "@/lib/db/schema";
+import { players } from "@/lib/db/schema";
+import { UIEvent } from "@/lib/ai/knowledge/types";
 
 type Player = typeof players.$inferSelect;
-type Event = typeof events.$inferSelect;
 
 interface ChatSidebarProps {
   player: Player;
-  recentEvents: Event[];
+  recentEvents: UIEvent[];
 }
 
 export function ChatSidebar({ player, recentEvents }: ChatSidebarProps) {
