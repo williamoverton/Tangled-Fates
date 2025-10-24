@@ -191,19 +191,18 @@ npm run db:studio
 ## 📝 Environment Variables
 
 ```bash
-# Database
-DATABASE_URL=postgresql://postgres:postgres@localhost:5432/choose-your-own-adventure-multiplayer
+# Postgres connection string
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/choose-your-own-adventure-multiplayer"
 
-# Authentication
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_key
-CLERK_SECRET_KEY=your_clerk_secret
+# Vercel AI SDK key
+AI_GATEWAY_API_KEY=""
 
-# AI Services
-ANTHROPIC_API_KEY=your_anthropic_key
-OPENAI_API_KEY=your_openai_key
+# Vercel blob storage
+BLOB_READ_WRITE_TOKEN=""
 
-# Bot Detection
-BOTID_API_KEY=your_botid_key
+# Clerk
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=""
+CLERK_SECRET_KEY=""
 ```
 
 ## 🤝 Contributing
