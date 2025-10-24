@@ -11,9 +11,10 @@ export async function generateContentForKnowledgeItem(
   switch (item.type) {
     case "world_event":
       // TODO: Handle the case where the location is not found
-      const location = item.location
-        ? await getLocationById(item.location)
-        : undefined;
+      const location =
+        item.locations && item.locations.length > 0
+          ? await getLocationById(item.locations[0])
+          : undefined;
 
       return dedent`
         In ${location ? `${location.name}` : "the world"} at ${item.when}, ${
@@ -35,6 +36,10 @@ export async function generateContentForKnowledgeItem(
     case "world_item":
       return dedent`
         There is an item called ${item.name}. It can be described as: ${item.description}
+      `;
+    case "world_world":
+      return dedent`
+        This is a world called ${item.name}. It can be described as: ${item.description}
       `;
   }
 }

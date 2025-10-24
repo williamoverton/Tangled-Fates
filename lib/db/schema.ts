@@ -292,3 +292,12 @@ export const chatHistory = pgTable("chat_history", {
     .unique(),
   messages: jsonb("messages").notNull(),
 });
+
+// World relations
+export const worldRelations = relations(worlds, ({ many }) => ({
+  locations: many(locations),
+  characters: many(characters),
+  items: many(items),
+  players: many(players),
+  events: many(events),
+}));
