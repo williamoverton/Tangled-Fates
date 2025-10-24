@@ -82,7 +82,9 @@ export function PlayerCard({
           </CardTitle>
           {player.description && (
             <CardDescription
-              className={isWikiVariant ? "text-sm line-clamp-3" : undefined}
+              className={
+                isWikiVariant ? "text-sm line-clamp-3" : "text-sm line-clamp-3"
+              }
             >
               {player.description}
             </CardDescription>
