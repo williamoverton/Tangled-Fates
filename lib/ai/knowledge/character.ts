@@ -5,7 +5,7 @@ import { db } from "@/lib/db/client";
 import { generateImage } from "../image/generateImage";
 import { after } from "next/server";
 import { and, cosineDistance, desc, eq, gt, sql } from "drizzle-orm";
-import { generateObject, generateText } from "ai";
+import { generateObject } from "ai";
 import dedent from "dedent";
 import { z } from "zod/v4";
 
