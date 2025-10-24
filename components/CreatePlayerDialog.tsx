@@ -45,12 +45,16 @@ export function CreatePlayerDialog({
 
     try {
       const player = await onCreatePlayer(playerName, playerDescription);
+      // Close dialog first
       setOpen(false);
       // Reset form
       setPlayerName("");
       setPlayerDescription("");
-      // Navigate to the play page
-      router.push(`/${worldSlug}/play/${player.id}`);
+      setIsSubmitting(false);
+      // Small delay to let dialog close, then navigate
+      setTimeout(() => {
+        router.push(`/${worldSlug}/play/${player.id}`);
+      }, 100);
     } catch (error) {
       console.error("Failed to create player:", error);
       setIsSubmitting(false);

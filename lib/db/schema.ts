@@ -35,7 +35,7 @@ export const locations = pgTable(
     description: text("description").notNull(),
     worldId: integer("world_id")
       .notNull()
-      .references(() => worlds.id),
+      .references(() => worlds.id, { onDelete: "cascade" }),
     imageUrl: text("image_url"),
     embedding: vector("embedding", { dimensions: 1536 }).notNull(),
   },
@@ -67,7 +67,7 @@ export const characters = pgTable(
     description: text("description").notNull(),
     worldId: integer("world_id")
       .notNull()
-      .references(() => worlds.id),
+      .references(() => worlds.id, { onDelete: "cascade" }),
     imageUrl: text("image_url"),
     embedding: vector("embedding", { dimensions: 1536 }).notNull(),
   },
@@ -99,7 +99,7 @@ export const items = pgTable(
     description: text("description").notNull(),
     worldId: integer("world_id")
       .notNull()
-      .references(() => worlds.id),
+      .references(() => worlds.id, { onDelete: "cascade" }),
     imageUrl: text("image_url"),
     embedding: vector("embedding", { dimensions: 1536 }).notNull(),
   },
@@ -126,7 +126,7 @@ export const players = pgTable(
     clerkUserId: varchar("clerk_user_id", { length: 255 }).notNull(),
     worldId: integer("world_id")
       .notNull()
-      .references(() => worlds.id),
+      .references(() => worlds.id, { onDelete: "cascade" }),
     createdAt: timestamp("created_at")
       .notNull()
       .defaultNow()
@@ -163,11 +163,19 @@ export const events = pgTable(
     description: text("description").notNull(),
     worldId: integer("world_id")
       .notNull()
-      .references(() => worlds.id),
-    locationId: integer("location_id").references(() => locations.id),
-    characterId: integer("character_id").references(() => characters.id),
-    playerId: integer("player_id").references(() => players.id),
-    itemId: integer("item_id").references(() => items.id),
+      .references(() => worlds.id, { onDelete: "cascade" }),
+    locationId: integer("location_id").references(() => locations.id, {
+      onDelete: "cascade",
+    }),
+    characterId: integer("character_id").references(() => characters.id, {
+      onDelete: "cascade",
+    }),
+    playerId: integer("player_id").references(() => players.id, {
+      onDelete: "cascade",
+    }),
+    itemId: integer("item_id").references(() => items.id, {
+      onDelete: "cascade",
+    }),
     embedding: vector("embedding", { dimensions: 1536 }).notNull(),
   },
   (table) => [
@@ -205,7 +213,7 @@ export const chatHistory = pgTable("chat_history", {
     .$defaultFn(() => new Date()),
   playerId: integer("player_id")
     .notNull()
-    .references(() => players.id)
+    .references(() => players.id, { onDelete: "cascade" })
     .unique(),
   messages: jsonb("messages").notNull(),
 });

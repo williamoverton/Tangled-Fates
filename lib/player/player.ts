@@ -74,10 +74,3 @@ export const getAllUserPlayersForWorld = (
   db.query.players.findMany({
     where: and(eq(players.worldId, world.id), eq(players.clerkUserId, userId)),
   });
-
-// Get all players in a world (for wiki)
-export const getAllPlayersInWorld = async (worldId: number) => {
-  return await db.query.players.findMany({
-    where: eq(players.worldId, worldId),
-  });
-};

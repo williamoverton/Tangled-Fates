@@ -1,7 +1,8 @@
 import { players, worlds } from "@/lib/db/schema";
-import { getEmbedForQuery } from "./embed";
+import { embedKnowledgeItem, getEmbedForQuery } from "./embed";
 import { db } from "@/lib/db/client";
 import { and, cosineDistance, desc, eq, gt, sql } from "drizzle-orm";
+import { CreateWorldPlayerItem } from "./types";
 
 const SIMILARITY_THRESHOLD = 0.3; // TODO: tune this
 
@@ -49,4 +50,26 @@ export const getAllPlayersInWorld = async (worldId: number) => {
   return await db.query.players.findMany({
     where: eq(players.worldId, worldId),
   });
+};
+
+export const updatePlayer = async (
+  world: typeof worlds.$inferSelect,
+  playerId: number,
+  player: CreateWorldPlayerItem
+) => {
+  console.log(`Updating player ${player.name} in knowledge base`);
+
+  const embedding = await embedKnowledgeItem({
+    type: "world_player",
+    ...player,
+  });
+
+  await db
+    .update(players)
+    .set({
+      name: player.name,
+      description: player.description,
+      embedding: embedding.embedding,
+    })
+    .where(and(eq(players.id, playerId), eq(players.worldId, world.id)));
 };

@@ -3,15 +3,8 @@ import { getWorldBySlug } from "@/lib/worlds/world";
 import { auth } from "@clerk/nextjs/server";
 import { notFound } from "next/navigation";
 import { CreatePlayerDialog } from "@/components/CreatePlayerDialog";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
+import { Card, CardContent } from "@/components/ui/card";
+import { PlayerCard } from "@/components/PlayerCard";
 
 export default async function WorldPage({
   params,
@@ -82,27 +75,12 @@ export default async function WorldPage({
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {players.map((player) => (
-              <Link
+              <PlayerCard
                 key={player.id}
+                player={player}
                 href={`/${world_slug}/play/${player.id}`}
-                className="block transition-transform hover:scale-105"
-              >
-                <Card className="h-full cursor-pointer hover:shadow-lg transition-shadow">
-                  <CardHeader>
-                    <CardTitle>{player.name}</CardTitle>
-                    {player.description && (
-                      <CardDescription className="line-clamp-3">
-                        {player.description}
-                      </CardDescription>
-                    )}
-                  </CardHeader>
-                  <CardContent>
-                    <Button variant="outline" className="w-full" asChild>
-                      <span>Play as {player.name}</span>
-                    </Button>
-                  </CardContent>
-                </Card>
-              </Link>
+                variant="select"
+              />
             ))}
           </div>
         )}

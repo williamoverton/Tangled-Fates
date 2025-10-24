@@ -45,7 +45,7 @@ export const chat = (
     messages: convertToModelMessages(messages),
     stopWhen: stepCountIs(10),
     tools: {
-      ...getReadTools(world),
+      ...getReadTools(world, player),
     },
   }).toUIMessageStreamResponse({
     onFinish: async (result) => {

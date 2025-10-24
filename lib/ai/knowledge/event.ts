@@ -127,3 +127,17 @@ export const getEventsForItem = async (itemId: number, limit?: number) => {
     limit,
   });
 };
+
+export const getAllEventsInWorld = async (worldId: number, limit?: number) => {
+  return await db.query.events.findMany({
+    where: eq(events.worldId, worldId),
+    orderBy: desc(events.createdAt),
+    limit,
+    with: {
+      location: true,
+      character: true,
+      player: true,
+      item: true,
+    },
+  });
+};

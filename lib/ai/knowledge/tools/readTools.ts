@@ -1,4 +1,4 @@
-import { worlds } from "@/lib/db/schema";
+import { players, worlds } from "@/lib/db/schema";
 import { tool } from "ai";
 import z from "zod";
 import { searchForEvent } from "../event";
@@ -7,7 +7,10 @@ import { searchForCharacter } from "../character";
 import { searchForPlayer } from "../player";
 import { searchForItem } from "../item";
 
-export const getReadTools = (world: typeof worlds.$inferSelect) => {
+export const getReadTools = (
+  world: typeof worlds.$inferSelect,
+  player: typeof players.$inferSelect
+) => {
   return {
     getWorldEvents: tool({
       description:
@@ -72,6 +75,19 @@ export const getReadTools = (world: typeof worlds.$inferSelect) => {
       }),
       execute: async ({ queries }) =>
         Promise.all(queries.map((query) => searchForPlayer(world, query))),
+    }),
+    getCurrentPlayer: tool({
+      description:
+        "Get the current player and their description. Use this to get the current player's description.",
+      inputSchema: z.object({}),
+      execute: async () => ({
+        id: player.id,
+        createdAt: player.createdAt,
+        name: player.name,
+        description: player.description,
+        imageUrl: player.imageUrl,
+        worldId: player.worldId,
+      }),
     }),
     getWorldItems: tool({
       description:

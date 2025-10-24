@@ -1,7 +1,8 @@
-import { worlds } from "@/lib/db/schema";
+import { players, worlds } from "@/lib/db/schema";
 import { z } from "zod";
 import {
   CreateWorldItemItem,
+  CreateWorldPlayerItem,
   WorldCharacterItem,
   WorldEventItem,
 } from "../types";
@@ -14,8 +15,12 @@ import { updateCharacter } from "../character";
 import { addItemToKnowledge } from "../item";
 import { updateItem } from "../item";
 import { tool } from "ai";
+import { updatePlayer } from "../player";
 
-export const getWriteTools = (world: typeof worlds.$inferSelect) => {
+export const getWriteTools = (
+  world: typeof worlds.$inferSelect,
+  player: typeof players.$inferSelect
+) => {
   return {
     addWorldEvent: tool({
       description:
@@ -80,6 +85,13 @@ export const getWriteTools = (world: typeof worlds.$inferSelect) => {
       }),
       execute: async ({ itemId, item }) =>
         await updateItem(world, itemId, item),
+    }),
+    updatePlayer: tool({
+      description:
+        "Update the current player. Use this if you need to update the name or description of the current player, for example if they die or get new powers etc.",
+      inputSchema: CreateWorldPlayerItem,
+      execute: async (playerUpdate) =>
+        await updatePlayer(world, player.id, playerUpdate),
     }),
   };
 };

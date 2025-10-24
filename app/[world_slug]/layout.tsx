@@ -18,7 +18,7 @@ export default async function WorldLayout({
   const { world_slug } = await params;
 
   return (
-    <div className="flex flex-col h-screen">
+    <div className="flex flex-col h-screen overflow-y-hidden max-h-full">
       <header className="flex justify-between items-center p-4 gap-4 h-16 text-white bg-medieval-header-bg border-b border-border shrink-0">
         {/* Navigation Links */}
         <nav className="flex items-center gap-2">
@@ -47,6 +47,11 @@ export default async function WorldLayout({
               Players
             </Button>
           </Link>
+          <Link href={`/${world_slug}/wiki/events`}>
+            <Button variant="ghost" size="sm" className="text-foreground">
+              Events
+            </Button>
+          </Link>
         </nav>
 
         {/* Auth Buttons */}
@@ -64,7 +69,9 @@ export default async function WorldLayout({
           </SignedIn>
         </div>
       </header>
-      <div className="flex-1 min-h-0 overflow-hidden">{children}</div>
+      <div className="flex-1 min-h-0 overflow-y-auto max-h-full">
+        {children}
+      </div>
     </div>
   );
 }

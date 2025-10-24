@@ -43,8 +43,8 @@ async function saveHistoryToKnowledgeBaseStep(
 
   const agent = new Agent({
     tools: {
-      ...getReadTools(context.world),
-      ...getWriteTools(context.world),
+      ...getReadTools(context.world, context.player),
+      ...getWriteTools(context.world, context.player),
     },
     model: "anthropic/claude-haiku-4.5",
     stopWhen: stepCountIs(40),

@@ -2,10 +2,9 @@ import { db } from "@/lib/db/client";
 import { worlds } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { notFound } from "next/navigation";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { getAllPlayersInWorld } from "@/lib/ai/knowledge/player";
-import Image from "next/image";
-import Link from "next/link";
+import { PlayerCard } from "@/components/PlayerCard";
 
 export default async function PlayersIndexPage({
   params,
@@ -64,56 +63,12 @@ export default async function PlayersIndexPage({
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {players.map((player) => (
-              <Link
+              <PlayerCard
                 key={player.id}
+                player={player}
                 href={`/${world_slug}/wiki/players/${player.id}`}
-                className="group"
-              >
-                <Card className="h-full overflow-hidden transition-all hover:shadow-lg hover:border-primary/50 hover:scale-[1.02] p-0">
-                  {/* Player Image */}
-                  <div className="relative w-full aspect-square bg-muted">
-                    {player.imageUrl ? (
-                      <Image
-                        src={player.imageUrl}
-                        alt={player.name}
-                        fill
-                        className="object-cover transition-transform group-hover:scale-105"
-                      />
-                    ) : (
-                      <div className="absolute inset-0 flex items-center justify-center text-muted-foreground">
-                        <svg
-                          className="w-16 h-16"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={1.5}
-                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                          />
-                        </svg>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Player Info */}
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-lg group-hover:text-primary transition-colors">
-                      {player.name}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-muted-foreground line-clamp-3">
-                      {player.description}
-                    </p>
-                    <p className="text-xs text-muted-foreground mt-3">
-                      Joined {new Date(player.createdAt).toLocaleDateString()}
-                    </p>
-                  </CardContent>
-                </Card>
-              </Link>
+                variant="wiki"
+              />
             ))}
           </div>
         )}
