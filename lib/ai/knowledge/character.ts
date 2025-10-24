@@ -1,10 +1,13 @@
-import { characters, worlds } from "@/lib/db/schema";
+import { characters, eventCharacters, worlds } from "@/lib/db/schema";
 import { embedKnowledgeItem, getEmbedForQuery } from "./embed";
 import { CreateWorldCharacterItem } from "./types";
 import { db } from "@/lib/db/client";
 import { generateImage } from "../image/generateImage";
 import { after } from "next/server";
 import { and, cosineDistance, desc, eq, gt, sql } from "drizzle-orm";
+import { generateObject, generateText } from "ai";
+import dedent from "dedent";
+import { z } from "zod/v4";
 
 const SIMILARITY_THRESHOLD = 0.3; // TODO: tune this
 
@@ -117,4 +120,76 @@ export const getAllCharactersInWorld = async (worldId: number) => {
   return await db.query.characters.findMany({
     where: eq(characters.worldId, worldId),
   });
+};
+
+// Sometimes two characters are the same person, but have different names.
+// This function merges two characters into one.
+// We use AI to load both characters and merge them into one.
+// Then we'll update any events that reference the other character to reference the correct character.
+export const mergeCharacters = async (
+  world: typeof worlds.$inferSelect,
+  characterId: number,
+  otherCharacterId: number
+) => {
+  const character = await getCharacterById(characterId);
+  const otherCharacter = await getCharacterById(otherCharacterId);
+
+  if (!character || !otherCharacter) {
+    throw new Error("At least one character not found when merging characters");
+  }
+
+  if (character.worldId !== otherCharacter.worldId) {
+    throw new Error(
+      "Characters are not in the same world when merging characters"
+    );
+  }
+
+  console.log(
+    "Merging characters ${character.name} and ${otherCharacter.name}"
+  );
+
+  const newCharacter = await generateObject({
+    schema: z.object({
+      name: z.string(),
+      description: z.string(),
+    }),
+    model: "anthropic/claude-haiku-4.5",
+    system: dedent`
+      You are a character merge expert. You are given two characters and you need to merge them into one.
+      Sometimes two characters are created by accident when a character is introduced without a name.
+      In this case you need to merge the characters into one and return the new character name and description.
+
+      You'll be given the name and description of two characters and you need to merge them into one.
+      If one is far less detailed than the other, use the more detailed one as the base and add the other one's details to it.
+    `,
+    prompt: dedent`
+      The two characters are:
+      <CHARACTER_1>
+      ${character.name}
+      ${character.description}
+      </CHARACTER_1>
+      <CHARACTER_2>
+      ${otherCharacter.name}
+      ${otherCharacter.description}
+      </CHARACTER_2>
+      Merge the characters into one and return the new character name and description.
+    `,
+  });
+
+  // Update the character with the new name and description
+  await updateCharacter(world, characterId, {
+    name: newCharacter.object.name,
+    description: newCharacter.object.description,
+  });
+
+  // Update all events that reference the other character to reference the new character
+  await db
+    .update(eventCharacters)
+    .set({
+      characterId: characterId,
+    })
+    .where(eq(eventCharacters.characterId, otherCharacterId));
+
+  // Delete the other character
+  await db.delete(characters).where(eq(characters.id, otherCharacterId));
 };
