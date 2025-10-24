@@ -105,10 +105,12 @@ export default async function CharacterWikiPage({
           {/* Sidebar Info Box */}
           <div className="lg:col-span-1">
             <Card className="sticky top-4">
-              <CardHeader className="border-b border-border bg-card-foreground/5">
-                <CardTitle className="text-center">{character.name}</CardTitle>
+              <CardHeader className="">
+                <CardTitle className="text-center text-xl font-bold">
+                  {character.name}
+                </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent>
                 {/* Small thumbnail for sidebar */}
                 {character.imageUrl && (
                   <div className="relative w-full aspect-square rounded-lg overflow-hidden border border-border">

@@ -173,7 +173,10 @@ export const getEventsForCharacter = async (
   return result;
 };
 
-export const getEventsForPlayer = async (playerId: number, limit?: number): Promise<UIEvent[]> => {
+export const getEventsForPlayer = async (
+  playerId: number,
+  limit?: number
+): Promise<UIEvent[]> => {
   const query = db
     .select({
       id: events.id,
@@ -190,7 +193,10 @@ export const getEventsForPlayer = async (playerId: number, limit?: number): Prom
   return result;
 };
 
-export const getEventsForItem = async (itemId: number, limit?: number): Promise<UIEvent[]> => {
+export const getEventsForItem = async (
+  itemId: number,
+  limit?: number
+): Promise<UIEvent[]> => {
   const query = db
     .select({
       id: events.id,
@@ -207,7 +213,10 @@ export const getEventsForItem = async (itemId: number, limit?: number): Promise<
   return result;
 };
 
-export const getAllEventsInWorld = async (worldId: number, limit?: number): Promise<UIEventWithRelations[]> => {
+export const getAllEventsInWorld = async (
+  worldId: number,
+  limit?: number
+): Promise<UIEventWithRelations[]> => {
   const result = await db.query.events.findMany({
     where: eq(events.worldId, worldId),
     orderBy: desc(events.createdAt),
