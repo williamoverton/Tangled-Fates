@@ -162,7 +162,7 @@ export const playerRelations = relations(players, ({ one }) => ({
   }),
 }));
 
-// Events that happened in the world and the corresponding location, character, player, and item (if applicable)
+// Events that happened in the world
 export const events = pgTable(
   "events",
   {
@@ -175,18 +175,6 @@ export const events = pgTable(
     worldId: integer("world_id")
       .notNull()
       .references(() => worlds.id, { onDelete: "cascade" }),
-    locationId: integer("location_id").references(() => locations.id, {
-      onDelete: "cascade",
-    }),
-    characterId: integer("character_id").references(() => characters.id, {
-      onDelete: "cascade",
-    }),
-    playerId: integer("player_id").references(() => players.id, {
-      onDelete: "cascade",
-    }),
-    itemId: integer("item_id").references(() => items.id, {
-      onDelete: "cascade",
-    }),
     embedding: vector("embedding", { dimensions: 1536 }).notNull(),
   },
   (table) => [
@@ -197,21 +185,97 @@ export const events = pgTable(
   ]
 );
 
-export const eventRelations = relations(events, ({ one }) => ({
+// Junction tables for many-to-many relationships
+export const eventLocations = pgTable("event_locations", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  eventId: integer("event_id")
+    .notNull()
+    .references(() => events.id, { onDelete: "cascade" }),
+  locationId: integer("location_id")
+    .notNull()
+    .references(() => locations.id, { onDelete: "cascade" }),
+});
+
+export const eventCharacters = pgTable("event_characters", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  eventId: integer("event_id")
+    .notNull()
+    .references(() => events.id, { onDelete: "cascade" }),
+  characterId: integer("character_id")
+    .notNull()
+    .references(() => characters.id, { onDelete: "cascade" }),
+});
+
+export const eventPlayers = pgTable("event_players", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  eventId: integer("event_id")
+    .notNull()
+    .references(() => events.id, { onDelete: "cascade" }),
+  playerId: integer("player_id")
+    .notNull()
+    .references(() => players.id, { onDelete: "cascade" }),
+});
+
+export const eventItems = pgTable("event_items", {
+  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  eventId: integer("event_id")
+    .notNull()
+    .references(() => events.id, { onDelete: "cascade" }),
+  itemId: integer("item_id")
+    .notNull()
+    .references(() => items.id, { onDelete: "cascade" }),
+});
+
+export const eventRelations = relations(events, ({ many }) => ({
+  locations: many(eventLocations),
+  characters: many(eventCharacters),
+  players: many(eventPlayers),
+  items: many(eventItems),
+}));
+
+export const eventLocationRelations = relations(eventLocations, ({ one }) => ({
+  event: one(events, {
+    fields: [eventLocations.eventId],
+    references: [events.id],
+  }),
   location: one(locations, {
-    fields: [events.locationId],
+    fields: [eventLocations.locationId],
     references: [locations.id],
   }),
-  character: one(characters, {
-    fields: [events.characterId],
-    references: [characters.id],
+}));
+
+export const eventCharacterRelations = relations(
+  eventCharacters,
+  ({ one }) => ({
+    event: one(events, {
+      fields: [eventCharacters.eventId],
+      references: [events.id],
+    }),
+    character: one(characters, {
+      fields: [eventCharacters.characterId],
+      references: [characters.id],
+    }),
+  })
+);
+
+export const eventPlayerRelations = relations(eventPlayers, ({ one }) => ({
+  event: one(events, {
+    fields: [eventPlayers.eventId],
+    references: [events.id],
   }),
   player: one(players, {
-    fields: [events.playerId],
+    fields: [eventPlayers.playerId],
     references: [players.id],
   }),
+}));
+
+export const eventItemRelations = relations(eventItems, ({ one }) => ({
+  event: one(events, {
+    fields: [eventItems.eventId],
+    references: [events.id],
+  }),
   item: one(items, {
-    fields: [events.itemId],
+    fields: [eventItems.itemId],
     references: [items.id],
   }),
 }));

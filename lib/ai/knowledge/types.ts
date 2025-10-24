@@ -87,28 +87,26 @@ export const WorldItemItem = CreateWorldItemItem.extend({
 
 export const CreateWorldEventItem = z.object({
   when: z.iso.datetime(),
-  location: z
-    .number()
+  locations: z
+    .array(z.number())
     .optional()
-    .nullable()
-    .describe(
-      "The ID of the location where the event occurred (if applicable)"
-    ),
-  character: z
-    .number()
+    .default([])
+    .describe("Array of location IDs where the event occurred (if applicable)"),
+  characters: z
+    .array(z.number())
     .optional()
-    .nullable()
-    .describe("The character involved in the event (if applicable)"),
-  player: z
-    .number()
+    .default([])
+    .describe("Array of character IDs involved in the event (if applicable)"),
+  players: z
+    .array(z.number())
     .optional()
-    .nullable()
-    .describe("The player involved in the event (if applicable)"), // TODO: Letting the LLM include the player ID is dangerous.
-  item: z
-    .number()
+    .default([])
+    .describe("Array of player IDs involved in the event (if applicable)"), // TODO: Letting the LLM include the player ID is dangerous.
+  items: z
+    .array(z.number())
     .optional()
-    .nullable()
-    .describe("The item involved in the event (if applicable)"),
+    .default([])
+    .describe("Array of item IDs involved in the event (if applicable)"),
   description: z.string().describe("A detailed description of the event."),
 });
 // Things that can happen in the world

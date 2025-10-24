@@ -1,4 +1,11 @@
-import { events, worlds } from "@/lib/db/schema";
+import {
+  events,
+  worlds,
+  eventLocations,
+  eventCharacters,
+  eventPlayers,
+  eventItems,
+} from "@/lib/db/schema";
 import { embedKnowledgeItem, getEmbedForQuery } from "./embed";
 import { CreateWorldEventItem } from "./types";
 import { db } from "@/lib/db/client";
@@ -12,7 +19,12 @@ export const addEventToKnowledge = async (
   event: CreateWorldEventItem
 ) => {
   // Make sure the event has at least one of location, character, player, or item
-  if (!event.location && !event.character && !event.player && !event.item) {
+  if (
+    (!event.locations || event.locations.length === 0) &&
+    (!event.characters || event.characters.length === 0) &&
+    (!event.players || event.players.length === 0) &&
+    (!event.items || event.items.length === 0)
+  ) {
     console.log(
       "Attempted to add event with no location, character, player, or item"
     );
@@ -32,16 +44,51 @@ export const addEventToKnowledge = async (
       .insert(events)
       .values({
         description: event.description,
-        locationId: event.location ?? null,
-        characterId: event.character ?? null,
-        playerId: event.player ?? null,
-        itemId: event.item ?? null,
         worldId: world.id,
         embedding: embedding.embedding,
       })
       .returning();
 
     console.log(`Event added to knowledge base with id ${createdEvent.id}`);
+
+    // Insert junction table records for each reference type
+    if (event.locations && event.locations.length > 0) {
+      await db.insert(eventLocations).values(
+        event.locations.map((locationId) => ({
+          eventId: createdEvent.id,
+          locationId,
+        }))
+      );
+    }
+
+    if (event.characters && event.characters.length > 0) {
+      await db.insert(eventCharacters).values(
+        event.characters.map((characterId) => ({
+          eventId: createdEvent.id,
+          characterId,
+        }))
+      );
+    }
+
+    if (event.players && event.players.length > 0) {
+      await db.insert(eventPlayers).values(
+        event.players.map((playerId) => ({
+          eventId: createdEvent.id,
+          playerId,
+        }))
+      );
+    }
+
+    if (event.items && event.items.length > 0) {
+      await db.insert(eventItems).values(
+        event.items.map((itemId) => ({
+          eventId: createdEvent.id,
+          itemId,
+        }))
+      );
+    }
+
+    console.log(`Event relationships added to knowledge base`);
 
     return createdEvent;
   } catch (error) {
@@ -75,10 +122,6 @@ export async function searchForEvent(
       id: events.id,
       createdAt: events.createdAt,
       description: events.description,
-      locationId: events.locationId,
-      characterId: events.characterId,
-      playerId: events.playerId,
-      itemId: events.itemId,
       worldId: events.worldId,
       similarity,
     })
@@ -94,38 +137,70 @@ export const getEventsForLocation = async (
   locationId: number,
   limit?: number
 ) => {
-  return await db.query.events.findMany({
-    where: eq(events.locationId, locationId),
-    orderBy: desc(events.createdAt),
-    limit,
-  });
+  const query = db
+    .select({
+      id: events.id,
+      createdAt: events.createdAt,
+      description: events.description,
+      worldId: events.worldId,
+    })
+    .from(events)
+    .innerJoin(eventLocations, eq(events.id, eventLocations.eventId))
+    .where(eq(eventLocations.locationId, locationId))
+    .orderBy(desc(events.createdAt));
+
+  return limit ? query.limit(limit) : query;
 };
 
 export const getEventsForCharacter = async (
   characterId: number,
   limit?: number
 ) => {
-  return await db.query.events.findMany({
-    where: eq(events.characterId, characterId),
-    orderBy: desc(events.createdAt),
-    limit,
-  });
+  const query = db
+    .select({
+      id: events.id,
+      createdAt: events.createdAt,
+      description: events.description,
+      worldId: events.worldId,
+    })
+    .from(events)
+    .innerJoin(eventCharacters, eq(events.id, eventCharacters.eventId))
+    .where(eq(eventCharacters.characterId, characterId))
+    .orderBy(desc(events.createdAt));
+
+  return limit ? query.limit(limit) : query;
 };
 
 export const getEventsForPlayer = async (playerId: number, limit?: number) => {
-  return await db.query.events.findMany({
-    where: eq(events.playerId, playerId),
-    orderBy: desc(events.createdAt),
-    limit,
-  });
+  const query = db
+    .select({
+      id: events.id,
+      createdAt: events.createdAt,
+      description: events.description,
+      worldId: events.worldId,
+    })
+    .from(events)
+    .innerJoin(eventPlayers, eq(events.id, eventPlayers.eventId))
+    .where(eq(eventPlayers.playerId, playerId))
+    .orderBy(desc(events.createdAt));
+
+  return limit ? query.limit(limit) : query;
 };
 
 export const getEventsForItem = async (itemId: number, limit?: number) => {
-  return await db.query.events.findMany({
-    where: eq(events.itemId, itemId),
-    orderBy: desc(events.createdAt),
-    limit,
-  });
+  const query = db
+    .select({
+      id: events.id,
+      createdAt: events.createdAt,
+      description: events.description,
+      worldId: events.worldId,
+    })
+    .from(events)
+    .innerJoin(eventItems, eq(events.id, eventItems.eventId))
+    .where(eq(eventItems.itemId, itemId))
+    .orderBy(desc(events.createdAt));
+
+  return limit ? query.limit(limit) : query;
 };
 
 export const getAllEventsInWorld = async (worldId: number, limit?: number) => {
@@ -134,10 +209,26 @@ export const getAllEventsInWorld = async (worldId: number, limit?: number) => {
     orderBy: desc(events.createdAt),
     limit,
     with: {
-      location: true,
-      character: true,
-      player: true,
-      item: true,
+      locations: {
+        with: {
+          location: true,
+        },
+      },
+      characters: {
+        with: {
+          character: true,
+        },
+      },
+      players: {
+        with: {
+          player: true,
+        },
+      },
+      items: {
+        with: {
+          item: true,
+        },
+      },
     },
   });
 };
