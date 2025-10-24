@@ -51,6 +51,23 @@ export const WorldPlayerItem = CreateWorldPlayerItem.extend({
   type: z.literal("world_player").default("world_player"),
 });
 
+// Worlds themselves
+export const CreateGameWorldItem = z.object({
+  name: z
+    .string()
+    .describe(
+      "The name of the world. Such as 'Mystic Realms', 'Cyberpunk 2087', 'Medieval Fantasy', etc."
+    ),
+  description: z
+    .string()
+    .describe(
+      "A detailed description of the world. Include everything needed to describe the world setting, atmosphere, and theme."
+    ),
+});
+export const GameWorldItem = CreateGameWorldItem.extend({
+  type: z.literal("world_world").default("world_world"),
+});
+
 // Items in the world
 export const CreateWorldItemItem = z.object({
   name: z
@@ -105,6 +122,7 @@ export const KnowledgeItem = z.discriminatedUnion("type", [
   WorldCharacterItem,
   WorldPlayerItem,
   WorldItemItem,
+  GameWorldItem,
 ]);
 
 // Inferred TypeScript types
@@ -118,5 +136,7 @@ export type CreateWorldPlayerItem = z.infer<typeof CreateWorldPlayerItem>;
 export type WorldPlayerItem = z.infer<typeof WorldPlayerItem>;
 export type CreateWorldItemItem = z.infer<typeof CreateWorldItemItem>;
 export type WorldItemItem = z.infer<typeof WorldItemItem>;
+export type CreateGameWorldItem = z.infer<typeof CreateGameWorldItem>;
+export type GameWorldItem = z.infer<typeof GameWorldItem>;
 
 export type KnowledgeItem = z.infer<typeof KnowledgeItem>;

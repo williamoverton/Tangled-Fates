@@ -11,16 +11,27 @@ import {
 import { relations } from "drizzle-orm";
 
 // Different worlds / Games that can be played
-export const worlds = pgTable("worlds", {
-  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
-  createdAt: timestamp("created_at")
-    .notNull()
-    .defaultNow()
-    .$defaultFn(() => new Date()),
-  name: varchar("name", { length: 255 }).notNull(),
-  description: text("description").notNull(),
-  slug: varchar("slug", { length: 255 }),
-});
+export const worlds = pgTable(
+  "worlds",
+  {
+    id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+    createdAt: timestamp("created_at")
+      .notNull()
+      .defaultNow()
+      .$defaultFn(() => new Date()),
+    name: varchar("name", { length: 255 }).notNull(),
+    description: text("description").notNull(),
+    slug: varchar("slug", { length: 255 }).notNull().unique(),
+    imageUrl: text("image_url"),
+    embedding: vector("embedding", { dimensions: 1536 }).notNull(),
+  },
+  (table) => [
+    index("worlds_embedding_index").using(
+      "hnsw",
+      table.embedding.op("vector_cosine_ops")
+    ),
+  ]
+);
 
 // Locations in the world
 export const locations = pgTable(
