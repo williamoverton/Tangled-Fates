@@ -1,6 +1,7 @@
 import { db } from "../../lib/db/client";
 import { CreateWorldDialog } from "../../components/CreateWorldDialog";
 import { WorldCard } from "../../components/WorldCard";
+import { cacheTag } from "next/cache";
 
 async function getWorlds() {
   return await db.query.worlds.findMany({
@@ -9,6 +10,9 @@ async function getWorlds() {
 }
 
 export default async function WorldsPage() {
+  "use cache";
+  cacheTag("worlds");
+
   const worldsList = await getWorlds();
 
   return (
