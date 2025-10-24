@@ -52,7 +52,7 @@ export const chat = (
       await saveChatHistory(player.id, [...messages, ...result.messages]);
       await start(saveHistoryToKnowledgeBase, [
         { world, player },
-        [messages.at(-1)!, ...result.messages],
+        [...messages.slice(-2), ...result.messages],
       ]);
     },
   });

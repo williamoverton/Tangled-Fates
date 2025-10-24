@@ -33,14 +33,6 @@ async function saveHistoryToKnowledgeBaseStep(
 ) {
   "use step";
 
-  const messagesText = messages.map(
-    (m) =>
-      `${m.role}:${m.parts
-        .filter((p) => p.type === "text")
-        .map((p) => p.text)
-        .join("\n")}`
-  );
-
   const agent = new Agent({
     tools: {
       ...getReadTools(context.world, context.player),
@@ -69,6 +61,7 @@ async function saveHistoryToKnowledgeBaseStep(
       IMPORTANT: Make sure to not add duplicates to the knowledge base! Always search for duplicates before adding anything new.
       IMPORTANT: Before adding a new character, make sure there is not a player with the same name already in the knowledge base!
       IMPORTANT: You're also in charge of updating things if they have changed! If you find something in the knowledge base but the information is outdated, update it using the appropriate tools.
+      IMPORTANT: Often characters are introduced without a name and added to the knowledge base with something like "The elder of the village". BUT, they might get a name later on in the story! Make sure to update the character's name if it is not already set rather than creating a new character.
 
       If the messages include new places, characters, items, or events, make sure to add them to the knowledge base using the appropriate tools.
       You can add as many things as you want! Remember the more things in our knowledge base the better the story will be!
@@ -77,8 +70,18 @@ async function saveHistoryToKnowledgeBaseStep(
       Here is the latest chat message from the player:
 
       <GAME MESSAGES>
-        ${messagesText.join("\n\n")}
+        ${messages
+          .map(
+            (m) =>
+              `<${m.role}>${m.parts
+                .filter((p) => p.type === "text")
+                .map((p) => p.text)
+                .join("\n")}</${m.role}>`
+          )
+          .join("\n")}
       </GAME MESSAGES>
+
+      You only need to focus on the latest two messages as the messages before that have already been processed, they are included for context.
 
       Save anything that might be useful for later story telling or for other players to know about.
     `,
