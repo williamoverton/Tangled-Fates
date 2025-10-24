@@ -18,7 +18,7 @@ export function ChatSidebar({ player, recentEvents }: ChatSidebarProps) {
       <ScrollArea className="flex-1 h-full">
         <div className="p-4 space-y-4 pb-6">
           {/* Player Info Card */}
-          <Card className="overflow-hidden border border-ui-border">
+          <Card className="overflow-hidden border border-ui-border p-0 gap-0">
             <div className="relative w-full aspect-square bg-muted">
               {player.imageUrl ? (
                 <Image
@@ -33,7 +33,7 @@ export function ChatSidebar({ player, recentEvents }: ChatSidebarProps) {
                 </div>
               )}
             </div>
-            <CardHeader>
+            <CardHeader className="px-6 pt-4 pb-2">
               <CardTitle className="text-xl">{player.name}</CardTitle>
             </CardHeader>
             <CardContent>
