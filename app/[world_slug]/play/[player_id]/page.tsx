@@ -1,7 +1,7 @@
 import { worlds } from "@/lib/db/schema";
 import { notFound, redirect } from "next/navigation";
 import { getInitialMessage } from "@/lib/ai/chatbot/initialMessage";
-import MainChat from "@/components/MainChat";
+import ChatWindow from "@/components/MainChat";
 import { Suspense } from "react";
 import { auth } from "@clerk/nextjs/server";
 import { getPlayer } from "@/lib/player/player";
@@ -51,11 +51,11 @@ const Game = async ({
   const recentEvents = await getEventsForPlayer(player.id, 10);
 
   return (
-    <MainChat
+    <ChatWindow
+      player={player}
       initialMessages={messages}
       title={world.name}
       world={world}
-      player={player}
       recentEvents={recentEvents}
     />
   );

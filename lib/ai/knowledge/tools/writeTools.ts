@@ -74,7 +74,7 @@ export const getWriteTools = (
     }),
     updateCharacter: tool({
       description:
-        "Update a character in the world. Use this to update a character that is already in the world if something has changed.",
+        "Update a character's details in the world. Use this to update a character that is already in the world if something has changed. This is their biography (not a step by step description of their life, but a detailed description of who they are and what they do).",
       inputSchema: z.object({
         characterId: z.number(),
         character: WorldCharacterItem,

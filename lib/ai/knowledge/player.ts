@@ -4,6 +4,7 @@ import { db } from "@/lib/db/client";
 import { and, cosineDistance, desc, eq, gt, sql } from "drizzle-orm";
 import { CreateWorldPlayerItem } from "./types";
 import { revalidateTag } from "next/cache";
+import { publishPlayerUpdate } from "@/lib/realtime/publish";
 
 const SIMILARITY_THRESHOLD = 0.3; // TODO: tune this
 
@@ -65,14 +66,17 @@ export const updatePlayer = async (
     ...player,
   });
 
-  await db
+  const [updatedPlayer] = await db
     .update(players)
     .set({
       name: player.name,
       description: player.description,
       embedding: embedding.embedding,
     })
-    .where(and(eq(players.id, playerId), eq(players.worldId, world.id)));
+    .where(and(eq(players.id, playerId), eq(players.worldId, world.id)))
+    .returning();
+
+  await publishPlayerUpdate(updatedPlayer);
 
   // Revalidate cache for this specific player and players in this world
   revalidateTag(`player-${playerId}`, "max");
