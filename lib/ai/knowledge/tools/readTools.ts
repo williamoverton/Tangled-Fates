@@ -3,7 +3,7 @@ import { tool } from "ai";
 import z from "zod";
 import { searchForEvent } from "../event";
 import { searchForLocation } from "../location";
-import { searchForCharacter } from "../character";
+import { searchForCharacter, searchForPersonalities } from "../character";
 import { searchForPlayer } from "../player";
 import { searchForItem } from "../item";
 
@@ -44,9 +44,9 @@ export const getReadTools = (
       execute: async ({ queries }) =>
         Promise.all(queries.map((query) => searchForLocation(world, query))),
     }),
-    getWorldCharacters: tool({
+    getWorldNPCs: tool({
       description:
-        "Get characters in the world and their descriptions. Use this thouroughly as part of your knowledge of the world.",
+        "Get non-player characters (NPCs) in the world and their descriptions. Use this thouroughly as part of your knowledge of the world.",
       inputSchema: z.object({
         queries: z
           .string()
@@ -75,6 +75,24 @@ export const getReadTools = (
       }),
       execute: async ({ queries }) =>
         Promise.all(queries.map((query) => searchForPlayer(world, query))),
+    }),
+    getWorldPersonalities: tool({
+      description:
+        "Get personalities in the world and their descriptions, use this as your main character search tool. This searches both characters (NPCs) and players. Use this to learn about other personalities that may have interacted with locations, characters, or items. This helps you understand the full context of events.",
+      inputSchema: z.object({
+        queries: z
+          .string()
+          .array()
+          .min(1)
+          .max(10)
+          .describe(
+            "The queries to search for personalities, such as a personality name/type or related personalities."
+          ),
+      }),
+      execute: async ({ queries }) =>
+        Promise.all(
+          queries.map((query) => searchForPersonalities(world, query))
+        ),
     }),
     getCurrentPlayer: tool({
       description:

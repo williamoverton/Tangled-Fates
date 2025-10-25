@@ -10,7 +10,11 @@ import { WorldLocationItem } from "../types";
 import { addEventToKnowledge } from "../event";
 import { addLocationToKnowledge } from "../location";
 import { updateLocation } from "../location";
-import { addCharacterToKnowledge, mergeCharacters } from "../character";
+import {
+  addCharacterToKnowledge,
+  mergeCharacterIntoPlayer,
+  mergeCharacters,
+} from "../character";
 import { updateCharacter } from "../character";
 import { addItemToKnowledge } from "../item";
 import { updateItem } from "../item";
@@ -77,6 +81,16 @@ export const getWriteTools = (
       }),
       execute: async ({ characterId, otherCharacterId }) =>
         await mergeCharacters(world, characterId, otherCharacterId),
+    }),
+    mergeCharacterIntoPlayer: tool({
+      description:
+        "Merge a character into a player. Use this if you find a character entry that is the same person as a player entry.",
+      inputSchema: z.object({
+        characterId: z.number(),
+        playerId: z.number(),
+      }),
+      execute: async ({ characterId, playerId }) =>
+        await mergeCharacterIntoPlayer(world, characterId, playerId),
     }),
     addNewItem: tool({
       description:

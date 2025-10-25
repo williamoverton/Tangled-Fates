@@ -62,6 +62,7 @@ async function saveHistoryToKnowledgeBaseStep(
       IMPORTANT: Before adding a new character, make sure there is not a player with the same name already in the knowledge base!
       IMPORTANT: You're also in charge of updating things if they have changed! If you find something in the knowledge base but the information is outdated, update it using the appropriate tools.
       IMPORTANT: Often characters are introduced without a name and added to the knowledge base with something like "The elder of the village". BUT, they might get a name later on in the story! Make sure to update the character's name if it is not already set rather than creating a new character.
+      IMPORTANT: We should never have characters that are the same person as a player! If you find a character that is the same person as a player, merge the character into the player using the mergeCharacterIntoPlayer tool.
 
       If the messages include new places, characters, items, or events, make sure to add them to the knowledge base using the appropriate tools.
       You can add as many things as you want! Remember the more things in our knowledge base the better the story will be!
