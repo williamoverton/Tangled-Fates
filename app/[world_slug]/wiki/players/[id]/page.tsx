@@ -11,6 +11,18 @@ import { getEventsForPlayer } from "@/lib/ai/knowledge/event";
 import { getPlayerById } from "@/lib/ai/knowledge/player";
 import { cacheTag } from "next/cache";
 
+export async function generateStaticParams() {
+  const players = await db.query.players.findMany({
+    with: {
+      world: true,
+    },
+  });
+  return players.map((player) => ({
+    world_slug: player.world.slug,
+    id: player.id.toString(),
+  }));
+}
+
 export default async function PlayerWikiPage({
   params,
 }: {

@@ -11,6 +11,18 @@ import { getEventsForCharacter } from "@/lib/ai/knowledge/event";
 import { getCharacterById } from "@/lib/ai/knowledge/character";
 import { cacheTag } from "next/cache";
 
+export async function generateStaticParams() {
+  const characters = await db.query.characters.findMany({
+    with: {
+      world: true,
+    },
+  });
+  return characters.map((character) => ({
+    world_slug: character.world.slug,
+    id: character.id.toString(),
+  }));
+}
+
 export default async function CharacterWikiPage({
   params,
 }: {

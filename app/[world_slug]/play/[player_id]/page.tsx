@@ -9,6 +9,7 @@ import { getWorldBySlug } from "@/lib/worlds/world";
 import { getChatHistory } from "@/lib/ai/chatbot/history";
 import { UIMessage } from "ai";
 import { getEventsForPlayer } from "@/lib/ai/knowledge/event";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
 const Game = async ({
   world,
@@ -50,13 +51,15 @@ const Game = async ({
   const recentEvents = await getEventsForPlayer(player.id, 10);
 
   return (
-    <MainChat
-      initialMessages={messages}
-      title={world.name}
-      world={world}
-      player={player}
-      recentEvents={recentEvents}
-    />
+    <Suspense fallback={<LoadingSpinner text="Preparing your story..." />}>
+      <MainChat
+        initialMessages={messages}
+        title={world.name}
+        world={world}
+        player={player}
+        recentEvents={recentEvents}
+      />
+    </Suspense>
   );
 };
 

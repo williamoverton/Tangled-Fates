@@ -11,6 +11,18 @@ import { getEventsForItem } from "@/lib/ai/knowledge/event";
 import { getItemById } from "@/lib/ai/knowledge/item";
 import { cacheTag } from "next/cache";
 
+export async function generateStaticParams() {
+  const items = await db.query.items.findMany({
+    with: {
+      world: true,
+    },
+  });
+  return items.map((item) => ({
+    world_slug: item.world.slug,
+    id: item.id.toString(),
+  }));
+}
+
 export default async function ItemWikiPage({
   params,
 }: {

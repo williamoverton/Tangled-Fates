@@ -5,6 +5,14 @@ import { notFound } from "next/navigation";
 import { CreatePlayerDialog } from "@/components/CreatePlayerDialog";
 import { Card, CardContent } from "@/components/ui/card";
 import { PlayerCard } from "@/components/PlayerCard";
+import { db } from "@/lib/db/client";
+
+export async function generateStaticParams() {
+  const worlds = await db.query.worlds.findMany();
+  return worlds.map((world) => ({
+    world_slug: world.slug,
+  }));
+}
 
 export default async function WorldPage({
   params,

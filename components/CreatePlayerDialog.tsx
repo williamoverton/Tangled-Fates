@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { Textarea } from "@/components/ui/textarea";
 
 interface CreatePlayerDialogProps {
@@ -109,7 +110,11 @@ export function CreatePlayerDialog({
               Cancel
             </Button>
             <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? "Creating..." : "Create Player"}
+              {isSubmitting ? (
+                <LoadingSpinner variant="inline" size="sm" text="Creating..." />
+              ) : (
+                "Create Player"
+              )}
             </Button>
           </DialogFooter>
         </form>

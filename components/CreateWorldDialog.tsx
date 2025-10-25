@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
+import { LoadingSpinner } from "./ui/loading-spinner";
 import { Textarea } from "./ui/textarea";
 import {
   Dialog,
@@ -104,7 +105,11 @@ export function CreateWorldDialog() {
               Cancel
             </Button>
             <Button type="submit" disabled={isLoading}>
-              {isLoading ? "Creating..." : "Create World"}
+              {isLoading ? (
+                <LoadingSpinner variant="inline" size="sm" text="Creating..." />
+              ) : (
+                "Create World"
+              )}
             </Button>
           </DialogFooter>
         </form>

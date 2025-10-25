@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card, CardContent } from "@/components/ui/card";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { players, worlds } from "@/lib/db/schema";
 import { UIEvent } from "@/lib/ai/knowledge/types";
 import { ChatSidebar } from "@/components/ChatSidebar";
@@ -156,15 +157,12 @@ export default function MainChat({
 
               {(status === "submitted" || status === "streaming") && (
                 <Card className="bg-ui-card-bg border border-ui-border shadow-lg mx-4 sm:mx-12">
-                  <CardContent className="flex items-center justify-center gap-3 p-4">
-                    <div className="flex gap-1">
-                      <span className="w-2 h-2 bg-ui-accent rounded-full animate-bounce [animation-delay:-0.3s]" />
-                      <span className="w-2 h-2 bg-ui-accent rounded-full animate-bounce [animation-delay:-0.15s]" />
-                      <span className="w-2 h-2 bg-ui-accent rounded-full animate-bounce" />
-                    </div>
-                    <span className="text-ui-text-secondary text-sm">
-                      Generating...
-                    </span>
+                  <CardContent className="p-4">
+                    <LoadingSpinner
+                      variant="dots"
+                      text="Generating..."
+                      className="justify-center"
+                    />
                   </CardContent>
                 </Card>
               )}

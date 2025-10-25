@@ -9,6 +9,13 @@ import { getAllEventsInWorld } from "@/lib/ai/knowledge/event";
 import Link from "next/link";
 import { cacheTag } from "next/cache";
 
+export async function generateStaticParams() {
+  const worlds = await db.query.worlds.findMany();
+  return worlds.map((world) => ({
+    world_slug: world.slug,
+  }));
+}
+
 export default async function EventsIndexPage({
   params,
 }: {

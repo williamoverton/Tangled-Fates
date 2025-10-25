@@ -11,6 +11,18 @@ import { getEventsForLocation } from "@/lib/ai/knowledge/event";
 import { getLocationById } from "@/lib/ai/knowledge/location";
 import { cacheTag } from "next/cache";
 
+export async function generateStaticParams() {
+  const locations = await db.query.locations.findMany({
+    with: {
+      world: true,
+    },
+  });
+  return locations.map((location) => ({
+    world_slug: location.world.slug,
+    id: location.id.toString(),
+  }));
+}
+
 export default async function LocationWikiPage({
   params,
 }: {

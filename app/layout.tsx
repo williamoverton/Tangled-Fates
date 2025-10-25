@@ -3,6 +3,7 @@ import { Geist_Mono, Geist } from "next/font/google";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Suspense } from "react";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,12 +34,11 @@ export default function RootLayout({
         <Suspense
           fallback={
             <div className="flex h-screen w-screen items-center justify-center">
-              <div className="text-center space-y-4">
-                <div className="w-16 h-16 border-4 border-primary/30 border-t-primary rounded-full animate-spin mx-auto"></div>
-                <p className="text-muted-foreground">
-                  Loading Tangled Fates...
-                </p>
-              </div>
+              <LoadingSpinner
+                variant="large"
+                size="lg"
+                text="Loading Tangled Fates..."
+              />
             </div>
           }
         >
