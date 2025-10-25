@@ -51,15 +51,13 @@ const Game = async ({
   const recentEvents = await getEventsForPlayer(player.id, 10);
 
   return (
-    <Suspense fallback={<LoadingSpinner text="Preparing your story..." />}>
-      <MainChat
-        initialMessages={messages}
-        title={world.name}
-        world={world}
-        player={player}
-        recentEvents={recentEvents}
-      />
-    </Suspense>
+    <MainChat
+      initialMessages={messages}
+      title={world.name}
+      world={world}
+      player={player}
+      recentEvents={recentEvents}
+    />
   );
 };
 
@@ -76,5 +74,9 @@ export default async function WorldPage({
     notFound();
   }
 
-  return <Game world={world} playerId={player_id} />;
+  return (
+    <Suspense fallback={<LoadingSpinner text="Preparing your story..." />}>
+      <Game world={world} playerId={player_id} />
+    </Suspense>
+  );
 }
