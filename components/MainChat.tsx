@@ -12,6 +12,7 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { players, worlds } from "@/lib/db/schema";
 import { UIEvent } from "@/lib/ai/knowledge/types";
 import { ChatSidebar } from "@/components/ChatSidebar";
+import { AudioPlayer } from "@/components/AudioPlayer";
 import { PanelRightOpen, PanelRightClose } from "lucide-react";
 
 export default function MainChat({
@@ -84,12 +85,18 @@ export default function MainChat({
                   {player.name}
                 </div>
               </div>
-              <div className="flex justify-end pr-2">
+              <div className="flex justify-end gap-2 pr-2 min-w-0 shrink-0">
+                {/* Audio controls */}
+                <div className="min-w-0 shrink-0">
+                  <AudioPlayer messages={messages} status={status} />
+                </div>
+
+                {/* Sidebar toggle */}
                 <Button
                   variant="outline"
                   size="icon"
                   onClick={() => setSidebarOpen(!sidebarOpen)}
-                  className="bg-background hover:bg-accent hover:text-accent-foreground"
+                  className="bg-background hover:bg-accent hover:text-accent-foreground shrink-0"
                   title={sidebarOpen ? "Hide sidebar" : "Show sidebar"}
                 >
                   {sidebarOpen ? (
@@ -157,10 +164,10 @@ export default function MainChat({
 
               {(status === "submitted" || status === "streaming") && (
                 <Card className="bg-ui-card-bg border border-ui-border shadow-lg mx-4 sm:mx-12">
-                  <CardContent className="p-4">
+                  <CardContent className="p-3">
                     <LoadingSpinner
                       variant="dots"
-                      text="Generating..."
+                      text="Generating response..."
                       className="justify-center"
                     />
                   </CardContent>
