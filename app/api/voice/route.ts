@@ -1,6 +1,8 @@
 import OpenAI from "openai";
 import z from "zod/v4";
 import { NextRequest } from "next/server";
+import { auth } from "@clerk/nextjs/server";
+import { checkBotId } from "botid/server";
 
 const schema = z.object({
   text: z.string().min(1).max(4096),
@@ -16,6 +18,18 @@ export async function GET(request: NextRequest) {
   }
 
   const { text: validatedText } = schema.parse({ text });
+
+  // Check for bot access
+  const verification = await checkBotId();
+  if (verification.isBot) {
+    return new Response("Access denied", { status: 403 });
+  }
+
+  // Check authentication
+  const { userId } = await auth();
+  if (!userId) {
+    return new Response("Unauthorized", { status: 401 });
+  }
 
   const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 

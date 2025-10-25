@@ -13,6 +13,7 @@ import { players, worlds } from "@/lib/db/schema";
 import { UIEvent } from "@/lib/ai/knowledge/types";
 import { ChatSidebar } from "@/components/ChatSidebar";
 import { AudioPlayer } from "@/components/AudioPlayer";
+import { MicrophoneButton } from "@/components/MicrophoneButton";
 import { PanelRightOpen, PanelRightClose } from "lucide-react";
 
 export default function MainChat({
@@ -195,6 +196,18 @@ export default function MainChat({
                 disabled={status !== "ready"}
                 placeholder="What do you do next?..."
                 className="flex-1 bg-input border border-ui-border text-foreground placeholder:text-muted-foreground focus-visible:ring-ui-accent"
+              />
+              <MicrophoneButton
+                onTranscriptionUpdate={(text) => {
+                  setInput(text);
+                  // Auto-submit the message
+                  if (text.trim()) {
+                    sendMessage({ text });
+                    setInput("");
+                  }
+                }}
+                disabled={status !== "ready"}
+                className="shrink-0"
               />
               <Button
                 type="submit"
