@@ -97,12 +97,16 @@ export function WorldCard({
         {/* Footer - Always visible */}
         <CardContent className={`shrink-0 ${!isWikiVariant ? "p-4 pt-0" : ""}`}>
           {isWikiVariant && (
-            <p className="text-xs text-muted-foreground">
+            <p className="text-xs text-muted-foreground pb-2">
               Created {new Date(world.createdAt).toLocaleDateString()}
             </p>
           )}
           {!isWikiVariant && (
-            <Button variant="outline" className="w-full" asChild>
+            <Button
+              variant="outline"
+              className="w-full font-bold text-lg py-6 bg-linear-to-r from-primary/10 to-accent/10 border-2 border-primary/30 hover:border-primary/50 hover:bg-linear-to-r hover:from-primary/20 hover:to-accent/20 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
+              asChild
+            >
               <span>{actionLabel || `Enter ${world.name}`}</span>
             </Button>
           )}

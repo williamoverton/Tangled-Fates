@@ -2,59 +2,109 @@ import { worlds } from "@/lib/db/schema";
 import { db } from "@/lib/db/client";
 import { WorldCard } from "@/components/WorldCard";
 import { GeneralNavbar } from "@/components/navbar/GeneralNavbar";
+import { Button } from "@/components/ui/button";
 import { cacheTag } from "next/cache";
+import Link from "next/link";
+import { desc } from "drizzle-orm";
 
 export default async function Home() {
   "use cache";
   cacheTag("worlds");
 
-  const worldsList = await db.select().from(worlds);
+  const worldsList = await db
+    .select()
+    .from(worlds)
+    .limit(6)
+    .orderBy(desc(worlds.createdAt));
+
   return (
     <div className="min-h-screen">
       <GeneralNavbar />
       {/* Hero Section */}
       <section className="relative overflow-hidden">
-        {/* Subtle Background Gradient */}
-        <div className="absolute inset-0 bg-linear-to-br from-primary/5 via-background to-accent/5"></div>
+        {/* Dynamic Background Gradient */}
+        <div className="absolute inset-0 bg-linear-to-br from-primary/10 via-background to-accent/10"></div>
 
-        {/* Static Glow Effects */}
+        {/* Subtle Glow Effects */}
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl"></div>
         <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-accent/10 rounded-full blur-3xl"></div>
 
         <div className="relative container mx-auto px-4 py-24 md:py-32">
-          <div className="max-w-5xl mx-auto text-center space-y-8">
+          <div className="max-w-6xl mx-auto text-center space-y-12">
             {/* Logo / Title */}
-            <div className="space-y-4 animate-fade-in-up">
+            <div className="space-y-6 animate-fade-in-up">
               <h1 className="text-6xl md:text-8xl font-bold tracking-tight">
                 <span className="bg-linear-to-r from-primary via-accent to-primary bg-clip-text text-transparent animate-gradient bg-size-[200%_auto]">
                   Tangled Fates
                 </span>
               </h1>
-              <p className="text-xl md:text-2xl text-muted-foreground font-medium">
+              <p className="text-2xl md:text-3xl text-foreground font-bold">
                 Where Every Choice Shapes Reality
               </p>
             </div>
 
             {/* Main Tagline */}
-            <p className="text-lg md:text-xl text-foreground/90 max-w-3xl mx-auto leading-relaxed animate-fade-in-up animation-delay-200">
+            <p className="text-xl md:text-2xl text-foreground/90 max-w-4xl mx-auto leading-relaxed animate-fade-in-up animation-delay-200">
               An AI-powered living, breathing world where your adventure
               intertwines with others. Discover secrets, forge your path, and
               leave your mark on a shared universe.
             </p>
 
+            {/* Main CTA Button */}
+            <div className="animate-fade-in-up animation-delay-400">
+              {worldsList.length > 0 ? (
+                <div className="space-y-6">
+                  <div className="inline-flex flex-col items-center gap-4">
+                    <Button
+                      size="lg"
+                      className="text-xl px-10 py-6 h-auto font-semibold bg-linear-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-white shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+                      asChild
+                    >
+                      <Link href="/worlds">Start Your Adventure</Link>
+                    </Button>
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <span className="w-2 h-2 rounded-full bg-green-500"></span>
+                      <span className="font-medium">
+                        {worldsList.length} world
+                        {worldsList.length !== 1 ? "s" : ""} available
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-6">
+                  <div className="inline-flex flex-col items-center gap-4">
+                    <Button
+                      size="lg"
+                      className="text-xl px-10 py-6 h-auto font-semibold bg-linear-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-white shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+                      asChild
+                    >
+                      <Link href="/worlds">Explore Worlds</Link>
+                    </Button>
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <span className="w-2 h-2 rounded-full bg-blue-500"></span>
+                      <span className="font-medium">
+                        New worlds coming soon
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
             {/* Feature Pills */}
-            <div className="flex flex-wrap justify-center gap-4 pt-4 animate-fade-in-up animation-delay-400">
-              <div className="px-6 py-3 rounded-full bg-card/80 backdrop-blur-sm border border-primary/30 shadow-lg shadow-primary/10">
+            <div className="flex flex-wrap justify-center gap-4 pt-8 animate-fade-in-up animation-delay-600">
+              <div className="px-6 py-3 rounded-full bg-card/90 backdrop-blur-sm border border-primary/40 shadow-lg shadow-primary/20">
                 <span className="text-sm font-medium text-primary">
                   🤖 AI-Powered Stories
                 </span>
               </div>
-              <div className="px-6 py-3 rounded-full bg-card/80 backdrop-blur-sm border border-accent/30 shadow-lg shadow-accent/10">
+              <div className="px-6 py-3 rounded-full bg-card/90 backdrop-blur-sm border border-accent/40 shadow-lg shadow-accent/20">
                 <span className="text-sm font-medium text-accent">
                   🌍 Shared Living Worlds
                 </span>
               </div>
-              <div className="px-6 py-3 rounded-full bg-card/80 backdrop-blur-sm border border-primary/30 shadow-lg shadow-primary/10">
+              <div className="px-6 py-3 rounded-full bg-card/90 backdrop-blur-sm border border-primary/40 shadow-lg shadow-primary/20">
                 <span className="text-sm font-medium text-primary">
                   📖 Collaborative Wiki
                 </span>
@@ -65,27 +115,24 @@ export default async function Home() {
       </section>
 
       {/* Worlds Selection Section - Main CTA */}
-      <section className="relative py-24 px-4 overflow-hidden">
-        {/* Background Effects */}
-        <div className="absolute inset-0 bg-linear-to-b from-background via-primary/3 to-background"></div>
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-px bg-linear-to-r from-transparent via-primary/30 to-transparent"></div>
+      <section id="worlds" className="relative py-24 px-4 overflow-hidden">
+        {/* Enhanced Background Effects */}
+        <div className="absolute inset-0 bg-linear-to-b from-background via-primary/5 to-background"></div>
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-px bg-linear-to-r from-transparent via-primary/50 to-transparent"></div>
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full h-px bg-linear-to-r from-transparent via-accent/50 to-transparent"></div>
 
         <div className="container mx-auto max-w-7xl relative">
           {/* Section Header */}
-          <div className="text-center mb-20 space-y-6">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium mb-4">
-              <span className="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
-              Available Worlds
-            </div>
-            <h2 className="text-5xl md:text-7xl font-bold leading-tight">
-              <span className="bg-linear-to-r from-primary via-accent to-primary bg-clip-text text-transparent animate-gradient bg-size-[200%_auto]">
+          <div className="text-center mb-16 space-y-6">
+            <h2 className="text-4xl md:text-6xl font-bold leading-tight">
+              <span className="bg-linear-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
                 Choose Your World
               </span>
             </h2>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+            <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
               Each world is a unique universe with its own lore, characters, and
               mysteries waiting to be unraveled.
-              <span className="text-primary font-semibold">
+              <span className="text-primary font-semibold pl-1">
                 Your adventure starts here.
               </span>
             </p>
@@ -96,7 +143,7 @@ export default async function Home() {
             {worldsList.map((world, index) => (
               <div
                 key={world.id}
-                className="animate-fade-in-up"
+                className="animate-fade-in-up group"
                 style={{ animationDelay: `${index * 150}ms` }}
               >
                 <WorldCard
@@ -131,16 +178,6 @@ export default async function Home() {
               <p className="text-muted-foreground text-lg">
                 New worlds will appear here soon
               </p>
-            </div>
-          )}
-
-          {/* Call to Action */}
-          {worldsList.length > 0 && (
-            <div className="text-center mt-16">
-              <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-primary/10 border border-primary/20 text-primary font-medium">
-                <span className="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
-                <span>Ready to begin your adventure?</span>
-              </div>
             </div>
           )}
         </div>
@@ -209,14 +246,25 @@ export default async function Home() {
       {/* Call to Action Footer */}
       <section className="relative py-20 px-4 overflow-hidden">
         <div className="absolute inset-0 bg-linear-to-t from-primary/10 via-background to-transparent"></div>
-        <div className="relative container mx-auto max-w-4xl text-center space-y-6">
-          <h2 className="text-3xl md:text-4xl font-bold">
-            Your Adventure Awaits
-          </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Join a community of adventurers. Every story you create, every
-            secret you uncover, becomes part of a living legend.
-          </p>
+
+        <div className="relative container mx-auto max-w-4xl text-center space-y-8">
+          <div className="space-y-6">
+            <h2 className="text-3xl md:text-4xl font-bold">
+              Your Adventure Awaits
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Join a community of adventurers. Every story you create, every
+              secret you uncover, becomes part of a living legend.
+            </p>
+          </div>
+
+          <Button
+            size="lg"
+            className="text-lg px-12 py-4 h-auto font-semibold bg-linear-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-white shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+            asChild
+          >
+            <Link href="/worlds">Begin Your Journey</Link>
+          </Button>
         </div>
       </section>
     </div>
