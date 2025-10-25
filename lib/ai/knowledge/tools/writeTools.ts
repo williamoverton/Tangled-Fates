@@ -8,7 +8,7 @@ import {
 } from "../types";
 import { WorldLocationItem } from "../types";
 import { addEventToKnowledge } from "../event";
-import { addLocationToKnowledge } from "../location";
+import { addLocationToKnowledge, mergeLocations } from "../location";
 import { updateLocation } from "../location";
 import {
   addCharacterToKnowledge,
@@ -16,7 +16,7 @@ import {
   mergeCharacters,
 } from "../character";
 import { updateCharacter } from "../character";
-import { addItemToKnowledge } from "../item";
+import { addItemToKnowledge, mergeItems } from "../item";
 import { updateItem } from "../item";
 import { tool } from "ai";
 import { updatePlayer } from "../player";
@@ -52,6 +52,16 @@ export const getWriteTools = (
       }),
       execute: async ({ locationId, location }) =>
         await updateLocation(world, locationId, location),
+    }),
+    mergeLocations: tool({
+      description:
+        "Merge two locations into one. Use this if you find two location entries that are the same place but have different names.",
+      inputSchema: z.object({
+        locationId: z.number(),
+        otherLocationId: z.number(),
+      }),
+      execute: async ({ locationId, otherLocationId }) =>
+        await mergeLocations(world, locationId, otherLocationId),
     }),
     addNewCharacter: tool({
       description:
@@ -92,6 +102,13 @@ export const getWriteTools = (
       execute: async ({ characterId, playerId }) =>
         await mergeCharacterIntoPlayer(world, characterId, playerId),
     }),
+    updatePlayer: tool({
+      description:
+        "Update the current player. Use this if you need to update the name or description of the current player, for example if they die or get new powers etc.",
+      inputSchema: CreateWorldPlayerItem,
+      execute: async (playerUpdate) =>
+        await updatePlayer(world, player.id, playerUpdate),
+    }),
     addNewItem: tool({
       description:
         "Add a new item to the world. Use this whenever any item of note is mentioned that doesnt already exist in the knowledge base.",
@@ -110,12 +127,15 @@ export const getWriteTools = (
       execute: async ({ itemId, item }) =>
         await updateItem(world, itemId, item),
     }),
-    updatePlayer: tool({
+    mergeItems: tool({
       description:
-        "Update the current player. Use this if you need to update the name or description of the current player, for example if they die or get new powers etc.",
-      inputSchema: CreateWorldPlayerItem,
-      execute: async (playerUpdate) =>
-        await updatePlayer(world, player.id, playerUpdate),
+        "Merge two items into one. Use this if you find two item entries that are the same thing but have different names.",
+      inputSchema: z.object({
+        itemId: z.number(),
+        otherItemId: z.number(),
+      }),
+      execute: async ({ itemId, otherItemId }) =>
+        await mergeItems(world, itemId, otherItemId),
     }),
   };
 };
