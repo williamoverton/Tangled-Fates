@@ -66,6 +66,8 @@ async function saveHistoryToKnowledgeBaseStep(
 
       If the messages include new places, characters, items, or events, make sure to add them to the knowledge base using the appropriate tools.
       You can add as many things as you want! Remember the more things in our knowledge base the better the story will be!
+
+      Make sure to not add duplicate events!
     `,
     prompt: dedent`
       Here is the latest chat message from the player:

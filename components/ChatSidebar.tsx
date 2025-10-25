@@ -42,7 +42,7 @@ export function ChatSidebar({ player, recentEvents }: ChatSidebarProps) {
                   {player.description}
                 </p>
               )}
-              <p className="text-xs text-muted-foreground flex items-center gap-1">
+              <p className="text-xs text-muted-foreground flex items-center gap-1 pb-2">
                 <Clock className="w-3 h-3" />
                 Joined {new Date(player.createdAt).toLocaleDateString()}
               </p>

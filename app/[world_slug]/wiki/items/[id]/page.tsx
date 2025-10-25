@@ -115,7 +115,7 @@ export default async function ItemWikiPage({
             </Card>
 
             {/* Recent Events Section */}
-            <RecentEvents events={recentEvents} />
+            <RecentEvents events={recentEvents} world_slug={world_slug} />
           </div>
 
           {/* Sidebar Info Box */}

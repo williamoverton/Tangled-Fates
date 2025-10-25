@@ -112,9 +112,7 @@ export const CreateWorldEventItem = z.object({
     .describe("A detailed markdown description of the event."),
   shortDescription: z
     .string()
-    .describe(
-      "A single sentence description of the event. No more than 10 words."
-    ),
+    .describe("A single sentence description of the event."),
 });
 // Things that can happen in the world
 export const WorldEventItem = CreateWorldEventItem.extend({

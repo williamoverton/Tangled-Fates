@@ -7,7 +7,7 @@ import {
   eventItems,
 } from "@/lib/db/schema";
 import { embedKnowledgeItem, getEmbedForQuery } from "./embed";
-import { CreateWorldEventItem, UIEvent, UIEventWithRelations } from "./types";
+import { CreateWorldEventItem, UIEventWithRelations } from "./types";
 import { db } from "@/lib/db/client";
 import { and, cosineDistance, desc, eq, gt, sql } from "drizzle-orm";
 import { revalidateTag } from "next/cache";
@@ -142,83 +142,197 @@ export async function searchForEvent(
 export const getEventsForLocation = async (
   locationId: number,
   limit?: number
-): Promise<UIEvent[]> => {
-  const query = db
-    .select({
-      id: events.id,
-      createdAt: events.createdAt,
-      description: events.description,
-      shortDescription: events.shortDescription,
-      worldId: events.worldId,
-    })
-    .from(events)
-    .innerJoin(eventLocations, eq(events.id, eventLocations.eventId))
-    .where(eq(eventLocations.locationId, locationId))
-    .orderBy(desc(events.createdAt));
+): Promise<UIEventWithRelations[]> => {
+  // First get the event IDs for this location
+  const eventIds = await db
+    .select({ eventId: eventLocations.eventId })
+    .from(eventLocations)
+    .where(eq(eventLocations.locationId, locationId));
 
-  const result = limit ? await query.limit(limit) : await query;
+  if (eventIds.length === 0) {
+    return [];
+  }
+
+  // Then get the full events with relations
+  const result = await db.query.events.findMany({
+    where: (events, { inArray }) =>
+      inArray(
+        events.id,
+        eventIds.map((e) => e.eventId)
+      ),
+    orderBy: desc(events.createdAt),
+    limit,
+    with: {
+      locations: {
+        with: {
+          location: true,
+        },
+      },
+      characters: {
+        with: {
+          character: true,
+        },
+      },
+      players: {
+        with: {
+          player: true,
+        },
+      },
+      items: {
+        with: {
+          item: true,
+        },
+      },
+    },
+  });
   return result;
 };
 
 export const getEventsForCharacter = async (
   characterId: number,
   limit?: number
-): Promise<UIEvent[]> => {
-  const query = db
-    .select({
-      id: events.id,
-      createdAt: events.createdAt,
-      description: events.description,
-      shortDescription: events.shortDescription,
-      worldId: events.worldId,
-    })
-    .from(events)
-    .innerJoin(eventCharacters, eq(events.id, eventCharacters.eventId))
-    .where(eq(eventCharacters.characterId, characterId))
-    .orderBy(desc(events.createdAt));
+): Promise<UIEventWithRelations[]> => {
+  // First get the event IDs for this character
+  const eventIds = await db
+    .select({ eventId: eventCharacters.eventId })
+    .from(eventCharacters)
+    .where(eq(eventCharacters.characterId, characterId));
 
-  return limit ? await query.limit(limit) : await query;
+  if (eventIds.length === 0) {
+    return [];
+  }
+
+  // Then get the full events with relations
+  const result = await db.query.events.findMany({
+    where: (events, { inArray }) =>
+      inArray(
+        events.id,
+        eventIds.map((e) => e.eventId)
+      ),
+    orderBy: desc(events.createdAt),
+    limit,
+    with: {
+      locations: {
+        with: {
+          location: true,
+        },
+      },
+      characters: {
+        with: {
+          character: true,
+        },
+      },
+      players: {
+        with: {
+          player: true,
+        },
+      },
+      items: {
+        with: {
+          item: true,
+        },
+      },
+    },
+  });
+  return result;
 };
 
 export const getEventsForPlayer = async (
   playerId: number,
   limit?: number
-): Promise<UIEvent[]> => {
-  const query = db
-    .select({
-      id: events.id,
-      createdAt: events.createdAt,
-      description: events.description,
-      shortDescription: events.shortDescription,
-      worldId: events.worldId,
-    })
-    .from(events)
-    .innerJoin(eventPlayers, eq(events.id, eventPlayers.eventId))
-    .where(eq(eventPlayers.playerId, playerId))
-    .orderBy(desc(events.createdAt));
+): Promise<UIEventWithRelations[]> => {
+  // First get the event IDs for this player
+  const eventIds = await db
+    .select({ eventId: eventPlayers.eventId })
+    .from(eventPlayers)
+    .where(eq(eventPlayers.playerId, playerId));
 
-  const result = limit ? await query.limit(limit) : await query;
+  if (eventIds.length === 0) {
+    return [];
+  }
+
+  // Then get the full events with relations
+  const result = await db.query.events.findMany({
+    where: (events, { inArray }) =>
+      inArray(
+        events.id,
+        eventIds.map((e) => e.eventId)
+      ),
+    orderBy: desc(events.createdAt),
+    limit,
+    with: {
+      locations: {
+        with: {
+          location: true,
+        },
+      },
+      characters: {
+        with: {
+          character: true,
+        },
+      },
+      players: {
+        with: {
+          player: true,
+        },
+      },
+      items: {
+        with: {
+          item: true,
+        },
+      },
+    },
+  });
   return result;
 };
 
 export const getEventsForItem = async (
   itemId: number,
   limit?: number
-): Promise<UIEvent[]> => {
-  const query = db
-    .select({
-      id: events.id,
-      createdAt: events.createdAt,
-      description: events.description,
-      shortDescription: events.shortDescription,
-      worldId: events.worldId,
-    })
-    .from(events)
-    .innerJoin(eventItems, eq(events.id, eventItems.eventId))
-    .where(eq(eventItems.itemId, itemId))
-    .orderBy(desc(events.createdAt));
+): Promise<UIEventWithRelations[]> => {
+  // First get the event IDs for this item
+  const eventIds = await db
+    .select({ eventId: eventItems.eventId })
+    .from(eventItems)
+    .where(eq(eventItems.itemId, itemId));
 
-  return limit ? await query.limit(limit) : await query;
+  if (eventIds.length === 0) {
+    return [];
+  }
+
+  // Then get the full events with relations
+  const result = await db.query.events.findMany({
+    where: (events, { inArray }) =>
+      inArray(
+        events.id,
+        eventIds.map((e) => e.eventId)
+      ),
+    orderBy: desc(events.createdAt),
+    limit,
+    with: {
+      locations: {
+        with: {
+          location: true,
+        },
+      },
+      characters: {
+        with: {
+          character: true,
+        },
+      },
+      players: {
+        with: {
+          player: true,
+        },
+      },
+      items: {
+        with: {
+          item: true,
+        },
+      },
+    },
+  });
+  return result;
 };
 
 export const getAllEventsInWorld = async (
