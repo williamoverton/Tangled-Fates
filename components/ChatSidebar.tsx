@@ -10,9 +10,10 @@ type Player = typeof players.$inferSelect;
 interface ChatSidebarProps {
   player: Player;
   recentEvents: UIEvent[];
+  playerPulse?: boolean;
 }
 
-export function ChatSidebar({ player, recentEvents }: ChatSidebarProps) {
+export function ChatSidebar({ player, recentEvents, playerPulse = false }: ChatSidebarProps) {
   return (
     <div className="w-80 lg:w-80 md:w-72 sm:w-64 border-l border-ui-border bg-ui-card-bg flex flex-col h-full transition-all duration-300 ease-in-out overflow-hidden">
       <ScrollArea className="flex-1 h-full">
@@ -34,11 +35,17 @@ export function ChatSidebar({ player, recentEvents }: ChatSidebarProps) {
               )}
             </div>
             <CardHeader className="px-6 pt-4 pb-2">
-              <CardTitle className="text-xl">{player.name}</CardTitle>
+              <CardTitle className={`text-xl ${
+                playerPulse ? 'animate-player-pulse' : ''
+              }`}>
+                {player.name}
+              </CardTitle>
             </CardHeader>
             <CardContent>
               {player.description && (
-                <p className="text-sm text-muted-foreground mb-2">
+                <p className={`text-sm text-muted-foreground mb-2 ${
+                  playerPulse ? 'animate-player-pulse' : ''
+                }`}>
                   {player.description}
                 </p>
               )}

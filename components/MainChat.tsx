@@ -32,10 +32,14 @@ function MainChat({
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [currentPlayer, setCurrentPlayer] = useState(player);
   const [currentRecentEvents, setCurrentRecentEvents] = useState(recentEvents);
+  const [playerPulse, setPlayerPulse] = useState(false);
 
   useChannel(`player-${player.id}`, (message: Ably.Message) => {
     // TODO: check type of message.data.player
-    setCurrentPlayer(message.data.player as typeof players.$inferSelect);
+    const newPlayer = message.data.player as typeof players.$inferSelect;
+
+    setCurrentPlayer(newPlayer);
+    setPlayerPulse(true);
   });
 
   const { messages, sendMessage, status, error } = useChat({
@@ -73,6 +77,16 @@ function MainChat({
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, status]);
 
+  // Reset pulse animation after it completes
+  useEffect(() => {
+    if (playerPulse) {
+      const timer = setTimeout(() => {
+        setPlayerPulse(false);
+      }, 800); // Match the animation duration
+      return () => clearTimeout(timer);
+    }
+  }, [playerPulse]);
+
   return (
     <div className="flex w-full h-full">
       {/* Main chat area */}
@@ -87,6 +101,7 @@ function MainChat({
             status={status}
             sidebarOpen={sidebarOpen}
             onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}
+            playerPulse={playerPulse}
           />
 
           {/* Messages area */}
@@ -112,6 +127,7 @@ function MainChat({
         <ChatSidebar
           player={currentPlayer}
           recentEvents={currentRecentEvents}
+          playerPulse={playerPulse}
         />
       )}
     </div>

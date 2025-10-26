@@ -12,6 +12,7 @@ interface ChatHeaderProps {
   status: string;
   sidebarOpen: boolean;
   onToggleSidebar: () => void;
+  playerPulse?: boolean;
 }
 
 export function ChatHeader({
@@ -21,6 +22,7 @@ export function ChatHeader({
   status,
   sidebarOpen,
   onToggleSidebar,
+  playerPulse = false,
 }: ChatHeaderProps) {
   return (
     <div className="relative bg-muted p-2 border-b border-ui-border-strong shrink-0 shadow-md z-10">
@@ -32,7 +34,9 @@ export function ChatHeader({
           <span className="text-xl font-bold text-center text-foreground tracking-tight">
             -
           </span>
-          <div className="text-xl font-bold text-center tracking-tight text-accent">
+          <div className={`text-xl font-bold text-center tracking-tight text-accent ${
+            playerPulse ? 'animate-player-pulse' : ''
+          }`}>
             {playerName}
           </div>
         </div>

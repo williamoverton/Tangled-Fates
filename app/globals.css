@@ -226,4 +226,41 @@
   .animation-delay-1000 {
     animation-delay: 1000ms;
   }
+
+  /* Player update pulse animation */
+  @keyframes player-pulse {
+    0% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    50% {
+      transform: scale(1.05);
+      opacity: 0.8;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  .animate-player-pulse {
+    animation: player-pulse 0.6s ease-in-out;
+  }
+
+  /* Player update glow animation */
+  @keyframes player-glow {
+    0% {
+      box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4);
+    }
+    50% {
+      box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.1);
+    }
+    100% {
+      box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+    }
+  }
+
+  .animate-player-glow {
+    animation: player-glow 0.8s ease-out;
+  }
 }
