@@ -109,7 +109,7 @@ export default async function LocationWikiPage({
               <CardContent>
                 <div className="prose prose-invert max-w-none">
                   <Response className="text-foreground leading-relaxed">
-                    {location.description}
+                    {location.description.replace("\\n", "\n")}
                   </Response>
                 </div>
               </CardContent>

@@ -102,12 +102,22 @@ export const getWriteTools = (
       execute: async ({ characterId, playerId }) =>
         await mergeCharacterIntoPlayer(world, characterId, playerId),
     }),
-    updatePlayer: tool({
+    updateCurrentPlayer: tool({
       description:
-        "Update the current player. Use this if you need to update the name or description of the current player, for example if they die or get new powers etc.",
+        "Update the CURRENT PLAYER. Use this if you need to update the name or description of the current player, for example if they die or get new powers etc. Do not use this tool to update other players that may appear in the story.",
       inputSchema: CreateWorldPlayerItem,
       execute: async (playerUpdate) =>
         await updatePlayer(world, player.id, playerUpdate),
+    }),
+    updateOtherPlayer: tool({
+      description:
+        "Update another player in the world. Use this to update a player that is already in the world if something has changed. Do not use this tool to update the current player.",
+      inputSchema: z.object({
+        playerId: z.number(),
+        player: CreateWorldPlayerItem,
+      }),
+      execute: async ({ playerId, player }) =>
+        await updatePlayer(world, playerId, player),
     }),
     addNewItem: tool({
       description:

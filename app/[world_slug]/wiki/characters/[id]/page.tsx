@@ -111,7 +111,7 @@ export default async function CharacterWikiPage({
               <CardContent>
                 <div className="prose prose-invert max-w-none">
                   <Response className="text-foreground leading-relaxed">
-                    {character.description}
+                    {character.description.replace("\\n", "\n")}
                   </Response>
                 </div>
               </CardContent>

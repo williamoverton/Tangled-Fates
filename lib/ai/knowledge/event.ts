@@ -12,7 +12,7 @@ import { db } from "@/lib/db/client";
 import { and, cosineDistance, desc, eq, gt, sql } from "drizzle-orm";
 import { revalidateTag } from "next/cache";
 
-const SIMILARITY_THRESHOLD = 0.3; // TODO: tune this
+const SIMILARITY_THRESHOLD = 0.2; // TODO: tune this
 
 // Add a new event to the knowledge base
 export const addEventToKnowledge = async (

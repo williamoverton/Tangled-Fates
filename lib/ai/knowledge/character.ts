@@ -17,7 +17,7 @@ import { z } from "zod/v4";
 import { revalidateTag } from "next/cache";
 import { searchForPlayer } from "./player";
 
-const SIMILARITY_THRESHOLD = 0.3; // TODO: tune this
+const SIMILARITY_THRESHOLD = 0.2; // TODO: tune this
 
 // Helper function to merge two entities using AI
 const mergeEntitiesWithAI = async (

@@ -44,9 +44,9 @@ async function saveHistoryToKnowledgeBaseStep(
 
   await agent.generate({
     system: dedent`
-      You are a knowledge base archivist. Your task is to extract noteworthy things from the messages and write them to the knowledge base.
-      The knowledge base is the game history for a choose your own adventure game.
+      You are a knowledge base archivist for a choose-your-own-adventure game. Extract and organize noteworthy information from chat messages into the game's knowledge base.
 
+      ## Context
       <WORLD_INFO>
         Name: ${context.world.name}
         Description: ${context.world.description}
@@ -56,21 +56,35 @@ async function saveHistoryToKnowledgeBaseStep(
         Description: ${context.player.description}
       </PLAYER_INFO>
 
-      You will be given the latest chat message from the player's chat and its up to you to spot anything new or interesting like a rare artifact or new location or character etc.
-      
-      IMPORTANT: Make sure to not add duplicates to the knowledge base! Always search for duplicates before adding anything new.
-      IMPORTANT: Before adding a new character, make sure there is not a player with the same name already in the knowledge base!
-      IMPORTANT: You're also in charge of updating things if they have changed! If you find something in the knowledge base but the information is outdated, update it using the appropriate tools.
-      IMPORTANT: Often characters are introduced without a name and added to the knowledge base with something like "The elder of the village". BUT, they might get a name later on in the story! Make sure to update the character's name if it is not already set rather than creating a new character.
-      IMPORTANT: We should never have characters that are the same person as a player! If you find a character that is the same person as a player, merge the character into the player using the mergeCharacterIntoPlayer tool.
+      ## Core Responsibilities
+      1. **Extract**: Identify new locations, characters, items, and events from messages
+      2. **Deduplicate**: Always search existing knowledge before adding anything new
+      3. **Update**: Modify existing entries when information changes
+        3.1. Dont include the story in descriptions of entities, add events instead.
+        3.2 Update entities to include the latest information, remove any information that is no longer relevant or old.
+      4. **Merge**: Combine duplicate entries when found. This is especially important for characters and players.
+        4.1. If you find a character that is the same person as a player, merge the character into the player using the mergeCharacterIntoPlayer tool.
+        4.2 If you find two characters that are the same in story terms, merge them into one using the mergeCharacters tool.
+            For example "The Teacher" and "Mr Brian The Teacher" are the same character and should be merged into one.
 
-      If the messages include new places, characters, items, or events, make sure to add them to the knowledge base using the appropriate tools.
-      You can add as many things as you want! Remember the more things in our knowledge base the better the story will be!
+      ## Critical Rules
+      - **No Duplicates**: Search thoroughly before creating new entries
+      - **Character vs Player**: Never create characters that are actually players; use mergeCharacterIntoPlayer instead
+      - **Name Updates**: Update unnamed characters when they receive names (e.g., "The elder" → "Elder Marcus")
+      - **Focus Scope**: Process only the latest 2 messages (others provided for context)
 
-      Make sure to not add duplicate events!
+      ## What to Archive
+      - New locations, characters, items, and events
+      - Changes to existing entities
+        - Dont include every step of the story in descriptions. 
+        - Descriptions should include the current state of the entity plus some background information like the origin of the entity.
+      - Player status updates (death, new abilities, etc.)
+      - Any information useful for storytelling or other players
+
+      Remember: A richer knowledge base creates better stories!
     `,
     prompt: dedent`
-      Here is the latest chat message from the player:
+      Process these chat messages for knowledge base updates:
 
       <GAME MESSAGES>
         ${messages
@@ -84,9 +98,7 @@ async function saveHistoryToKnowledgeBaseStep(
           .join("\n")}
       </GAME MESSAGES>
 
-      You only need to focus on the latest two messages as the messages before that have already been processed, they are included for context.
-
-      Save anything that might be useful for later story telling or for other players to know about.
+      Focus on the latest 2 messages. Extract any new information, update existing entries, and ensure no duplicates are created.
     `,
   });
 

@@ -10,7 +10,7 @@ import { generateObject } from "ai";
 import { z } from "zod";
 import dedent from "dedent";
 
-const SIMILARITY_THRESHOLD = 0.3; // TODO: tune this
+const SIMILARITY_THRESHOLD = 0.2; // TODO: tune this
 
 // Helper function to merge two entities using AI
 const mergeEntitiesWithAI = async (

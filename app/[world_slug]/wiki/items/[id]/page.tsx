@@ -109,7 +109,7 @@ export default async function ItemWikiPage({
               <CardContent>
                 <div className="prose prose-invert max-w-none">
                   <Response className="text-foreground leading-relaxed">
-                    {item.description}
+                    {item.description.replace("\\n", "\n")}
                   </Response>
                 </div>
               </CardContent>

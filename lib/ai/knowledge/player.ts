@@ -6,7 +6,7 @@ import { CreateWorldPlayerItem } from "./types";
 import { revalidateTag } from "next/cache";
 import { publishPlayerUpdate } from "@/lib/realtime/publish";
 
-const SIMILARITY_THRESHOLD = 0.3; // TODO: tune this
+const SIMILARITY_THRESHOLD = 0.2; // TODO: tune this
 
 export async function searchForPlayer(
   world: typeof worlds.$inferSelect,
@@ -59,7 +59,7 @@ export const updatePlayer = async (
   playerId: number,
   player: CreateWorldPlayerItem
 ) => {
-  console.log(`Updating player ${player.name} in knowledge base`);
+  console.log(`Updating player ${playerId} (${player.name}) in knowledge base`);
 
   const embedding = await embedKnowledgeItem({
     type: "world_player",
