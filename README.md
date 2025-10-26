@@ -9,6 +9,7 @@
 - **Dynamic Narratives**: Claude Haiku 4.5 powers intelligent, context-aware storytelling that adapts to your choices
 - **Consistent World Building**: AI maintains story consistency by searching through existing knowledge before generating new content
 - **Real-time Chat Interface**: Stream responses with typing indicators and smooth animations
+- **Live Player Updates**: Real-time synchronization of player state changes across all connected clients using Ably
 
 ### 🌍 Shared Living Worlds
 
@@ -51,6 +52,7 @@
 - **Drizzle ORM** for type-safe database operations
 - **Docker Compose** for local development environment
 - **Clerk Authentication** for secure user management
+- **Ably Realtime** for live player state synchronization and multiplayer features
 
 ### Knowledge Management
 
@@ -190,20 +192,7 @@ npm run db:studio
 
 ## 📝 Environment Variables
 
-```bash
-# Postgres connection string
-DATABASE_URL="postgresql://postgres:postgres@localhost:5432/choose-your-own-adventure-multiplayer"
-
-# Vercel AI SDK key
-AI_GATEWAY_API_KEY=""
-
-# Vercel blob storage
-BLOB_READ_WRITE_TOKEN=""
-
-# Clerk
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=""
-CLERK_SECRET_KEY=""
-```
+See env.sample
 
 ## 🤝 Contributing
 
@@ -224,6 +213,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - Vector search with [pgvector](https://github.com/pgvector/pgvector)
 - UI components from [shadcn/ui](https://ui.shadcn.com/)
 - Authentication by [Clerk](https://clerk.com/)
+- Real-time features powered by [Ably](https://ably.com/)
 
 ---
 

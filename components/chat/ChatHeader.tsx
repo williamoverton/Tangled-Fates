@@ -34,9 +34,11 @@ export function ChatHeader({
           <span className="text-xl font-bold text-center text-foreground tracking-tight">
             -
           </span>
-          <div className={`text-xl font-bold text-center tracking-tight text-accent ${
-            playerPulse ? 'animate-player-pulse' : ''
-          }`}>
+          <div
+            className={`text-xl font-bold text-center tracking-tight text-accent ${
+              playerPulse ? "animate-player-pulse" : ""
+            }`}
+          >
             {playerName}
           </div>
         </div>
