@@ -61,6 +61,10 @@ export const addEventToKnowledge = async (
           locationId,
         }))
       );
+
+      for (const locationId of event.locations) {
+        revalidateTag(`locations-${locationId}`, "max");
+      }
     }
 
     if (event.characters && event.characters.length > 0) {
@@ -70,6 +74,10 @@ export const addEventToKnowledge = async (
           characterId,
         }))
       );
+
+      for (const characterId of event.characters) {
+        revalidateTag(`characters-${characterId}`, "max");
+      }
     }
 
     if (event.players && event.players.length > 0) {
@@ -79,6 +87,10 @@ export const addEventToKnowledge = async (
           playerId,
         }))
       );
+
+      for (const playerId of event.players) {
+        revalidateTag(`players-${playerId}`, "max");
+      }
     }
 
     if (event.items && event.items.length > 0) {
@@ -88,6 +100,10 @@ export const addEventToKnowledge = async (
           itemId,
         }))
       );
+
+      for (const itemId of event.items) {
+        revalidateTag(`items-${itemId}`, "max");
+      }
     }
 
     console.log(`Event relationships added to knowledge base`);

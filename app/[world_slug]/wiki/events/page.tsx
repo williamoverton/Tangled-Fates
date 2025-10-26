@@ -1,5 +1,3 @@
-"use cache";
-
 import { db } from "@/lib/db/client";
 import { worlds } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
@@ -20,6 +18,8 @@ export default async function EventsIndexPage({
 }: {
   params: Promise<{ world_slug: string }>;
 }) {
+  "use cache";
+
   const { world_slug } = await params;
 
   // Get the world

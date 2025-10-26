@@ -1,5 +1,3 @@
-"use cache";
-
 import { db } from "@/lib/db/client";
 import { worlds } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
@@ -28,6 +26,8 @@ export default async function LocationWikiPage({
 }: {
   params: Promise<{ world_slug: string; id: string }>;
 }) {
+  "use cache";
+
   const { world_slug, id } = await params;
 
   // Get the world
