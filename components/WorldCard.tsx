@@ -9,6 +9,7 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Response } from "@/components/ai-elements/response";
 
 interface WorldCardProps {
   world: {
@@ -89,7 +90,9 @@ export function WorldCard({
                   : "text-sm line-clamp-2 h-10"
               }
             >
-              {world.description}
+              <Response className="[&_p]:m-0 [&_p]:p-0 *:m-0 *:p-0">
+                {world.description}
+              </Response>
             </CardDescription>
           )}
         </CardHeader>

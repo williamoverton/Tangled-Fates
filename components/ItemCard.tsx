@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { User } from "lucide-react";
+import { Package } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -8,11 +8,10 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Response } from "@/components/ai-elements/response";
 
-interface PlayerCardProps {
-  player: {
+interface ItemCardProps {
+  item: {
     id: number;
     name: string;
     description: string | null;
@@ -24,12 +23,12 @@ interface PlayerCardProps {
   actionLabel?: string;
 }
 
-export function PlayerCard({
-  player,
+export function ItemCard({
+  item,
   href,
   variant = "wiki",
   actionLabel,
-}: PlayerCardProps) {
+}: ItemCardProps) {
   const isWikiVariant = variant === "wiki";
 
   return (
@@ -46,12 +45,12 @@ export function PlayerCard({
             : "cursor-pointer transition-shadow"
         }`}
       >
-        {/* Player Image */}
+        {/* Item Image */}
         <div className="relative w-full aspect-square bg-muted shrink-0">
-          {player.imageUrl ? (
+          {item.imageUrl ? (
             <Image
-              src={player.imageUrl}
-              alt={player.name}
+              src={item.imageUrl}
+              alt={item.name}
               fill
               className={
                 isWikiVariant
@@ -61,12 +60,12 @@ export function PlayerCard({
             />
           ) : (
             <div className="absolute inset-0 flex items-center justify-center text-muted-foreground">
-              <User className="w-16 h-16" strokeWidth={1.5} />
+              <Package className="w-16 h-16" strokeWidth={1.5} />
             </div>
           )}
         </div>
 
-        {/* Player Info - Scrollable area */}
+        {/* Item Info - Scrollable area */}
         <CardHeader
           className={`${isWikiVariant ? "pb-3" : ""} ${
             !isWikiVariant ? "flex-1 overflow-y-auto" : ""
@@ -79,16 +78,16 @@ export function PlayerCard({
                 : undefined
             }
           >
-            {player.name}
+            {item.name}
           </CardTitle>
-          {player.description && (
+          {item.description && (
             <CardDescription
               className={
                 isWikiVariant ? "text-sm line-clamp-3" : "text-sm line-clamp-3"
               }
             >
               <Response className="[&_p]:m-0 [&_p]:p-0 *:m-0 *:p-0">
-                {player.description}
+                {item.description}
               </Response>
             </CardDescription>
           )}
@@ -98,13 +97,13 @@ export function PlayerCard({
         <CardContent className="shrink-0">
           {isWikiVariant && (
             <p className="text-xs text-muted-foreground">
-              Joined {new Date(player.createdAt).toLocaleDateString()}
+              Discovered {new Date(item.createdAt).toLocaleDateString()}
             </p>
           )}
-          {!isWikiVariant && (
-            <Button variant="outline" className="w-full mb-4" asChild>
-              <span>{actionLabel || `Play as ${player.name}`}</span>
-            </Button>
+          {!isWikiVariant && actionLabel && (
+            <p className="text-xs text-muted-foreground text-center">
+              {actionLabel}
+            </p>
           )}
         </CardContent>
       </Card>

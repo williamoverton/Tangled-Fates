@@ -8,6 +8,7 @@ import { RecentEvents } from "@/components/wiki/RecentEvents";
 import { getEventsForItem } from "@/lib/ai/knowledge/event";
 import { getItemById } from "@/lib/ai/knowledge/item";
 import { cacheTag } from "next/cache";
+import { Response } from "@/components/ai-elements/response";
 
 export async function generateStaticParams() {
   const items = await db.query.items.findMany({
@@ -107,9 +108,9 @@ export default async function ItemWikiPage({
               </CardHeader>
               <CardContent>
                 <div className="prose prose-invert max-w-none">
-                  <p className="text-foreground leading-relaxed whitespace-pre-wrap">
+                  <Response className="text-foreground leading-relaxed">
                     {item.description}
-                  </p>
+                  </Response>
                 </div>
               </CardContent>
             </Card>

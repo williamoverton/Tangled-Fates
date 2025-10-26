@@ -2,11 +2,10 @@ import { db } from "@/lib/db/client";
 import { worlds } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { notFound } from "next/navigation";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { getAllItemsInWorld } from "@/lib/ai/knowledge/item";
-import Image from "next/image";
-import Link from "next/link";
 import { cacheTag } from "next/cache";
+import { ItemCard } from "@/components/ItemCard";
 
 export default async function ItemsIndexPage({
   params,
@@ -69,56 +68,12 @@ export default async function ItemsIndexPage({
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {items.map((item) => (
-              <Link
+              <ItemCard
                 key={item.id}
+                item={item}
                 href={`/${world_slug}/wiki/items/${item.id}`}
-                className="group"
-              >
-                <Card className="h-full overflow-hidden transition-all hover:shadow-lg hover:border-primary/50 hover:scale-[1.02] p-0">
-                  {/* Item Image */}
-                  <div className="relative w-full aspect-square bg-muted">
-                    {item.imageUrl ? (
-                      <Image
-                        src={item.imageUrl}
-                        alt={item.name}
-                        fill
-                        className="object-cover transition-transform group-hover:scale-105"
-                      />
-                    ) : (
-                      <div className="absolute inset-0 flex items-center justify-center text-muted-foreground">
-                        <svg
-                          className="w-16 h-16"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={1.5}
-                            d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
-                          />
-                        </svg>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Item Info */}
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-lg group-hover:text-primary transition-colors">
-                      {item.name}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-muted-foreground line-clamp-3">
-                      {item.description}
-                    </p>
-                    <p className="text-xs text-muted-foreground mt-3">
-                      Discovered {new Date(item.createdAt).toLocaleDateString()}
-                    </p>
-                  </CardContent>
-                </Card>
-              </Link>
+                variant="wiki"
+              />
             ))}
           </div>
         )}

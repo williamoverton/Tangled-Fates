@@ -8,6 +8,7 @@ import { RecentEvents } from "@/components/wiki/RecentEvents";
 import { getEventsForCharacter } from "@/lib/ai/knowledge/event";
 import { getCharacterById } from "@/lib/ai/knowledge/character";
 import { cacheTag } from "next/cache";
+import { Response } from "@/components/ai-elements/response";
 
 export async function generateStaticParams() {
   const characters = await db.query.characters.findMany({
@@ -109,9 +110,9 @@ export default async function CharacterWikiPage({
               </CardHeader>
               <CardContent>
                 <div className="prose prose-invert max-w-none">
-                  <p className="text-foreground leading-relaxed whitespace-pre-wrap">
+                  <Response className="text-foreground leading-relaxed">
                     {character.description}
-                  </p>
+                  </Response>
                 </div>
               </CardContent>
             </Card>

@@ -7,6 +7,7 @@ import { UIEventWithRelations } from "@/lib/ai/knowledge/types";
 import Link from "next/link";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { useState } from "react";
+import { Response } from "@/components/ai-elements/response";
 
 interface RecentEventsProps {
   events: UIEventWithRelations[];
@@ -37,15 +38,15 @@ function EventDescription({ event, className }: EventDescriptionProps) {
     event.shortDescription && event.shortDescription !== event.description;
 
   if (!shouldShowToggle) {
-    return <p className={className}>{event.description}</p>;
+    return <Response className={className}>{event.description}</Response>;
   }
 
   return (
     <Collapsible open={isExpanded} onOpenChange={setIsExpanded}>
       <div className="space-y-2">
-        <p className={className}>
+        <Response className={className}>
           {isExpanded ? event.description : shortDescription}
-        </p>
+        </Response>
         <CollapsibleTrigger asChild>
           <Button
             variant="ghost"

@@ -8,11 +8,10 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Response } from "@/components/ai-elements/response";
 
-interface PlayerCardProps {
-  player: {
+interface CharacterCardProps {
+  character: {
     id: number;
     name: string;
     description: string | null;
@@ -24,12 +23,12 @@ interface PlayerCardProps {
   actionLabel?: string;
 }
 
-export function PlayerCard({
-  player,
+export function CharacterCard({
+  character,
   href,
   variant = "wiki",
   actionLabel,
-}: PlayerCardProps) {
+}: CharacterCardProps) {
   const isWikiVariant = variant === "wiki";
 
   return (
@@ -46,12 +45,12 @@ export function PlayerCard({
             : "cursor-pointer transition-shadow"
         }`}
       >
-        {/* Player Image */}
+        {/* Character Image */}
         <div className="relative w-full aspect-square bg-muted shrink-0">
-          {player.imageUrl ? (
+          {character.imageUrl ? (
             <Image
-              src={player.imageUrl}
-              alt={player.name}
+              src={character.imageUrl}
+              alt={character.name}
               fill
               className={
                 isWikiVariant
@@ -66,7 +65,7 @@ export function PlayerCard({
           )}
         </div>
 
-        {/* Player Info - Scrollable area */}
+        {/* Character Info - Scrollable area */}
         <CardHeader
           className={`${isWikiVariant ? "pb-3" : ""} ${
             !isWikiVariant ? "flex-1 overflow-y-auto" : ""
@@ -79,16 +78,16 @@ export function PlayerCard({
                 : undefined
             }
           >
-            {player.name}
+            {character.name}
           </CardTitle>
-          {player.description && (
+          {character.description && (
             <CardDescription
               className={
                 isWikiVariant ? "text-sm line-clamp-3" : "text-sm line-clamp-3"
               }
             >
               <Response className="[&_p]:m-0 [&_p]:p-0 *:m-0 *:p-0">
-                {player.description}
+                {character.description}
               </Response>
             </CardDescription>
           )}
@@ -98,13 +97,13 @@ export function PlayerCard({
         <CardContent className="shrink-0">
           {isWikiVariant && (
             <p className="text-xs text-muted-foreground">
-              Joined {new Date(player.createdAt).toLocaleDateString()}
+              First seen {new Date(character.createdAt).toLocaleDateString()}
             </p>
           )}
-          {!isWikiVariant && (
-            <Button variant="outline" className="w-full mb-4" asChild>
-              <span>{actionLabel || `Play as ${player.name}`}</span>
-            </Button>
+          {!isWikiVariant && actionLabel && (
+            <p className="text-xs text-muted-foreground text-center">
+              {actionLabel}
+            </p>
           )}
         </CardContent>
       </Card>

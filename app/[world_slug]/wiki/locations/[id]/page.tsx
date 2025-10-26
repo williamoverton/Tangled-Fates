@@ -8,6 +8,7 @@ import { RecentEvents } from "@/components/wiki/RecentEvents";
 import { getEventsForLocation } from "@/lib/ai/knowledge/event";
 import { getLocationById } from "@/lib/ai/knowledge/location";
 import { cacheTag } from "next/cache";
+import { Response } from "@/components/ai-elements/response";
 
 export async function generateStaticParams() {
   const locations = await db.query.locations.findMany({
@@ -107,9 +108,9 @@ export default async function LocationWikiPage({
               </CardHeader>
               <CardContent>
                 <div className="prose prose-invert max-w-none">
-                  <p className="text-foreground leading-relaxed whitespace-pre-wrap">
+                  <Response className="text-foreground leading-relaxed">
                     {location.description}
-                  </p>
+                  </Response>
                 </div>
               </CardContent>
             </Card>
