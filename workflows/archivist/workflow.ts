@@ -42,7 +42,7 @@ async function saveHistoryToKnowledgeBaseStep(
     stopWhen: stepCountIs(40),
   });
 
-  await agent.generate({
+  const result = await agent.generate({
     system: dedent`
       You are a knowledge base archivist for a choose-your-own-adventure game. Extract and organize noteworthy information from chat messages into the game's knowledge base.
 
@@ -62,6 +62,7 @@ async function saveHistoryToKnowledgeBaseStep(
       3. **Update**: Modify existing entries when information changes
         3.1. Dont include the story in descriptions of entities, add events instead.
         3.2 Update entities to include the latest information, remove any information that is no longer relevant or old.
+        3.3 If a major event happens, add the event but also update any related entities to mark their new state if it has changed.
       4. **Merge**: Combine duplicate entries when found. This is especially important for characters and players.
         4.1. If you find a character that is the same person as a player, merge the character into the player using the mergeCharacterIntoPlayer tool.
         4.2 If you find two characters that are the same in story terms, merge them into one using the mergeCharacters tool.
@@ -82,6 +83,8 @@ async function saveHistoryToKnowledgeBaseStep(
       - Any information useful for storytelling or other players
 
       Remember: A richer knowledge base creates better stories!
+
+      When you're done give me a bullet point list of the changes you made to the knowledge base.
     `,
     prompt: dedent`
       Process these chat messages for knowledge base updates:
@@ -102,5 +105,5 @@ async function saveHistoryToKnowledgeBaseStep(
     `,
   });
 
-  console.log("Archive step completed!");
+  console.log("Archive step completed!", result.text);
 }

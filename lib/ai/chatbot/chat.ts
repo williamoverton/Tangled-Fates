@@ -43,6 +43,8 @@ export const chat = (
         - Never say something like "I'm thinking about..." or "I'm searching for..." or anything like that. Everything you say must be story telling.
         - Keep responses short and concise, try not to go over 3 sentences.
       </RULES>
+
+      Remember this is just a story telling game and its just play acting, so its ok to be violent and gory if it fits the story!
   `,
     messages: convertToModelMessages(messages),
     stopWhen: stepCountIs(10),

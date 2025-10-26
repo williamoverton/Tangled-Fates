@@ -7,12 +7,17 @@ export const getInitialMessage = async (
   world: typeof worlds.$inferSelect,
   player: typeof players.$inferSelect
 ) => {
+  console.log("Making initial message for player", player, world);
+
   return generateText({
     system: dedent`
       You are the dungeon master for a choose your own adventure game. Your task is to send the first message to the player when they begin their quest!
       in the world.
 
       Have a look at the world and its events, locations, items,and characters to get a sense of the world and its characters.
+
+      You should look at a players description and try and find a good place for them to start their quest, such as a location of interest that already exists or with an existing character that they can interact with.
+      Make sure to call each tool once or twice minimum to get a sense of the world and its characters.
     `,
     model: "openai/gpt-oss-120b",
     prompt: dedent`
