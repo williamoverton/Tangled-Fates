@@ -42,77 +42,82 @@ export const addEventToKnowledge = async (
     });
     console.log(`Embedding created successfully`);
 
-    const [createdEvent] = await db
-      .insert(events)
-      .values({
-        description: unescapeString(event.description),
-        shortDescription: unescapeString(event.shortDescription),
-        worldId: world.id,
-        embedding: embedding.embedding,
-      })
-      .returning();
+    // Use a transaction to ensure all operations succeed or fail together
+    const result = await db.transaction(async (tx) => {
+      const [createdEvent] = await tx
+        .insert(events)
+        .values({
+          description: unescapeString(event.description),
+          shortDescription: unescapeString(event.shortDescription),
+          worldId: world.id,
+          embedding: embedding.embedding,
+        })
+        .returning();
 
-    console.log(`Event added to knowledge base with id ${createdEvent.id}`);
+      console.log(`Event added to knowledge base with id ${createdEvent.id}`);
 
-    // Insert junction table records for each reference type
-    if (event.locations && event.locations.length > 0) {
-      await db.insert(eventLocations).values(
-        event.locations.map((locationId) => ({
-          eventId: createdEvent.id,
-          locationId,
-        }))
-      );
+      // Insert junction table records for each reference type
+      if (event.locations && event.locations.length > 0) {
+        await tx.insert(eventLocations).values(
+          event.locations.map((locationId) => ({
+            eventId: createdEvent.id,
+            locationId,
+          }))
+        );
 
-      for (const locationId of event.locations) {
-        revalidateTag(`locations-${locationId}`, "max");
+        for (const locationId of event.locations) {
+          revalidateTag(`locations-${locationId}`, "max");
+        }
       }
-    }
 
-    if (event.characters && event.characters.length > 0) {
-      await db.insert(eventCharacters).values(
-        event.characters.map((characterId) => ({
-          eventId: createdEvent.id,
-          characterId,
-        }))
-      );
+      if (event.characters && event.characters.length > 0) {
+        await tx.insert(eventCharacters).values(
+          event.characters.map((characterId) => ({
+            eventId: createdEvent.id,
+            characterId,
+          }))
+        );
 
-      for (const characterId of event.characters) {
-        revalidateTag(`characters-${characterId}`, "max");
+        for (const characterId of event.characters) {
+          revalidateTag(`characters-${characterId}`, "max");
+        }
       }
-    }
 
-    if (event.players && event.players.length > 0) {
-      await db.insert(eventPlayers).values(
-        event.players.map((playerId) => ({
-          eventId: createdEvent.id,
-          playerId,
-        }))
-      );
+      if (event.players && event.players.length > 0) {
+        await tx.insert(eventPlayers).values(
+          event.players.map((playerId) => ({
+            eventId: createdEvent.id,
+            playerId,
+          }))
+        );
 
-      for (const playerId of event.players) {
-        revalidateTag(`players-${playerId}`, "max");
+        for (const playerId of event.players) {
+          revalidateTag(`players-${playerId}`, "max");
+        }
       }
-    }
 
-    if (event.items && event.items.length > 0) {
-      await db.insert(eventItems).values(
-        event.items.map((itemId) => ({
-          eventId: createdEvent.id,
-          itemId,
-        }))
-      );
+      if (event.items && event.items.length > 0) {
+        await tx.insert(eventItems).values(
+          event.items.map((itemId) => ({
+            eventId: createdEvent.id,
+            itemId,
+          }))
+        );
 
-      for (const itemId of event.items) {
-        revalidateTag(`items-${itemId}`, "max");
+        for (const itemId of event.items) {
+          revalidateTag(`items-${itemId}`, "max");
+        }
       }
-    }
 
-    console.log(`Event relationships added to knowledge base`);
+      console.log(`Event relationships added to knowledge base`);
 
-    // Revalidate cache for events in this world
-    revalidateTag(`events-${world.id}`, "max");
+      // Revalidate cache for events in this world
+      revalidateTag(`events-${world.id}`, "max");
 
-    return createdEvent;
+      return createdEvent;
+    });
+
+    return result;
   } catch (error) {
     console.error("Error adding event to knowledge base:", error);
     console.error("Event data:", JSON.stringify(event, null, 2));
