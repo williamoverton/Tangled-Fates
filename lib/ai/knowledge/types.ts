@@ -10,7 +10,7 @@ export const CreateWorldLocationItem = z.object({
   description: z
     .string()
     .describe(
-      "A detailed **well formatted markdown** description of the place. Include everything needed to describe the place."
+      "A **well formatted markdown** description of the place. Include everything needed to describe the place."
     ),
 });
 export const WorldLocationItem = CreateWorldLocationItem.extend({
@@ -27,7 +27,7 @@ export const CreateWorldCharacterItem = z.object({
   description: z
     .string()
     .describe(
-      "A detailed **well formatted markdown** description of the character. Include everything needed to describe the character."
+      "A **well formatted markdown** description of the character. Include everything needed to describe the character."
     ),
 });
 export const WorldCharacterItem = CreateWorldCharacterItem.extend({
@@ -44,7 +44,7 @@ export const CreateWorldPlayerItem = z.object({
   description: z
     .string()
     .describe(
-      "A detailed **well formatted markdown** description of the player. Include everything needed to describe the player."
+      "A **well formatted markdown** description of the player. Include everything needed to describe the player."
     ),
 });
 export const WorldPlayerItem = CreateWorldPlayerItem.extend({
@@ -61,7 +61,7 @@ export const CreateGameWorldItem = z.object({
   description: z
     .string()
     .describe(
-      "A detailed **well formatted markdown** description of the world. Include everything needed to describe the world setting, atmosphere, and theme."
+      "A **well formatted markdown** description of the world. Include everything needed to describe the world setting, atmosphere, and theme."
     ),
 });
 export const GameWorldItem = CreateGameWorldItem.extend({
@@ -78,7 +78,7 @@ export const CreateWorldItemItem = z.object({
   description: z
     .string()
     .describe(
-      "A detailed **well formatted markdown** description of the item. Include everything needed to describe the item."
+      "A **well formatted markdown** description of the item. Include everything needed to describe the item."
     ),
 });
 export const WorldItemItem = CreateWorldItemItem.extend({
@@ -109,9 +109,7 @@ export const CreateWorldEventItem = z.object({
     .describe("Array of item IDs involved in the event (if applicable)"),
   description: z
     .string()
-    .describe(
-      "A detailed **well formatted markdown** description of the event."
-    ),
+    .describe("A **well formatted markdown** description of the event."),
   shortDescription: z
     .string()
     .describe("A single sentence description of the event."),
