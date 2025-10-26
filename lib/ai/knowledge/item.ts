@@ -9,6 +9,7 @@ import { revalidateTag } from "next/cache";
 import { generateObject } from "ai";
 import { z } from "zod";
 import dedent from "dedent";
+import { unescapeString } from "@/lib/utils";
 
 const SIMILARITY_THRESHOLD = 0.2; // TODO: tune this
 
@@ -64,8 +65,8 @@ export const addItemToKnowledge = async (
       .insert(items)
       .values({
         worldId: world.id,
-        name: item.name,
-        description: item.description,
+        name: unescapeString(item.name),
+        description: unescapeString(item.description),
         embedding: embedding.embedding,
       })
       .returning();
@@ -151,8 +152,8 @@ export const updateItem = async (
   await db
     .update(items)
     .set({
-      name: item.name,
-      description: item.description,
+      name: unescapeString(item.name),
+      description: unescapeString(item.description),
       embedding: embedding.embedding,
     })
     .where(and(eq(items.id, itemId), eq(items.worldId, world.id)));

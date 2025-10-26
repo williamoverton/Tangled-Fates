@@ -11,6 +11,7 @@ import { CreateWorldEventItem, UIEventWithRelations } from "./types";
 import { db } from "@/lib/db/client";
 import { and, cosineDistance, desc, eq, gt, sql } from "drizzle-orm";
 import { revalidateTag } from "next/cache";
+import { unescapeString } from "@/lib/utils";
 
 const SIMILARITY_THRESHOLD = 0.2; // TODO: tune this
 
@@ -44,8 +45,8 @@ export const addEventToKnowledge = async (
     const [createdEvent] = await db
       .insert(events)
       .values({
-        description: event.description,
-        shortDescription: event.shortDescription,
+        description: unescapeString(event.description),
+        shortDescription: unescapeString(event.shortDescription),
         worldId: world.id,
         embedding: embedding.embedding,
       })

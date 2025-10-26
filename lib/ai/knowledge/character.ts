@@ -16,6 +16,7 @@ import dedent from "dedent";
 import { z } from "zod/v4";
 import { revalidateTag } from "next/cache";
 import { searchForPlayer } from "./player";
+import { unescapeString } from "@/lib/utils";
 
 const SIMILARITY_THRESHOLD = 0.2; // TODO: tune this
 
@@ -68,8 +69,8 @@ export const addCharacterToKnowledge = async (
     .insert(characters)
     .values({
       worldId: world.id,
-      name: character.name,
-      description: character.description,
+      name: unescapeString(character.name),
+      description: unescapeString(character.description),
       embedding: embedding.embedding,
     })
     .returning();
@@ -146,8 +147,8 @@ export const updateCharacter = async (
   await db
     .update(characters)
     .set({
-      name: character.name,
-      description: character.description,
+      name: unescapeString(character.name),
+      description: unescapeString(character.description),
       embedding: embedding.embedding,
     })
     .where(
@@ -303,8 +304,8 @@ export const mergeCharacterIntoPlayer = async (
   await db
     .update(players)
     .set({
-      name: mergedPlayer.object.name,
-      description: mergedPlayer.object.description,
+      name: unescapeString(mergedPlayer.object.name),
+      description: unescapeString(mergedPlayer.object.description),
       embedding: embedding.embedding,
     })
     .where(eq(players.id, playerId));

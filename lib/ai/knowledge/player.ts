@@ -5,6 +5,7 @@ import { and, cosineDistance, desc, eq, gt, sql } from "drizzle-orm";
 import { CreateWorldPlayerItem } from "./types";
 import { revalidateTag } from "next/cache";
 import { publishPlayerUpdate } from "@/lib/realtime/publish";
+import { unescapeString } from "@/lib/utils";
 
 const SIMILARITY_THRESHOLD = 0.2; // TODO: tune this
 
@@ -69,8 +70,8 @@ export const updatePlayer = async (
   const [updatedPlayer] = await db
     .update(players)
     .set({
-      name: player.name,
-      description: player.description,
+      name: unescapeString(player.name),
+      description: unescapeString(player.description),
       embedding: embedding.embedding,
     })
     .where(and(eq(players.id, playerId), eq(players.worldId, world.id)))
