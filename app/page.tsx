@@ -47,9 +47,9 @@ export default async function Home() {
             <p className="text-xl md:text-2xl text-foreground/90 max-w-4xl mx-auto leading-relaxed animate-fade-in-up animation-delay-200">
               Jump into Tangled Fates where your wild decisions actually matter!
               An AI Dungeon Master weaves your chaos into a massive shared
-              world. Slay dragons, betray allies, save villages—or burn them
-              down. It's D&D meets MMO, and it's absolutely bonkers. Start Your
-              Adventure
+              world. Slay dragons, betray allies, save villages or burn them
+              down. It&apos;s D&D meets MMO, and it&apos;s absolutely bonkers.
+              Start Your Adventure
             </p>
 
             {/* Main CTA Button */}
