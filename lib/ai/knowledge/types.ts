@@ -179,8 +179,8 @@ type EventItemRelation = typeof eventItems.$inferSelect & {
 };
 
 export type UIEventWithRelations = UIEvent & {
-  locations?: EventLocationRelation[];
-  characters?: EventCharacterRelation[];
-  players?: EventPlayerRelation[];
-  items?: EventItemRelation[];
+  locations?: Omit<EventLocationRelation, "embedding">[];
+  characters?: Omit<EventCharacterRelation, "embedding">[];
+  players?: Omit<EventPlayerRelation, "embedding">[];
+  items?: Omit<EventItemRelation, "embedding">[];
 };

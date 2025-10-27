@@ -16,6 +16,66 @@ import { publishWorldEvent } from "@/lib/realtime/publish";
 
 const SIMILARITY_THRESHOLD = 0.2; // TODO: tune this
 
+// Data to get back for events including related entities to the event.
+const includeColumns = {
+  locations: {
+    with: {
+      location: {
+        columns: {
+          id: true,
+          name: true,
+          description: true,
+          createdAt: true,
+          imageUrl: true,
+          worldId: true,
+        },
+      },
+    },
+  },
+  players: {
+    with: {
+      player: {
+        columns: {
+          id: true,
+          name: true,
+          description: true,
+          createdAt: true,
+          imageUrl: true,
+          worldId: true,
+        },
+      },
+    },
+  },
+  items: {
+    with: {
+      item: {
+        columns: {
+          id: true,
+          name: true,
+          description: true,
+          createdAt: true,
+          imageUrl: true,
+          worldId: true,
+        },
+      },
+    },
+  },
+  characters: {
+    with: {
+      character: {
+        columns: {
+          id: true,
+          name: true,
+          description: true,
+          createdAt: true,
+          imageUrl: true,
+          worldId: true,
+        },
+      },
+    },
+  },
+} as const;
+
 // Add a new event to the knowledge base
 export const addEventToKnowledge = async (
   world: typeof worlds.$inferSelect,
@@ -188,29 +248,9 @@ export const getEventsForLocation = async (
       ),
     orderBy: desc(events.createdAt),
     limit,
-    with: {
-      locations: {
-        with: {
-          location: true,
-        },
-      },
-      characters: {
-        with: {
-          character: true,
-        },
-      },
-      players: {
-        with: {
-          player: true,
-        },
-      },
-      items: {
-        with: {
-          item: true,
-        },
-      },
-    },
+    with: includeColumns,
   });
+
   return result;
 };
 
@@ -237,28 +277,7 @@ export const getEventsForCharacter = async (
       ),
     orderBy: desc(events.createdAt),
     limit,
-    with: {
-      locations: {
-        with: {
-          location: true,
-        },
-      },
-      characters: {
-        with: {
-          character: true,
-        },
-      },
-      players: {
-        with: {
-          player: true,
-        },
-      },
-      items: {
-        with: {
-          item: true,
-        },
-      },
-    },
+    with: includeColumns,
   });
   return result;
 };
@@ -286,28 +305,7 @@ export const getEventsForPlayer = async (
       ),
     orderBy: desc(events.createdAt),
     limit,
-    with: {
-      locations: {
-        with: {
-          location: true,
-        },
-      },
-      characters: {
-        with: {
-          character: true,
-        },
-      },
-      players: {
-        with: {
-          player: true,
-        },
-      },
-      items: {
-        with: {
-          item: true,
-        },
-      },
-    },
+    with: includeColumns,
   });
   return result;
 };
@@ -335,28 +333,7 @@ export const getEventsForItem = async (
       ),
     orderBy: desc(events.createdAt),
     limit,
-    with: {
-      locations: {
-        with: {
-          location: true,
-        },
-      },
-      characters: {
-        with: {
-          character: true,
-        },
-      },
-      players: {
-        with: {
-          player: true,
-        },
-      },
-      items: {
-        with: {
-          item: true,
-        },
-      },
-    },
+    with: includeColumns,
   });
   return result;
 };
@@ -369,28 +346,7 @@ export const getAllEventsInWorld = async (
     where: eq(events.worldId, worldId),
     orderBy: desc(events.createdAt),
     limit,
-    with: {
-      locations: {
-        with: {
-          location: true,
-        },
-      },
-      characters: {
-        with: {
-          character: true,
-        },
-      },
-      players: {
-        with: {
-          player: true,
-        },
-      },
-      items: {
-        with: {
-          item: true,
-        },
-      },
-    },
+    with: includeColumns,
   });
   return result;
 };
@@ -400,27 +356,6 @@ export const getEventById = async (
 ): Promise<UIEventWithRelations | undefined> => {
   return await db.query.events.findFirst({
     where: eq(events.id, eventId),
-    with: {
-      locations: {
-        with: {
-          location: true,
-        },
-      },
-      characters: {
-        with: {
-          character: true,
-        },
-      },
-      players: {
-        with: {
-          player: true,
-        },
-      },
-      items: {
-        with: {
-          item: true,
-        },
-      },
-    },
+    with: includeColumns,
   });
 };
