@@ -5,12 +5,17 @@ import { GeneralNavbar } from "@/components/navbar/GeneralNavbar";
 import { Button } from "@/components/ui/button";
 import { cacheTag } from "next/cache";
 import Link from "next/link";
-import { desc } from "drizzle-orm";
+import { desc, count } from "drizzle-orm";
 
 export default async function Home() {
   "use cache";
   cacheTag("worlds");
 
+  // Fetch total count of worlds
+  const totalWorldsResult = await db.select({ count: count() }).from(worlds);
+  const totalWorlds = totalWorldsResult[0]?.count || 0;
+
+  // Fetch limited worlds for display
   const worldsList = await db
     .select()
     .from(worlds)
@@ -54,7 +59,7 @@ export default async function Home() {
 
             {/* Main CTA Button */}
             <div className="animate-fade-in-up animation-delay-400">
-              {worldsList.length > 0 ? (
+              {totalWorlds > 0 ? (
                 <div className="space-y-6">
                   <div className="inline-flex flex-col items-center gap-4">
                     <Button
@@ -67,8 +72,8 @@ export default async function Home() {
                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
                       <span className="w-2 h-2 rounded-full bg-green-500"></span>
                       <span className="font-medium">
-                        {worldsList.length} world
-                        {worldsList.length !== 1 ? "s" : ""} available
+                        {totalWorlds} world
+                        {totalWorlds !== 1 ? "s" : ""} available
                       </span>
                     </div>
                   </div>
@@ -159,7 +164,7 @@ export default async function Home() {
           </div>
 
           {/* Empty State */}
-          {worldsList.length === 0 && (
+          {totalWorlds === 0 && (
             <div className="text-center py-24">
               <div className="inline-flex items-center justify-center w-24 h-24 rounded-full bg-muted/30 mb-8 border-2 border-dashed border-muted-foreground/30">
                 <svg
