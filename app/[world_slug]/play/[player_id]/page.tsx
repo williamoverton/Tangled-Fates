@@ -33,13 +33,16 @@ const Game = async ({
   let messages: UIMessage[] = await getChatHistory(player.id);
 
   if (messages.length === 0) {
+    const initialMessage = await getInitialMessage(world, player);
+    const messageText = initialMessage.text || `Welcome to ${world.name}, ${player.name}! Your adventure begins now. What would you like to do?`;
+    
     messages = [
       {
         role: "assistant",
         parts: [
           {
             type: "text",
-            text: (await getInitialMessage(world, player)).text,
+            text: messageText,
           },
         ],
         id: "initial-message",
