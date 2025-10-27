@@ -1,6 +1,6 @@
 import { worlds } from "@/lib/db/schema";
 import { db } from "@/lib/db/client";
-import { WorldCard } from "@/components/WorldCard";
+import { WorldCard } from "@/components/wiki/WorldCard";
 import { GeneralNavbar } from "@/components/navbar/GeneralNavbar";
 import { Button } from "@/components/ui/button";
 import { cacheTag } from "next/cache";

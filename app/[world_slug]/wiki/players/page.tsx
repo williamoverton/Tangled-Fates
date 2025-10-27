@@ -4,7 +4,7 @@ import { eq } from "drizzle-orm";
 import { notFound } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { getAllPlayersInWorld } from "@/lib/ai/knowledge/player";
-import { PlayerCard } from "@/components/PlayerCard";
+import { PlayerCard } from "@/components/wiki/PlayerCard";
 import { cacheTag } from "next/cache";
 
 export default async function PlayersIndexPage({

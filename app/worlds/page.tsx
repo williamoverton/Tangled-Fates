@@ -1,6 +1,6 @@
 import { db } from "../../lib/db/client";
 import { CreateWorldDialog } from "../../components/CreateWorldDialog";
-import { WorldCard } from "../../components/WorldCard";
+import { WorldCard } from "../../components/wiki/WorldCard";
 import { cacheTag } from "next/cache";
 
 async function getWorlds() {

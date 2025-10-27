@@ -4,7 +4,7 @@ import { auth } from "@clerk/nextjs/server";
 import { notFound } from "next/navigation";
 import { CreatePlayerDialog } from "@/components/CreatePlayerDialog";
 import { Card, CardContent } from "@/components/ui/card";
-import { PlayerCard } from "@/components/PlayerCard";
+import { PlayerCard } from "@/components/wiki/PlayerCard";
 import { db } from "@/lib/db/client";
 
 export async function generateStaticParams() {

@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { getAllItemsInWorld } from "@/lib/ai/knowledge/item";
 import { cacheTag } from "next/cache";
-import { ItemCard } from "@/components/ItemCard";
+import { ItemCard } from "@/components/wiki/ItemCard";
 
 export default async function ItemsIndexPage({
   params,

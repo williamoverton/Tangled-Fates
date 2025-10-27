@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { getAllLocationsInWorld } from "@/lib/ai/knowledge/location";
 import { cacheTag } from "next/cache";
-import { LocationCard } from "@/components/LocationCard";
+import { LocationCard } from "@/components/wiki/LocationCard";
 
 export default async function LocationsIndexPage({
   params,
