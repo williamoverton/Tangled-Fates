@@ -33,18 +33,39 @@ const Game = async ({
   let messages: UIMessage[] = await getChatHistory(player.id);
 
   if (messages.length === 0) {
+    let initialMessageText = "";
+    
+    try {
+      console.log(`Generating initial message for player ${player.id}`);
+      const result = await getInitialMessage(world, player);
+      initialMessageText = result.text || "";
+      console.log(`Initial message generated, length: ${initialMessageText.length}`);
+    } catch (error) {
+      console.error("Error generating initial message:", error);
+    }
+
+    // Fallback message if generation failed or returned empty
+    if (!initialMessageText || initialMessageText.trim().length === 0) {
+      console.warn("Using fallback initial message");
+      initialMessageText = `Welcome to ${world.name}, ${player.name}! ${world.description}\n\nYour adventure begins now. What would you like to do?`;
+    }
+
     messages = [
       {
         role: "assistant",
         parts: [
           {
             type: "text",
-            text: (await getInitialMessage(world, player)).text,
+            text: initialMessageText,
           },
         ],
         id: "initial-message",
       },
     ];
+
+    // Save the initial message to prevent regeneration on reload
+    const { saveChatHistory } = await import("@/lib/ai/chatbot/history");
+    await saveChatHistory(player.id, messages);
   }
 
   // Fetch recent events for the player
