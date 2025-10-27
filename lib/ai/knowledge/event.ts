@@ -12,6 +12,7 @@ import { db } from "@/lib/db/client";
 import { and, cosineDistance, desc, eq, gt, sql } from "drizzle-orm";
 import { revalidateTag } from "next/cache";
 import { unescapeString } from "@/lib/utils";
+import { publishWorldEvent } from "@/lib/realtime/publish";
 
 const SIMILARITY_THRESHOLD = 0.2; // TODO: tune this
 
@@ -116,6 +117,9 @@ export const addEventToKnowledge = async (
 
       return createdEvent;
     });
+
+    // Would be nice if we could publish the event we have, but the shape is wrong. So we pass the ID and the publish function fetches the event from the database.
+    await publishWorldEvent(result.id);
 
     return result;
   } catch (error) {
@@ -389,4 +393,34 @@ export const getAllEventsInWorld = async (
     },
   });
   return result;
+};
+
+export const getEventById = async (
+  eventId: number
+): Promise<UIEventWithRelations | undefined> => {
+  return await db.query.events.findFirst({
+    where: eq(events.id, eventId),
+    with: {
+      locations: {
+        with: {
+          location: true,
+        },
+      },
+      characters: {
+        with: {
+          character: true,
+        },
+      },
+      players: {
+        with: {
+          player: true,
+        },
+      },
+      items: {
+        with: {
+          item: true,
+        },
+      },
+    },
+  });
 };

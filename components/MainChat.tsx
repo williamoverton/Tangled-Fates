@@ -42,6 +42,11 @@ function MainChat({
     setPlayerPulse(true);
   });
 
+  useChannel(`world_event-${world.id}`, (message: Ably.Message) => {
+    const newEvent = message.data.event as UIEvent;
+    setCurrentRecentEvents([newEvent, ...currentRecentEvents]);
+  });
+
   const { messages, sendMessage, status, error } = useChat({
     transport: new DefaultChatTransport({
       api: "/api/chat",
@@ -148,7 +153,7 @@ export default function ChatWindow({
   recentEvents: UIEvent[];
 }) {
   return (
-    <RealtimeWrapper player={player}>
+    <RealtimeWrapper player={player} world={world}>
       <MainChat
         initialMessages={initialMessages}
         title={title}

@@ -13,7 +13,11 @@ interface ChatSidebarProps {
   playerPulse?: boolean;
 }
 
-export function ChatSidebar({ player, recentEvents, playerPulse = false }: ChatSidebarProps) {
+export function ChatSidebar({
+  player,
+  recentEvents,
+  playerPulse = false,
+}: ChatSidebarProps) {
   return (
     <div className="w-80 lg:w-80 md:w-72 sm:w-64 border-l border-ui-border bg-ui-card-bg flex flex-col h-full transition-all duration-300 ease-in-out overflow-hidden">
       <ScrollArea className="flex-1 h-full">
@@ -35,17 +39,21 @@ export function ChatSidebar({ player, recentEvents, playerPulse = false }: ChatS
               )}
             </div>
             <CardHeader className="px-6 pt-4 pb-2">
-              <CardTitle className={`text-xl ${
-                playerPulse ? 'animate-player-pulse' : ''
-              }`}>
+              <CardTitle
+                className={`text-xl ${
+                  playerPulse ? "animate-player-pulse" : ""
+                }`}
+              >
                 {player.name}
               </CardTitle>
             </CardHeader>
             <CardContent>
               {player.description && (
-                <p className={`text-sm text-muted-foreground mb-2 ${
-                  playerPulse ? 'animate-player-pulse' : ''
-                }`}>
+                <p
+                  className={`text-sm text-muted-foreground mb-2 ${
+                    playerPulse ? "animate-player-pulse" : ""
+                  }`}
+                >
                   {player.description}
                 </p>
               )}
@@ -74,7 +82,7 @@ export function ChatSidebar({ player, recentEvents, playerPulse = false }: ChatS
                       className="border-l-2 border-primary/50 pl-3 py-2 hover:border-primary transition-colors"
                     >
                       <p className="text-xs text-foreground leading-relaxed mb-1">
-                        {event.description}
+                        {event.shortDescription || event.description}
                       </p>
                       <time className="text-[10px] text-muted-foreground">
                         {new Date(event.createdAt).toLocaleDateString("en-US", {
