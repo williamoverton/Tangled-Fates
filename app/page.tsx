@@ -39,15 +39,17 @@ export default async function Home() {
                 </span>
               </h1>
               <p className="text-2xl md:text-3xl text-foreground font-bold">
-                Where Every Choice Shapes Reality
+                Roll the Dice. Change Everything.
               </p>
             </div>
 
             {/* Main Tagline */}
             <p className="text-xl md:text-2xl text-foreground/90 max-w-4xl mx-auto leading-relaxed animate-fade-in-up animation-delay-200">
-              An AI-powered living, breathing world where your adventure
-              intertwines with others. Discover secrets, forge your path, and
-              leave your mark on a shared universe.
+              Jump into Tangled Fates where your wild decisions actually matter!
+              An AI Dungeon Master weaves your chaos into a massive shared
+              world. Slay dragons, betray allies, save villages—or burn them
+              down. It's D&D meets MMO, and it's absolutely bonkers. Start Your
+              Adventure
             </p>
 
             {/* Main CTA Button */}
