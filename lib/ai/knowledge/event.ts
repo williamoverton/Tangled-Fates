@@ -37,6 +37,7 @@ const includeColumns = {
       player: {
         columns: {
           id: true,
+          clerkUserId: true,
           name: true,
           description: true,
           createdAt: true,
