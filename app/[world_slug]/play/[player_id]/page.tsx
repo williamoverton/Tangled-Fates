@@ -39,7 +39,7 @@ const Game = async ({
         parts: [
           {
             type: "text",
-            text: (await getInitialMessage(world, player)).text,
+            text: await getInitialMessage(world, player),
           },
         ],
         id: "initial-message",

@@ -7,9 +7,16 @@ export const getInitialMessage = async (
   world: typeof worlds.$inferSelect,
   player: typeof players.$inferSelect
 ) => {
-  console.log("Making initial message for player", player, world);
+  console.log(
+    "Making initial message for player",
+    player.id,
+    player.name,
+    "in world",
+    world.id,
+    world.name
+  );
 
-  return generateText({
+  const result = await generateText({
     system: dedent`
       You are the dungeon master for a choose your own adventure game. Your task is to send the first message to the player when they begin their quest!
       in the world.
@@ -44,4 +51,16 @@ export const getInitialMessage = async (
     stopWhen: stepCountIs(15),
     tools: getReadTools(world, player),
   });
+
+  console.log(
+    "Generated initial message text:",
+    result.text?.substring(0, 100) + "..."
+  );
+
+  if (!result.text) {
+    console.error("No text generated for initial message");
+    return "Welcome to your adventure! What would you like to do?";
+  }
+
+  return result.text;
 };
